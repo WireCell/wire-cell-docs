@@ -1,4 +1,5 @@
-# Build externals for wire-cell packages
+[TOC]
+
 
 The ``wire-cell`` software in [BNL IF GitHub](https://github.com/BNLIF) depends on some software that may not come with your OS, in particular [ROOT](http://root.cern.ch).  This package provides a [Worch](https://github.com/brettviren/worch) configuration file to build that software.
 

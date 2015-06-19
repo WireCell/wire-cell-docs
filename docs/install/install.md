@@ -1,3 +1,5 @@
+[TOC]
+
 # Prerequisites
 Some external packages are required as described in this section.
 

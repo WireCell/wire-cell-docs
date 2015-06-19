@@ -1,3 +1,5 @@
+[TOC]
+
 Here is what you will do in the act of developing code.
 
 # Build Dancing
@@ -132,4 +134,50 @@ Whew!
 The namespace WireCell is used for all "core" wire cell code. Code that is used to glue this core functionality into other systems may use another namespace but should not use WireCell. For example, the "simple simulation tree" uses `WireCellSst`.
 
 It can be tedious to type explicit namespace qualifiers all the time. You can use the using namespace WireCell; directive where in implementation files (*.cxx) but you should never use it in (top-scope) of header files as it will then leak the contents of the namespace into any unsuspecting file that #include’s it.
+
+
+# Dealing with git submodules
+
+From [the git book](http://git-scm.com/book/en/v2/Git-Tools-Submodules#Working-on-a-Project-with-Submodules), do you updates like:
+
+    $ git submodule update --remote --rebase
+
+or like
+
+    $ git submodule update --remote --merge
+
+With:
+
+-   **`--rebase`:** put our local commits on top of any new ones
+
+-   **`--merge`:** merge our commits into new ones
+
+The first leaves a more "linear" commit history while the second leaves
+"diamonds" in the history whenever we have briefly diverged from the
+remote repository.  You can run "`gitk --all`" in wire-cell or one of the
+submodules to see what I mean.  Either way is fine.  Rebasing looks
+cleaner in the history but merge captures the subtle fact of where our
+line of development actually diverged.
+
+In that link there are other interesting things to do:
+
+-   Configure your repository so "`git status`" in the top-level "wire-cell" gives us more info on the status of all submodules:
+
+    `$ git config status.submodulesummary 1`
+
+-   Make it so "`git diff`" in wire-cell will also show any diff's in the submodules:
+
+    `$ git config diff.submodule log`
+
+-   To check that we will push in the right order (submodules first):
+
+    `$ git push --recurse-submodules=check`
+
+-   To force submodules to push first
+
+    `$ git push --recurse-submodules=on-demand`
+
+-   To run any command in all submodules
+
+    `$ git submodule foreach 'the command'`
 
