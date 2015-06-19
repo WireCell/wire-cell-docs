@@ -18,5 +18,7 @@ pages:
     - Blob Reconstruction: alg/blob.md
   - Visualization:
     - WebGL: viz/webgl.md
+  - Test:
+    - readme: test/index.md
 # theme_dir: custom_theme
 
