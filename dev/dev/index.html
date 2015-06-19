@@ -96,6 +96,24 @@
         
             <ul>
             
+                <li class="toctree-l3"><a href="#build-dancing">Build Dancing</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#debug">Debug</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#new-packages">New packages</a></li>
+                
+                    <li><a class="toctree-l4" href="#considerations">Considerations</a></li>
+                
+                    <li><a class="toctree-l4" href="#source-package-conventions">Source Package Conventions</a></li>
+                
+                    <li><a class="toctree-l4" href="#build-packages">Build packages</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#namespaces">Namespaces</a></li>
+                
+            
             </ul>
         
     </li>
@@ -188,7 +206,104 @@
           <div role="main">
             <div class="section">
               
-                
+                <p>Here is what you will do in the act of developing code.</p>
+<h1 id="build-dancing">Build Dancing</h1>
+<p>To rebuild after hacking on the source just type:</p>
+<pre><code class="bash">$ waf
+</code></pre>
+
+<p>When ready to install into the configured “prefix” installation area:</p>
+<pre><code class="bash">$ waf install
+</code></pre>
+
+<p>To force a full rebuild:</p>
+<pre><code class="bash">$ waf clean build
+</code></pre>
+
+<p>To limit building to just one submodule:</p>
+<pre><code class="bash">$ cd &lt;subdir&gt;/
+$ waf
+</code></pre>
+
+<h1 id="debug">Debug</h1>
+<p>To build for debugging one needs to reconfigure waf with a <code>--build-debug=&lt;flags&gt;</code> option and then the project must be cleaned and rebuilt. This can be done all at once like:</p>
+<pre><code class="bash">$ waf --prefix=/path/to/install --build-debug=-ggdb3 clean configure build install
+</code></pre>
+
+<p>You may also want to see what commands Waf is actually running to confirm this option is transmitted, just add a <code>-v</code> to the command line:</p>
+<pre><code class="bash">$ waf -v
+</code></pre>
+
+<p>Finally, run GDB in your usual, preferred manner:</p>
+<pre><code class="bash">$ gdb --args /home/bviren/projects/wire-cell/top/build/nav/test_geomdatasource
+(gdb) run
+</code></pre>
+
+<h1 id="new-packages">New packages</h1>
+<p>New wire-cell packages can be added easily.</p>
+<h2 id="considerations">Considerations</h2>
+<p>Wire Cell packages are organized to be easy to create. It's much better to create many small packages and maybe later merge them than it is to split apart ones which have grown too monolithic. When thinking about writing some code consider</p>
+<ul>
+<li>What other packages will I need?</li>
+<li>What future packages will need mine?</li>
+</ul>
+<p>You may have an idea for a package but in reality it is better split up into others. Here are reasons to believe your ideas fit into multiple packages:</p>
+<ul>
+<li>When I describe my expected package functionality I use the word "and".</li>
+<li>Some other package should use part of my package but the other part is not needed.</li>
+</ul>
+<p>If in doubt, make more, smaller packages.</p>
+<h2 id="source-package-conventions">Source Package Conventions</h2>
+<p>To make them easy to build and aggregate they must follow a layout convention.</p>
+<p>First, each source package should be kept in it's own git repository. The recommended package naming convention is:</p>
+<pre><code>wire-cell-NAME
+</code></pre>
+
+<p>where <code>NAME</code> is some short identifier of the package's primary purpose.</p>
+<p>The contents of the source package must be organized following these sub-directory conventions</p>
+<pre><code class="bash">src/             # C++ source file for libraries with .cxx extensions or private headers
+inc/NAME/        # public/API C++ header files with .h extensions
+dict/LinkDef.h   # ROOT linkdef header (for rootcling dictionaries)
+tests/           # Unit tests Python (nosetests) files like test_*.py or main C++ programs named like test_*.cxx.
+apps/            # main application(s), one appname.cxx file for each app named appname (todo: not yet supported)
+python/NAME      # python modules (todo: not yet supported)
+wscript_build    # a brief waf file
+</code></pre>
+
+<p>The <code>wscript_build</code> file specifies a name for the binary package (in general similar but not identical to the source package name) and a list of any other packages part of the wire-cell system on which it depends. For example the <code>wire-cell-nav</code> source package builds to a <code>WireCellNav</code> binary package and it depends on the WireCellData package and so its <code>wscript_build</code> file is:</p>
+<pre><code>bld.make_package('WireCellNav', use='WireCellData')
+</code></pre>
+
+<p>This is Python and the <code>bld</code> object is a Waf build context. It is provided automagically when waf interprets this file.</p>
+<h2 id="build-packages">Build packages</h2>
+<p>The above is about code packages. Code packages are built via a build package. This build package, <code>wire-cell</code> is but one possible "view" into all the wire cell packages. Other build packages may be created which only build some sub-set of all wire cell packages.</p>
+<p>To add a new code package to a build package (such as this one) one must do a little, annoying dance:</p>
+<pre><code>$ mkdir &lt;name&gt;
+$ cd &lt;name&gt;/
+$ echo &quot;bld.make_package('WireCell&lt;Name&gt;', use='WireCellNav WireCellData')&quot; &gt; wscript_build
+$ git init
+$ git commit -a -m &quot;Start code package &lt;name&gt;&quot;
+</code></pre>
+
+<p>Replace <code>&lt;name&gt;</code> with your package name. And, of course, you may want to put more code than just the <code>wscript_build</code> file. Also, that file should list what packages your package depends on.</p>
+<p>Now, make a new repository by going to the <a href="https://github.com/BNLIF">BNLIF GitHub</a> and clicking "New repository" button. Give it a name like <code>wire-cell-&lt;name&gt;</code>. Copy-and-paste the two command it tells you to use:</p>
+<pre><code class="bash">$ git remote add origin git@github.com:BNLIF/wire-cell-&lt;name&gt;.git
+$ git push -u origin master
+</code></pre>
+
+<p>Finally, move aside the local repository and add it right back as a submodule:</p>
+<pre><code class="bash">$ cd ..  # back to top
+$ mv &lt;name&gt; &lt;name&gt;.moved
+$ git submodule add -- git@github.com:BNLIF/wire-cell-&lt;name&gt;.git &lt;name&gt;
+$ git submodule update
+$ git commit -a -m &quot;Added &lt;name&gt; to top-level build package.&quot;
+$ git push
+</code></pre>
+
+<p>Whew!</p>
+<h1 id="namespaces">Namespaces</h1>
+<p>The namespace WireCell is used for all "core" wire cell code. Code that is used to glue this core functionality into other systems may use another namespace but should not use WireCell. For example, the "simple simulation tree" uses <code>WireCellSst</code>.</p>
+<p>It can be tedious to type explicit namespace qualifiers all the time. You can use the using namespace WireCell; directive where in implementation files (*.cxx) but you should never use it in (top-scope) of header files as it will then leak the contents of the namespace into any unsuspecting file that #include’s it.</p>
               
             </div>
           </div>
