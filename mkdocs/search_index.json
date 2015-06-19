@@ -1,0 +1,109 @@
+{
+    "docs": [
+        {
+            "location": "/", 
+            "text": "Welcome to Wire Cell", 
+            "title": "Overview"
+        }, 
+        {
+            "location": "/#welcome-to-wire-cell", 
+            "text": "", 
+            "title": "Welcome to Wire Cell"
+        }, 
+        {
+            "location": "/install/install/", 
+            "text": "Prerequisites\n\n\nSome external packages are required as described in this section.\n\n\nAutomated installation\n\n\nIt is recommended to use the automated installation method to install the required externals. Follow the directions in \nInstall Externals\n and come back here after setting up your user environment.\n\n\nManual installation\n\n\nYou may provide the external packages yourself. The definitive list of required packages, their versions and build details are kept in wire-cell-externals worch.cfg file. Refer to that for the most up-to-date information on what software is needed. In summary you will need:\n\n\n\n\nROOT v6\n\n\nPython 2.7\n\n\nBOOST 1.55 (or equiv)\n\n\n\n\nYou will need to set up your run-time environment so that these commands do not fail and give the expected version:\n\n\n$ root -b -q\n...\n| Welcome to ROOT 6.02/05                http://root.cern.ch |\n...\n$ python -c 'import ROOT; print ROOT.gROOT.GetVersion()'\n6.02/05\n\n\n\n\nBuild\n\n\nPreparing the source\n\n\nThe wire cell source project uses \ngit-submodules\n to bring all the source together:\n\n\n$ git clone git@github.com:BNLIF/wire-cell.git\n$ cd wire-cell\n$ git submodule init\n$ git submodule update\n\n$ alias waf=`pwd`/waf-tools/waf\n\n\n\n\nBuilding\n\n\nTo configure, build and install the wire cell code do:\n\n\n$ waf --prefix=/path/to/install configure build install\n\n\n\n\nNote: this is not a Worch build - there is no \n--orch-config\n option.\n\n\nIf you followed the \nsingle rooted install\n pattern then the \n/path/to/install\n can be \n/path/to/single-rooted\n and no additional user environment will be needed for run-time and the following command line should succeed:\n\n\n$ python -c 'import ROOT; print ROOT.WireCellData'\nWarning in \nTInterpreter::ReadRootmapFile\n: class  pair\nfloat,float\n found in libCore.so  is already in libWireCellDataDict.so\nWarning in \nTInterpreter::ReadRootmapFile\n: class  pair\nint,float\n found in libCore.so  is already in libWireCellDataDict.so\n\nclass 'ROOT.WireCellData'\n\n\n\n\n\nIf you provided your own externals or used the name/version tree pattern (using environment modules) then you will need to set your environment properly. Besides the usual \n$PATH\n, \n$LD_LIBRARY_PATH\n, etc pointing at \n/path/to/install\n you may need to set \nPYTHONPATH\n.\n\n\nIndependent from how you installed the code, if you have the broken ROOT packages for Ubuntu installed you will have to set:\n\n\n$ export PYTHONNOUSERSITE=yes", 
+            "title": "Install Wire Cell"
+        }, 
+        {
+            "location": "/install/install/#prerequisites", 
+            "text": "Some external packages are required as described in this section.", 
+            "title": "Prerequisites"
+        }, 
+        {
+            "location": "/install/install/#automated-installation", 
+            "text": "It is recommended to use the automated installation method to install the required externals. Follow the directions in  Install Externals  and come back here after setting up your user environment.", 
+            "title": "Automated installation"
+        }, 
+        {
+            "location": "/install/install/#manual-installation", 
+            "text": "You may provide the external packages yourself. The definitive list of required packages, their versions and build details are kept in wire-cell-externals worch.cfg file. Refer to that for the most up-to-date information on what software is needed. In summary you will need:   ROOT v6  Python 2.7  BOOST 1.55 (or equiv)   You will need to set up your run-time environment so that these commands do not fail and give the expected version:  $ root -b -q\n...\n| Welcome to ROOT 6.02/05                http://root.cern.ch |\n...\n$ python -c 'import ROOT; print ROOT.gROOT.GetVersion()'\n6.02/05", 
+            "title": "Manual installation"
+        }, 
+        {
+            "location": "/install/install/#build", 
+            "text": "", 
+            "title": "Build"
+        }, 
+        {
+            "location": "/install/install/#preparing-the-source", 
+            "text": "The wire cell source project uses  git-submodules  to bring all the source together:  $ git clone git@github.com:BNLIF/wire-cell.git\n$ cd wire-cell\n$ git submodule init\n$ git submodule update\n\n$ alias waf=`pwd`/waf-tools/waf", 
+            "title": "Preparing the source"
+        }, 
+        {
+            "location": "/install/install/#building", 
+            "text": "To configure, build and install the wire cell code do:  $ waf --prefix=/path/to/install configure build install  Note: this is not a Worch build - there is no  --orch-config  option.  If you followed the  single rooted install  pattern then the  /path/to/install  can be  /path/to/single-rooted  and no additional user environment will be needed for run-time and the following command line should succeed:  $ python -c 'import ROOT; print ROOT.WireCellData'\nWarning in  TInterpreter::ReadRootmapFile : class  pair float,float  found in libCore.so  is already in libWireCellDataDict.so\nWarning in  TInterpreter::ReadRootmapFile : class  pair int,float  found in libCore.so  is already in libWireCellDataDict.so class 'ROOT.WireCellData'   If you provided your own externals or used the name/version tree pattern (using environment modules) then you will need to set your environment properly. Besides the usual  $PATH ,  $LD_LIBRARY_PATH , etc pointing at  /path/to/install  you may need to set  PYTHONPATH .  Independent from how you installed the code, if you have the broken ROOT packages for Ubuntu installed you will have to set:  $ export PYTHONNOUSERSITE=yes", 
+            "title": "Building"
+        }, 
+        {
+            "location": "/install/external/", 
+            "text": "Build externals for wire-cell packages\n\n\nThe \nwire-cell\n software in \nBNL IF GitHub\n depends on some software that may not come with your OS, in particular \nROOT\n.  This package provides a \nWorch\n configuration file to build that software.\n\n\nQuickstart\n\n\nIf you don\u2019t care what this does, just cut and paste:\n\n\n$ virtualenv /path/to/buildenv\n$ source /path/to/buildenv/bin/activate\n$ pip install worch\n\n$ git clone git@github.com:BNLIF/wire-cell-externals.git /path/to/work\n$ cd /path/to/work\n$ waf --prefix=/path/to/install --orch-config=worch.cfg configure build\n$ deactivate\n\n$ source /path/to/install/env.sh\n$ module load root\n\n\n\n\nYou would repeat those last two lines in any new shells. You can now test:\n\n\n$ root -b -q\n...\n| Welcome to ROOT 6.02/05                http://root.cern.ch |\n...\n$ python -c 'import ROOT; print ROOT.gROOT.GetVersion()'\n6.02/05\n\n\n\n\nMore details and build options are described in the following sections.\n\n\nPreparation\n\n\nIt is recommended to install the Worch build system into a Python virtual environment. This environment will be used only for building these externals.\n\n\n$ virtualenv /path/to/buildenv\n$ source /path/to/buildenv/bin/activate\n$ pip install worch\n\n\n\n\nThis wire-cell-externals repository provides the rest of what is needed. Clone it to some place with ample disk space (10s of GB).\n\n\n$ git clone git@github.com:BNLIF/wire-cell-externals.git /path/to/work\n$ cd /path/to/work\n\n\n\n\nBuild\n\n\nAfter the above is done, this one command builds all the external software:\n\n\n(1)  $ waf --prefix=/path/to/install --orch-config=worch.cfg configure\n(2)  $ waf\n(3)  $ deactivate\n\n\n\n\nThis does:\n\n\n\n\nConfigures the build according to the \nworch.cfg\n file and tells it where to install the final results\n\n\nPerforms the automated build of external packages. This takes ~1 hour on Intel i7 w/ an SSD.\n\n\nExit the virtualenv as it is no longer needed (\n/path/to/buildenv\n may be removed)\n\n\n\n\nInstall\n\n\nThere are two ways to install the results of the build which differ in the organization of the installation directory layout. They are:\n\n\nname/version tree\n\n\n\n\neach package is installed into \n/path/to/install/\nname\n/\nversion\n/{bin,lib,include}\n. This allows for multiple versions of each package to be installed in parallel supporting different versions of an overall collection. It allows purging of a particular version by simply deleting the directory, although with care not to break other packages which depend on it. The user environment must be modified (\nPATH\n, etc) to pick up all run-time aspects of each individual package.\n\n\n\n\nsingle-rooted directory\n\n\n\n\nall packages are installed in the same \n/path/to/install/{bin,lib,include}\n directory. User run-time environment still requires adjustment but only for a single aspect. Only one version of a package may be installed, and removing an installed package is not supported (but is possible).\nThis package supports both paradigms.\n\n\n\n\nThis package supports both paradigms.\n\n\nInstall to name/version tree\n\n\nBy default, and as part of the build procedure, one will produce a name/version tree installation area as designated by the \n--prefix\n option to \nwaf\n. The user run-time environment can be set up with the help of \nEnvironment Modules\n (EM) which are provided by the build.\n\n\n$ source /path/to/install/env.sh\n$ module load root\n\n$ root -b -q\n...\n| Welcome to ROOT 6.02/05                http://root.cern.ch |\n...\n\n$ python -c 'import ROOT; print ROOT.gROOT.GetVersion()'\n6.02/05\n\n\n\n\nSingle-rooted install\n\n\nIn addition to the population of /path/to/install as above, the build will produce a \u201ctarpack\u201d binary package file. These can simply be unpacked into a single-rooted directory.\n\n\n$ cd /path/to/work\n$ mkdir -p /path/to/single-rooted\n$ for n in tmp/tarpack/*.tgz; do tar -C /path/to/single-rooted -xf $n; done\n\n\n\n\nNo special environment setup mechanism is provided for this mechanism however one can largely piggy-back on the one ROOT provides:\n\n\n$ source /path/to/single-rooted/bin/thisroot.sh\n\n$ root -b -q\n...\n| Welcome to ROOT 6.02/05                http://root.cern.ch |\n...\n\n$ python -c 'import ROOT; print ROOT.gROOT.GetVersion()'\n6.02/05", 
+            "title": "Install Externals"
+        }, 
+        {
+            "location": "/install/external/#build-externals-for-wire-cell-packages", 
+            "text": "The  wire-cell  software in  BNL IF GitHub  depends on some software that may not come with your OS, in particular  ROOT .  This package provides a  Worch  configuration file to build that software.", 
+            "title": "Build externals for wire-cell packages"
+        }, 
+        {
+            "location": "/install/external/#quickstart", 
+            "text": "If you don\u2019t care what this does, just cut and paste:  $ virtualenv /path/to/buildenv\n$ source /path/to/buildenv/bin/activate\n$ pip install worch\n\n$ git clone git@github.com:BNLIF/wire-cell-externals.git /path/to/work\n$ cd /path/to/work\n$ waf --prefix=/path/to/install --orch-config=worch.cfg configure build\n$ deactivate\n\n$ source /path/to/install/env.sh\n$ module load root  You would repeat those last two lines in any new shells. You can now test:  $ root -b -q\n...\n| Welcome to ROOT 6.02/05                http://root.cern.ch |\n...\n$ python -c 'import ROOT; print ROOT.gROOT.GetVersion()'\n6.02/05  More details and build options are described in the following sections.", 
+            "title": "Quickstart"
+        }, 
+        {
+            "location": "/install/external/#preparation", 
+            "text": "It is recommended to install the Worch build system into a Python virtual environment. This environment will be used only for building these externals.  $ virtualenv /path/to/buildenv\n$ source /path/to/buildenv/bin/activate\n$ pip install worch  This wire-cell-externals repository provides the rest of what is needed. Clone it to some place with ample disk space (10s of GB).  $ git clone git@github.com:BNLIF/wire-cell-externals.git /path/to/work\n$ cd /path/to/work", 
+            "title": "Preparation"
+        }, 
+        {
+            "location": "/install/external/#build", 
+            "text": "After the above is done, this one command builds all the external software:  (1)  $ waf --prefix=/path/to/install --orch-config=worch.cfg configure\n(2)  $ waf\n(3)  $ deactivate  This does:   Configures the build according to the  worch.cfg  file and tells it where to install the final results  Performs the automated build of external packages. This takes ~1 hour on Intel i7 w/ an SSD.  Exit the virtualenv as it is no longer needed ( /path/to/buildenv  may be removed)", 
+            "title": "Build"
+        }, 
+        {
+            "location": "/install/external/#install", 
+            "text": "There are two ways to install the results of the build which differ in the organization of the installation directory layout. They are:  name/version tree   each package is installed into  /path/to/install/ name / version /{bin,lib,include} . This allows for multiple versions of each package to be installed in parallel supporting different versions of an overall collection. It allows purging of a particular version by simply deleting the directory, although with care not to break other packages which depend on it. The user environment must be modified ( PATH , etc) to pick up all run-time aspects of each individual package.   single-rooted directory   all packages are installed in the same  /path/to/install/{bin,lib,include}  directory. User run-time environment still requires adjustment but only for a single aspect. Only one version of a package may be installed, and removing an installed package is not supported (but is possible).\nThis package supports both paradigms.   This package supports both paradigms.  Install to name/version tree  By default, and as part of the build procedure, one will produce a name/version tree installation area as designated by the  --prefix  option to  waf . The user run-time environment can be set up with the help of  Environment Modules  (EM) which are provided by the build.  $ source /path/to/install/env.sh\n$ module load root\n\n$ root -b -q\n...\n| Welcome to ROOT 6.02/05                http://root.cern.ch |\n...\n\n$ python -c 'import ROOT; print ROOT.gROOT.GetVersion()'\n6.02/05  Single-rooted install  In addition to the population of /path/to/install as above, the build will produce a \u201ctarpack\u201d binary package file. These can simply be unpacked into a single-rooted directory.  $ cd /path/to/work\n$ mkdir -p /path/to/single-rooted\n$ for n in tmp/tarpack/*.tgz; do tar -C /path/to/single-rooted -xf $n; done  No special environment setup mechanism is provided for this mechanism however one can largely piggy-back on the one ROOT provides:  $ source /path/to/single-rooted/bin/thisroot.sh\n\n$ root -b -q\n...\n| Welcome to ROOT 6.02/05                http://root.cern.ch |\n...\n\n$ python -c 'import ROOT; print ROOT.gROOT.GetVersion()'\n6.02/05", 
+            "title": "Install"
+        }, 
+        {
+            "location": "/dev/overview/", 
+            "text": "", 
+            "title": "Overview"
+        }, 
+        {
+            "location": "/dev/dev/", 
+            "text": "", 
+            "title": "Developing"
+        }, 
+        {
+            "location": "/dev/test/", 
+            "text": "", 
+            "title": "Testing"
+        }, 
+        {
+            "location": "/alg/cell/", 
+            "text": "", 
+            "title": "Making Cells"
+        }, 
+        {
+            "location": "/alg/blob/", 
+            "text": "", 
+            "title": "Blob Reconstruction"
+        }, 
+        {
+            "location": "/viz/webgl/", 
+            "text": "", 
+            "title": "WebGL"
+        }
+    ]
+}

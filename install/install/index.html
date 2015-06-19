@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Install Wire Cell - Wire Cell Documentation</title>
+  
+
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Install Wire Cell";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+  <script src="../../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Wire Cell Documentation</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../..">Overview</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Installation</span></li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Install Wire Cell</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#prerequisites">Prerequisites</a></li>
+                
+                    <li><a class="toctree-l4" href="#automated-installation">Automated installation</a></li>
+                
+                    <li><a class="toctree-l4" href="#manual-installation">Manual installation</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#build">Build</a></li>
+                
+                    <li><a class="toctree-l4" href="#preparing-the-source">Preparing the source</a></li>
+                
+                    <li><a class="toctree-l4" href="#building">Building</a></li>
+                
+            
+            </ul>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../external/">Install Externals</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Developer</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../dev/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../dev/dev/">Developing</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../dev/test/">Testing</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Algorithms</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../alg/cell/">Making Cells</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../alg/blob/">Blob Reconstruction</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Visualization</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../viz/webgl/">WebGL</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Wire Cell Documentation</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Installation &raquo;</li>
+        
+      
+    
+    <li>Install Wire Cell</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        
+          <a href="https://github.com/BNLIF/wire-cell-docs/" class="icon icon-github"> Edit on GitHub</a>
+        
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="prerequisites">Prerequisites</h1>
+<p>Some external packages are required as described in this section.</p>
+<h2 id="automated-installation">Automated installation</h2>
+<p>It is recommended to use the automated installation method to install the required externals. Follow the directions in <a href="../external/">Install Externals</a> and come back here after setting up your user environment.</p>
+<h2 id="manual-installation">Manual installation</h2>
+<p>You may provide the external packages yourself. The definitive list of required packages, their versions and build details are kept in wire-cell-externals worch.cfg file. Refer to that for the most up-to-date information on what software is needed. In summary you will need:</p>
+<ul>
+<li>ROOT v6</li>
+<li>Python 2.7</li>
+<li>BOOST 1.55 (or equiv)</li>
+</ul>
+<p>You will need to set up your run-time environment so that these commands do not fail and give the expected version:</p>
+<pre><code class="bash">$ root -b -q
+...
+| Welcome to ROOT 6.02/05                http://root.cern.ch |
+...
+$ python -c 'import ROOT; print ROOT.gROOT.GetVersion()'
+6.02/05
+</code></pre>
+
+<h1 id="build">Build</h1>
+<h2 id="preparing-the-source">Preparing the source</h2>
+<p>The wire cell source project uses <code>git-submodules</code> to bring all the source together:</p>
+<pre><code class="bash">$ git clone git@github.com:BNLIF/wire-cell.git
+$ cd wire-cell
+$ git submodule init
+$ git submodule update
+
+$ alias waf=`pwd`/waf-tools/waf
+</code></pre>
+
+<h2 id="building">Building</h2>
+<p>To configure, build and install the wire cell code do:</p>
+<pre><code class="bash">$ waf --prefix=/path/to/install configure build install
+</code></pre>
+
+<p>Note: this is not a Worch build - there is no <code>--orch-config</code> option.</p>
+<p>If you followed the <em>single rooted install</em> pattern then the <code>/path/to/install</code> can be <code>/path/to/single-rooted</code> and no additional user environment will be needed for run-time and the following command line should succeed:</p>
+<pre><code class="bash">$ python -c 'import ROOT; print ROOT.WireCellData'
+Warning in &lt;TInterpreter::ReadRootmapFile&gt;: class  pair&lt;float,float&gt; found in libCore.so  is already in libWireCellDataDict.so
+Warning in &lt;TInterpreter::ReadRootmapFile&gt;: class  pair&lt;int,float&gt; found in libCore.so  is already in libWireCellDataDict.so
+&lt;class 'ROOT.WireCellData'&gt;
+</code></pre>
+
+<p>If you provided your own externals or used the name/version tree pattern (using environment modules) then you will need to set your environment properly. Besides the usual <code>$PATH</code>, <code>$LD_LIBRARY_PATH</code>, etc pointing at <code>/path/to/install</code> you may need to set <code>PYTHONPATH</code>.</p>
+<p>Independent from how you installed the code, if you have the broken ROOT packages for Ubuntu installed you will have to set:</p>
+<pre><code class="bash">$ export PYTHONNOUSERSITE=yes
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../external/" class="btn btn-neutral float-right" title="Install Externals"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../.." class="btn btn-neutral" title="Overview"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../.." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../external/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>
