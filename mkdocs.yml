@@ -1,0 +1,20 @@
+site_name: Wire Cell Documentation
+site_description: Documentation for the LArTPC Wire Cell reconstruction packages
+# theme: mkdocs
+theme: readthedocs
+pages:
+  - Overview: index.md
+  - Installation:
+    - Install Wire Cell: install/install.md
+    - Install Externals: install/external.md
+  - Developer:
+    - Overview: dev/overview.md
+    - Developing: dev/dev.md
+    - Testing: dev/test.md
+  - Algorithms:
+    - Making Cells: alg/cell.md
+    - Blob Reconstruction: alg/blob.md
+  - Visualization:
+    - WebGL: viz/webgl.md
+# theme_dir: custom_theme
+
