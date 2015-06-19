@@ -103,6 +103,11 @@
         
             <ul>
             
+                <li class="toctree-l3"><a href="#tests">Tests</a></li>
+                
+                    <li><a class="toctree-l4" href="#c-tests">C++ tests</a></li>
+                
+            
             </ul>
         
     </li>
@@ -141,21 +146,6 @@
             
     <li class="toctree-l1 ">
         <a class="" href="../../viz/webgl/">WebGL</a>
-        
-    </li>
-
-        
-    </ul>
-<li>
-          
-            <li>
-    <ul class="subnav">
-    <li><span>Test</span></li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../../test/">readme</a>
         
     </li>
 
@@ -203,7 +193,39 @@
           <div role="main">
             <div class="section">
               
-                
+                <h1 id="tests">Tests</h1>
+<p>Tests go under the <code>test/</code> (or <code>tests/</code>) sub-directory of the package.  There are two types, C++ and Python.  In both cases, only files that begin with "<code>test_*</code>" will be considered tests.  Tests are automatically run as part of the build procedure (fixme: just C++ ones are automatic right now) and will be rerun when they or code they depend on changes.   When tests are run by the build the <code>stdout/stderr</code> is typically captured.  You can run them manually to observe any print statements.  Tests are not installed but left in the "<code>build/</code>" (or sometimes "<code>tmp/</code>") output directory.</p>
+<p>Here are a few general guidelines for writing tests:</p>
+<ul>
+<li>write many tests</li>
+<li>write tests as fine grained as convenient</li>
+<li>the best tests are written before or while the code they test is being written</li>
+<li>test code does need not be "pretty", it will never be called from anywhere else</li>
+<li>tests should run quickly</li>
+<li>do use contrived data or mocked code to provide a bit of test code it's needed input or code support</li>
+</ul>
+<h2 id="c-tests">C++ tests</h2>
+<p>Writing a C++ test is to write a <code>main()</code> program which takes <strong>no arguments</strong>.  If a test fails, either let it crash the test program or call <code>exit(1)</code>.</p>
+<p>You can explicitly run C++ test programs.  When they are run as part of the build, their full path is printed.  When run automatically, waf takes care of setting up their environment so that their libraries are found.  When run manually you will have to assure this.  The simplest way is to <code>waf install</code>" the package first.</p>
+<pre><code class="bash">$ waf
+...
+execution summary
+  tests that pass 3/4
+    /home/bviren/projects/wire-cell/top/build/data/test_construct
+    /home/bviren/projects/wire-cell/top/build/nav/test_geomdatasource
+    /home/bviren/projects/wire-cell/top/build/sst/tgeomdatasource
+  tests that fail 1/4
+    /home/bviren/projects/wire-cell/top/build/data/test_fail
+'build' finished successfully
+
+$ waf install
+
+$ /home/bviren/projects/wire-cell/top/build/sst/test_sst_geomdatasource
+Wire: 0 plane=1 index=0
+Wire: 0 plane=1 index=1
+Wire: 0 plane=1 index=2
+...
+</code></pre>
               
             </div>
           </div>

@@ -114,6 +114,9 @@
                 <li class="toctree-l3"><a href="#namespaces">Namespaces</a></li>
                 
             
+                <li class="toctree-l3"><a href="#dealing-with-git-submodules">Dealing with git submodules</a></li>
+                
+            
             </ul>
         
     </li>
@@ -166,21 +169,6 @@
     </ul>
 <li>
           
-            <li>
-    <ul class="subnav">
-    <li><span>Test</span></li>
-
-        
-            
-    <li class="toctree-l1 ">
-        <a class="" href="../../test/">readme</a>
-        
-    </li>
-
-        
-    </ul>
-<li>
-          
         </ul>
       </div>
       &nbsp;
@@ -221,7 +209,21 @@
           <div role="main">
             <div class="section">
               
-                <p>Here is what you will do in the act of developing code.</p>
+                <div class="toc">
+<ul>
+<li><a href="#build-dancing">Build Dancing</a></li>
+<li><a href="#debug">Debug</a></li>
+<li><a href="#new-packages">New packages</a><ul>
+<li><a href="#considerations">Considerations</a></li>
+<li><a href="#source-package-conventions">Source Package Conventions</a></li>
+<li><a href="#build-packages">Build packages</a></li>
+</ul>
+</li>
+<li><a href="#namespaces">Namespaces</a></li>
+<li><a href="#dealing-with-git-submodules">Dealing with git submodules</a></li>
+</ul>
+</div>
+<p>Here is what you will do in the act of developing code.</p>
 <h1 id="build-dancing">Build Dancing</h1>
 <p>To rebuild after hacking on the source just type:</p>
 <pre><code class="bash">$ waf
@@ -319,6 +321,51 @@ $ git push
 <h1 id="namespaces">Namespaces</h1>
 <p>The namespace WireCell is used for all "core" wire cell code. Code that is used to glue this core functionality into other systems may use another namespace but should not use WireCell. For example, the "simple simulation tree" uses <code>WireCellSst</code>.</p>
 <p>It can be tedious to type explicit namespace qualifiers all the time. You can use the using namespace WireCell; directive where in implementation files (*.cxx) but you should never use it in (top-scope) of header files as it will then leak the contents of the namespace into any unsuspecting file that #include’s it.</p>
+<h1 id="dealing-with-git-submodules">Dealing with git submodules</h1>
+<p>From <a href="http://git-scm.com/book/en/v2/Git-Tools-Submodules#Working-on-a-Project-with-Submodules">the git book</a>, do you updates like:</p>
+<pre><code>$ git submodule update --remote --rebase
+</code></pre>
+<p>or like</p>
+<pre><code>$ git submodule update --remote --merge
+</code></pre>
+<p>With:</p>
+<ul>
+<li>
+<p><strong><code>--rebase</code>:</strong> put our local commits on top of any new ones</p>
+</li>
+<li>
+<p><strong><code>--merge</code>:</strong> merge our commits into new ones</p>
+</li>
+</ul>
+<p>The first leaves a more "linear" commit history while the second leaves
+"diamonds" in the history whenever we have briefly diverged from the
+remote repository.  You can run "<code>gitk --all</code>" in wire-cell or one of the
+submodules to see what I mean.  Either way is fine.  Rebasing looks
+cleaner in the history but merge captures the subtle fact of where our
+line of development actually diverged.</p>
+<p>In that link there are other interesting things to do:</p>
+<ul>
+<li>
+<p>Configure your repository so "<code>git status</code>" in the top-level "wire-cell" gives us more info on the status of all submodules:</p>
+<p><code>$ git config status.submodulesummary 1</code></p>
+</li>
+<li>
+<p>Make it so "<code>git diff</code>" in wire-cell will also show any diff's in the submodules:</p>
+<p><code>$ git config diff.submodule log</code></p>
+</li>
+<li>
+<p>To check that we will push in the right order (submodules first):</p>
+<p><code>$ git push --recurse-submodules=check</code></p>
+</li>
+<li>
+<p>To force submodules to push first</p>
+<p><code>$ git push --recurse-submodules=on-demand</code></p>
+</li>
+<li>
+<p>To run any command in all submodules</p>
+<p><code>$ git submodule foreach 'the command'</code></p>
+</li>
+</ul>
               
             </div>
           </div>
