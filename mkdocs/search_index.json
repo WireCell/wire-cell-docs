@@ -72,7 +72,7 @@
         }, 
         {
             "location": "/dev/overview/", 
-            "text": "", 
+            "text": "An overview of the system with indications of current status and near\nterm plans is given as a diagram below.\n\n\n\n\n(figure as [\nPDF\n] or [\nDOT\n])\n\n\nThe legend for this diagram is:\n\n\n\n\n\n\ndotted line\n\n:   this step is missing and needed.\n\n\n\n\n\n\ndashed line\n\n:   this step exists but is not captured so that anyone can perform it.\n\n\n\n\n\n\nsolid line\n\n:   this step exists, documented to some extent and anyone can reproduce it (eg, it's in GitHub).\n\n\n\n\n\n\nyellow\n\n:   this process exists but is not generally known/available.\n\n\n\n\n\n\nred\n\n:   this process does not exist or is just conceptual and is needed soon.\n\n\n\n\n\n\nfolder shape\n\n:   some file or file types\n\n\n\n\n\n\ncomponent shape\n\n:   some software package\n\n\n\n\n\n\nrectangle shape\n\n:   a program\n\n\n\n\n\n\ntrapezoid shape\n\n:   visualization or end-user application", 
             "title": "Overview"
         }, 
         {
