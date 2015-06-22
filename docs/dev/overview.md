@@ -33,6 +33,3 @@ The legend for this diagram is:
 
 - **trapezoid shape**
 :   visualization or end-user application
-
-
-
