@@ -1,4 +1,4 @@
-<img src='http://g.gravizo.com/g?
+![Eco](http://g.gravizo.com/g?
   digraph G {
     label="Wire-cell Data Flow, Components and Status";
     larsoft[shape=box,label="LArSoft"];
@@ -47,5 +47,5 @@
     root2json->json[style=dashed,label="writes"];
     json->disp[label="HTTP"];
     algs->rootvis;
-}
-'/>
+  }
+)
