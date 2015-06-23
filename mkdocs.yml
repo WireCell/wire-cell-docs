@@ -12,6 +12,7 @@ pages:
   - Developer:
     - Overview: dev/overview.md
     - Developing: dev/dev.md
+    - Persistency: dev/data.md
     - Testing: dev/test.md
   - Algorithms:
     - Making Cells: alg/cell.md

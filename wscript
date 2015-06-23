@@ -1,7 +1,8 @@
 top = '.'
 out = '.'
 
-graphviz_files = ['docs/img/ecosystem-data.dot',]
+graphviz_files = ['docs/img/ecosystem-data.dot',
+                  'docs/img/rootdata.dot',]
 
 def configure(cfg):
     cfg.find_program('mkdocs', var='MKDOCS', mandatory=True)
