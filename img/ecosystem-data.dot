@@ -1,4 +1,4 @@
-digraph "G" {
+digraph "Wire Cell Ecosystem" {
 	label="Wire-cell Data Flow, Components and Status";
 	URL="http://bnlif.github.io/wire-cell-docs/"
 
