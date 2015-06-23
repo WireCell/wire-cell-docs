@@ -1,0 +1,18 @@
+digraph "rootdata" {
+	label="Wire Cell Root Data Schema";
+
+	node [shape="record"];
+
+	wirecharge [
+		    label = "{WireCharge|+ wid : int\l|+ charge : float\l}";
+		    ];
+	wireslice [
+		   label = "{WireSlice|+ tbin : int\l|+wires vector<WireCharge>\l}";
+		   ];
+	wireframe [
+		   label = "{WireFrame|+ wires : vector<WireSlice>\l}";
+		   ];
+	
+		   
+
+	}

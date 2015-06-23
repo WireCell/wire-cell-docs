@@ -103,6 +103,13 @@
         
             
     <li class="toctree-l1 ">
+        <a class="" href="../data/">Persistency</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
         <a class="" href="../test/">Testing</a>
         
     </li>
@@ -229,6 +236,62 @@ term plans is given as a diagram below.</p>
 <li>
 <p><strong>trapezoid shape</strong>
 :   visualization or end-user application</p>
+</li>
+</ul>
+<h1 id="terms"><a name="terms"></a>Terms</h1>
+<p>These terms are used with specific meanings in Wire Cell</p>
+<ul>
+<li>
+<p><strong>coordinate system</strong>
+: electrons drift in the negative-X direction toward the wire planes, Y points upward and is sometimes referred to as W, Z follows from the right-hand-rule.  U and V directions point at some angle w.r.t. W and are in the W-Z plane.</p>
+</li>
+<li>
+<p><strong>tick</strong>
+: the unit of digitized time.</p>
+</li>
+<li>
+<p><strong>tbin</strong>
+: one bin of time of some integral number of ticks</p>
+</li>
+<li>
+<p><strong>wire plane</strong>
+: a two-dimensional extent in the Y-Z plane which is perpendicular to the drift direction.  There is a U, V and W (aka Y) wire plane which contains <strong>wire</strong> segments.  Each of these planes are slightly offset in the drift direction X.</p>
+</li>
+<li>
+<p><strong>charge</strong>
+: refers to an amount of charged particles drifting past the wire plane during one tick.  Sometimes used to refer to the deconvolved ADC in one tick which provides a measure of the charge.  Sometimes used to refer to the un-deconvolved signal.  Yes, it's confusing. </p>
+</li>
+<li>
+<p><strong>wire</strong>
+: a segment or run of the conductor which senses the passing of drifting charge.  A wire runs in either the U, V or W (aka Y) direction.</p>
+</li>
+<li>
+<p><strong>channel</strong>
+: the unit of electronics responsible for digitizing charge on a wire.  For detectors with wrapped readout conductors a single channel maps to multiple wires.</p>
+</li>
+<li>
+<p><strong>cell</strong>
+: a region of the plane surrounding an area near where three wires, one from each plane, are crossing (at least pairwise, if not in a triple-point).</p>
+</li>
+<li>
+<p><strong>tiling</strong>
+: the set of cells which fully cover the plane with no gaps nor overlaps.  There is more than one way to tile the plane.</p>
+</li>
+<li>
+<p><strong>blob</strong>
+: an association of continguous cells which is expected to contain a portion of the charge of the event from one tbin.  In general, the association will include cells which may not actually contain charge.  A blob is bounded by cells (or plane boundaries) which definitely do not contain charge.</p>
+</li>
+<li>
+<p><strong>blob cluster</strong>
+: an association of a number of blobs, potentially from different tbins, which intend to capture an extended portion of charge that came from the passage of a single particle (track) or multiple, closely related particles (shower).</p>
+</li>
+<li>
+<p><strong>slice</strong>
+: a qualifier to indicate information from one tbin.  A wire slice would indicate the collection of charge collected on wires at a given time.</p>
+</li>
+<li>
+<p><strong>frame</strong>
+: the collection of slices readout as a continuous unit from the DAQ. </p>
 </li>
 </ul>
               
