@@ -10,11 +10,13 @@ def configure(cfg):
 def build(bld):
     
     if bld.env.DOT:
-        for ext in ['png','pdf']:
-            for dot in graphviz_files:
-                bld(rule='${DOT} -T%s -o ${TGT} ${SRC}'%ext,
-                    source = dot,
-                    target = dot.replace('.dot','.'+ext))
+        for dot in graphviz_files:
+            bld(rule='${DOT} -Tpdf -o ${TGT} ${SRC}',
+                source = dot,
+                target = dot.replace('.dot','.pdf'))
+            bld(rule='${DOT} -Tcmapx -o ${TGT[0].abspath()} -Tpng -o ${TGT[1].abspath()} ${SRC}',
+                source = dot,
+                target = [dot.replace('.dot','.map'), dot.replace('.dot','.png')])
 
     # note, mkdocs always rebuilds everything 
     bld(rule='${MKDOCS} build',
