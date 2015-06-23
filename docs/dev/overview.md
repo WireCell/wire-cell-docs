@@ -1,7 +1,7 @@
 An overview of the system with indications of current status and near
 term plans is given as a diagram below.
 
-![ecosystem](../img/ecosystem-data.svg)
+![ecosystem](../img/ecosystem-data.png)
 
 
 ([[PNG](../img/ecosystem-data.png)], [[PDF](../img/ecosystem-data.pdf)], [[DOT](../img/ecosystem-data.dot)] and for clickable links open [[SVG](../img/ecosystem-data.svg)])

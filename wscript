@@ -8,7 +8,7 @@ def configure(cfg):
     cfg.find_program('dot', var='DOT', mandatory=False)
 
 def build(bld):
-    
+
     if bld.env.DOT:
         for dot in graphviz_files:
             bld(rule='${DOT} -Tpdf -o ${TGT} ${SRC}',
@@ -21,7 +21,7 @@ def build(bld):
                 source = dot,
                 target = [dot.replace('.dot','.map'), dot.replace('.dot','.png')])
 
-    # note, mkdocs always rebuilds everything 
+    # note, mkdocs always rebuilds everything
     bld(rule='${MKDOCS} build',
         source = 'docs/img/ecosystem-data.png',
         target = 'site/img/ecosystem-data.png')
