@@ -1,4 +1,4 @@
-<map id="G" name="G">
+<map id="Wire Cell Ecosystem" name="Wire Cell Ecosystem">
 <area shape="rect" id="node5" href="https://github.com/BNLIF/wire-cell-celltree" title="Geo dumped from larsoft\n(wire&#45;cell&#45;celltree)\n(can we directly generate w/out larsoft?)" alt="" coords="267,237,583,308"/>
 <area shape="rect" id="node4" href="https://github.com/BNLIF/wire-cell-celltree" title="MC truth+wire sig\n(wire&#45;cell&#45;celltree)" alt="" coords="85,247,243,298"/>
 <area shape="rect" id="node18" href="https://github.com/brettviren/lard" title="LAr Data Server\n(lard&#45;server)" alt="" coords="121,1087,263,1138"/>

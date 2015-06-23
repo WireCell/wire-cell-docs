@@ -14,6 +14,9 @@ def build(bld):
             bld(rule='${DOT} -Tpdf -o ${TGT} ${SRC}',
                 source = dot,
                 target = dot.replace('.dot','.pdf'))
+            bld(rule='${DOT} -Tsvg -o ${TGT} ${SRC}',
+                source = dot,
+                target = dot.replace('.dot','.svg'))
             bld(rule='${DOT} -Tcmapx -o ${TGT[0].abspath()} -Tpng -o ${TGT[1].abspath()} ${SRC}',
                 source = dot,
                 target = [dot.replace('.dot','.map'), dot.replace('.dot','.png')])
