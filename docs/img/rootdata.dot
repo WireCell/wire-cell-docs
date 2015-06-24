@@ -35,47 +35,47 @@ digraph "rootdata" {
 	subgraph cluster_perframe {
 		label="Per-frame data";
 		
-	subgraph cluster_channels {
-		label="Channel Data";
+		subgraph cluster_channels {
+			label="Channel Data";
 
-		channelcharge [
-			    label = "{ChannelCharge|+ chid : int\l+ charge : float\l}";
-			    ];
-		channelslice [
-			   label = "{ChannelSlice|+ tbin : int\l+channels array&lt;ChannelCharge&gt;\l}";
-			   ];
-		channelstore [
-			    label = "{ChannelStore|+ channels : array&lt;ChannelSlice&gt;\l}";
-			    ];
-		channelcharge->channelslice[arrowhead=diamond,headlabel=" 1 ",taillabel=" N "];
-		channelslice->channelstore[arrowhead=diamond,headlabel=" 1 ",taillabel=" N "];
-	}
+			channelcharge [
+				       label = "{ChannelCharge|+ chid : int\l+ charge : float\l+ uncertainty : float\l}";
+				       ];
+			channelslice [
+				      label = "{ChannelSlice|+ tbin : int\l+channels array&lt;ChannelCharge&gt;\l}";
+				      ];
+			channelstore [
+				      label = "{ChannelStore|+ channels : array&lt;ChannelSlice&gt;\l}";
+				      ];
+			channelcharge->channelslice[arrowhead=diamond,headlabel=" 1 ",taillabel=" N "];
+			channelslice->channelstore[arrowhead=diamond,headlabel=" 1 ",taillabel=" N "];
+		}
 
-	subgraph cluster_cells {
-		label = "Cell Data (one entry/frame)";
-		
-		cellcharge [
-			    label= "{CellCharge|+ cellid : int\l+ charge : float\l}";
-			    ];
-		blob [
-		      label = "{Blob|+ string : technique\l+ tbin : int\l+ qtot : float\l+ quality : float\l+ cells array&lt;CellCharge&gt;\l}";
-		      ];
-		blobstore [
-			    label = "{BlobStore|+ blobs : array&lt;Blob&gt;\l}";
-			    ];
-		blobcluster [
-			     label = "{BlobCluster|+ blobid : array&lt;int&gt;\l}";
-			     ];
-		clusterstore [
-			       label = "{ClusterStore|+ cluster : array&lt;Cluster&gt;\l}";
-			       ];
-		{rank=same; blobcluster; blobstore;}
-		cellcharge->blob[arrowhead=diamond,headlabel=" 1 ",taillabel=" N "];
-		blob->blobstore[arrowhead=diamond,headlabel=" 1   ",taillabel=" N "];
-		blob->blobcluster[arrowhead=odiamond,headlabel=" 1 ",taillabel=" N  "];
-		blobcluster->clusterstore[arrowhead=diamond,headlabel=" 1 ",taillabel=" N "];
-		blobcluster->blobstore;
+		subgraph cluster_cells {
+			label = "Cell Data (one entry/frame)";
+			
+			cellcharge [
+				    label= "{CellCharge|+ cellid : int\l+ charge : float\l}";
+				    ];
+			blob [
+			      label = "{Blob|+ string : technique\l+ tbin : int\l+ qtot : float\l+ quality : vector&lt;float&gt;\l+ cells array&lt;CellCharge&gt;\l}";
+			      ];
+			blobstore [
+				   label = "{BlobStore|+ blobs : array&lt;Blob&gt;\l}";
+				   ];
+			blobcluster [
+				     label = "{BlobCluster|+ blobid : array&lt;int&gt;\l}";
+				     ];
+			clusterstore [
+				      label = "{ClusterStore|+ cluster : array&lt;Cluster&gt;\l}";
+				      ];
+			{rank=same; blobcluster; blobstore;}
+			cellcharge->blob[arrowhead=diamond,headlabel=" 1 ",taillabel=" N "];
+			blob->blobstore[arrowhead=diamond,headlabel=" 1   ",taillabel=" N "];
+			blob->blobcluster[arrowhead=odiamond,headlabel=" 1 ",taillabel=" N  "];
+			blobcluster->clusterstore[arrowhead=diamond,headlabel=" 1 ",taillabel=" N "];
+			blobcluster->blobstore;
+		}
 	}
-}
 }
 
