@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Persistency - Wire Cell Documentation</title>
+  <title>Interfaces - Wire Cell Documentation</title>
   
 
   <link rel="shortcut icon" href="../../img/favicon.ico">
@@ -20,7 +20,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Persistency";
+    var mkdocs_page_name = "Interfaces";
   </script>
   
   <script src="../../js/jquery-2.1.1.min.js"></script>
@@ -98,30 +98,31 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../iface/">Interfaces</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Interfaces</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#overview-of-interfaces">Overview of Interfaces</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#providing-interfaces">Providing Interfaces</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#context">Context</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#example">Example</a></li>
+                
+            
+            </ul>
         
     </li>
 
         
             
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Persistency</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#schema">Schema</a></li>
-                
-                    <li><a class="toctree-l4" href="#generalities">Generalities</a></li>
-                
-                    <li><a class="toctree-l4" href="#geometry">Geometry</a></li>
-                
-                    <li><a class="toctree-l4" href="#channel">Channel</a></li>
-                
-                    <li><a class="toctree-l4" href="#cell">Cell</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../data/">Persistency</a>
         
     </li>
 
@@ -199,7 +200,7 @@
         
       
     
-    <li>Persistency</li>
+    <li>Interfaces</li>
     <li class="wy-breadcrumbs-aside">
       
         
@@ -213,79 +214,67 @@
           <div role="main">
             <div class="section">
               
-                <p>Wire Cell has a simple ROOT I/O persistency module.  </p>
-<h1 id="schema">Schema</h1>
-<p>The data is saved to several ROOT TFiles is shown in the following
-figure.  Refer to the <a href="#terms">terms</a> section for a nomenclature.</p>
-<p><img alt="rootdata" src="../../img/rootdata.svg" /></p>
-<p>([<a href="../../img/rootdata.png">PNG</a>], [<a href="../../img/rootdata.pdf">PDF</a>], [<a href="../../img/rootdata.dot">DOT</a>] and [<a href="../../img/rootdata.svg">SVG</a>])</p>
-<h2 id="generalities">Generalities</h2>
-<p>To store the data into a ROOT file we must take care of ownership and
-references explicitly.  In general this is handled by representing
-ownership as an array of objects and references as an index into this
-array.</p>
-<p>There are three trees: Geometry, Channel and Cell.</p>
-<h2 id="geometry">Geometry</h2>
-<p>The geometry is saved into a tree with a single entry.  There are
-three owning arrays, <code>WireStore</code>, <code>PointStore</code> and <code>TilingStore</code>
-owning:</p>
-<ul>
-<li>
-<p><code>Wire</code> with associated channel ID number (referred to in the
-Channel data tree) and two end points</p>
-</li>
-<li>
-<p><code>Point</code> all 3d Points referred to by other objects.</p>
-</li>
-<li>
-<p><code>Cell</code> associates a Wire via it's index (<code>wid</code>) with a center
-  point and an (ordered) array of points that make up the corners of
-  the cell.</p>
-</li>
-</ul>
-<h2 id="channel">Channel</h2>
-<p>Information about charge read out from all channels in a frame.  One
-entry in this branch spans an entire readout frame.</p>
-<ul>
-<li>
-<p><code>ChannelStore</code> holds all channel data for the frame</p>
-</li>
-<li>
-<p><code>ChannelSlice</code> associates a time bin <code>tbin</code> that counts relative
-to the start of the frame with a collection of read out channel
-charges.  A negative charge is undefined.</p>
-</li>
-<li>
-<p><code>ChannelCharge</code> associates a channel ID with a charge.</p>
-</li>
-</ul>
-<h2 id="cell">Cell</h2>
-<p>The Cell branch holds associations between charge and cells and groups
-of cells.  This branch may hold MC truth value or reconstruction.</p>
-<ul>
-<li>
-<p><code>CellCharge</code> associates a cell ID, which is an index into the
-  <code>TilingStore</code> with a charge.  A negative charge is undefined.</p>
-</li>
-<li>
-<p><code>Blob</code> owns an array of <code>CellCharge</code>.  The <code>technique</code> is a user
-  defined string to label the origin of the blob (eg, "simtruth" or
-  maybe "2dtoyreco", etc).  The <code>tbin</code> counts the time bin from the
-  beginning of the frame, the <code>qtot</code> is some measure of the charge for
-  the blob as a whole (and may not necessarily be the sum of the
-  charge on the individual cells).  The <code>quality</code>is a
-  <code>technique</code>-specific measure of quality and finally the array of
-  cell charge.</p>
-</li>
-<li>
-<p><code>BlobCluster</code> is a (non-owning) association of blobs.  This may be
-  used to collect blobs together within one time slice or may be used
-  to collect them together across multiple time slices such as to form
-  the blobs contributing to a track or a shower.  Blobs are referenced
-  by their index into the frame's <code>BlobStore</code>.  All available
-  <code>BlobClusters</code> are stored in the <code>ClusterStore</code></p>
-</li>
-</ul>
+                <p>Wire Cell uses Interfaces to access major components.</p>
+<h1 id="overview-of-interfaces">Overview of Interfaces</h1>
+<p>Wire Cell has a number of high-level concepts which are implemented as
+C++ "Interface" classes.  Such classes expose only methods which take
+or return either Plain Old Data (POD) or instances from the
+<a href="https://github.com/BNLIF/wire-cell-data">Wire Cell Data</a> package.</p>
+<p>The reason for this additional layer is to provide a decoupling
+between the different Wire Cell packages and to allow one to set
+actual implementations at the application layer.  This allows for
+competing implementations to be swapped in a transparent manner.  For
+example, one may have a wire geometry that comes from a parameterized
+model that generates wire placements or one may have a detailed as-is
+survey where each wire is painstakingly described and stored.  The
+code that uses such a geometry doesn't care and instead accesses
+whatever the application layer gives it via the <code>IWireGeometry</code>
+interface.</p>
+<p>A concrete implementation may present multiple interfaces.  For
+example the <code>GeomDataSource</code> from the
+<a href="https://github.com/BNLIF/wire-cell-nav">Wire Cell Nav</a> package
+provides both <code>IWireGeometry</code> and <code>IWireDatabase</code> interfaces.</p>
+<h1 id="providing-interfaces">Providing Interfaces</h1>
+<p>Interface classes provide a mechanism to keep packages independent and
+loosely coupled.  It does this by having code depend only on the
+generic interface classes and not on the concrete implementations.  </p>
+<p>It is possible (and easy) to violate paradigm and end up back with
+tightly coupled packages and code.  This unwanted tight coupling can
+still occur if the code that produces the concrete implementation of
+an interface is intermixed with the code that consumes the interface.</p>
+<p>To combat this one should layer the packages so that a higher
+application layer is responsible for creating the concrete
+implementations of interfaces as well as the consumer code (which may
+also be accessed through interfaces).</p>
+<p>Specifically, to maintain this separation one should place any
+<code>apps/*.cxx</code> and <code>tests/*.cxx</code> main programs which create concrete
+implementations of interfaces in a package other than the one that
+holds the generic <code>src/*.cxx</code> library files.</p>
+<h1 id="context">Context</h1>
+<p>There are various important interfaces that most all of Wire Cell code
+will require.  It is thus convenient to bundle access to these into a
+single interface called the <code>IContext</code>.  This simplifies high-level
+application code as the code for creating and initializing a specific
+context can be provided as a high-level library.  For example, all
+geometry and readout data may come from some domain.  One example is
+if the input to Wire Cell originates from
+<a href="https://github.com/BNLIF/wire-cell-sst">Wire Cell SST</a> files.
+High-level application code can depend on SST, produce an SST-based
+context and feed its content to the Wire Cell code as generic
+interfaces.</p>
+<h1 id="example">Example</h1>
+<p>The figure below gives a hypothetical example.  At the top are the
+Wire Cell interfaces.  In the middle are the concrete implementations
+of these interfaces.  At the very bottom are (paradoxically)
+high-level application components which aggregate concrete
+implementations together in order to drive the program.  Shown is an
+example of how Wire Cell and LArSoft might integrate.  A
+<code>wire-cell-larsoft</code> component would provide concrete implementations
+of Wire Cell interfaces using code that depends on facilities from
+LArSoft.  A high-level (at the bottom) "application" (an Art module)
+would tie together the interfaces implemented by LArSoft code and the
+Wire Cell implementation in order to run in an Art job.</p>
+<p><img alt="interface-dependency" src="../../img/interface-dependency.png" /></p>
               
             </div>
           </div>
@@ -293,10 +282,10 @@ of cells.  This branch may hold MC truth value or reconstruction.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../test/" class="btn btn-neutral float-right" title="Testing"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../data/" class="btn btn-neutral float-right" title="Persistency"/>Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../iface/" class="btn btn-neutral" title="Interfaces"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../dev/" class="btn btn-neutral" title="Building"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -324,10 +313,10 @@ of cells.  This branch may hold MC truth value or reconstruction.</p>
           <a class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../iface/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../dev/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../test/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../data/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

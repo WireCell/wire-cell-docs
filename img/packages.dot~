@@ -1,0 +1,19 @@
+digraph "Packages" {
+	label = "Wire Cell Packages";
+	node[shape=componenet];
+	edge[arrowhead=ftriangle];
+
+	data;
+	nav->inter;
+	nav->data;
+	alg->inter;
+	alg->data;
+
+	2dtoy->nav;
+	2dtoy->data;
+	2dtoy->tiling;
+	2dtoy->sst;
+	2dtoy->lsp;
+	
+
+	}
