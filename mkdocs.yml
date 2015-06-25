@@ -11,7 +11,8 @@ pages:
     - Install Externals: install/external.md
   - Developer:
     - Overview: dev/overview.md
-    - Developing: dev/dev.md
+    - Building: dev/dev.md
+    - Interfaces: dev/iface.md
     - Persistency: dev/data.md
     - Testing: dev/test.md
   - Algorithms:

@@ -6,29 +6,25 @@ digraph "rootdata" {
 	subgraph cluster_geometry {
 		label = "Geometry (one entry/file)";
 		apoint [ label = "{Point|+ x : float\l+ y : float\l+ z : float\l}"; ];
-		points [ label = "{PointStore|+ points : array&lt;Point&gt;\l}"; ];
 
 		awire [ label = "{Wire|+ chid : int\l+ point1 : int\l+ point2 : int\l}"; ];
-		wires [ label = "{WireStore|+ wires : array&lt;Wire&gt;}"; ];
+
+		geostore [ label = "{GeometryStore|+ wires : array&lt;Wire&gt;\l+ cells : array&lt;Cell&gt;\l+ points : array&lt;Point&gt;}"; ];
 		      
-		geomcell [
-			  label = "{Cell|+ wid : triple&lt;int&gt;\l+ center : int\l+ corners : array&lt;int&gt;\l}"
-			  ];
-		tiling [
-			label = "{TilingStore|+ cells : array&lt;Cell&gt;\l}";
-			];
+		cell [
+			  label = "{Cell|+ uid : int\l+ vid : int\l+ wid : int\l+ center : int\l+ corners : array&lt;int&gt;\l}"
+			  ];	
 		{rank=same; awire; apoint;}
 			
-
-		apoint->points[arrowhead=diamond,headlabel=" 1  ",taillabel=" N "];
-		awire->wires[arrowhead=diamond,headlabel=" 1 ",taillabel=" N "];
 		awire->apoint;
 		
 
-		geomcell->awire[headlabel=" 3 ",taillabel=" 1  "];
-		geomcell->apoint[headlabel=" N ",taillabel=" 1 "];
+		cell->awire[headlabel=" 3 ",taillabel=" 1  "];
+		cell->apoint[headlabel=" N ",taillabel=" 1 "];
 
-		geomcell->tiling[arrowhead=diamond,headlabel="1    ",taillabel=" N "];
+		cell->geostore[arrowhead=diamond,headlabel="1    ",taillabel=" N "];
+		awire->geostore[arrowhead=diamond,headlabel="1    ",taillabel=" N "];
+		apoint->geostore[arrowhead=diamond,headlabel="1    ",taillabel=" N "];
 
 	}
 	
@@ -44,11 +40,7 @@ digraph "rootdata" {
 			channelslice [
 				      label = "{ChannelSlice|+ tbin : int\l+channels array&lt;ChannelCharge&gt;\l}";
 				      ];
-			channelstore [
-				      label = "{ChannelStore|+ channels : array&lt;ChannelSlice&gt;\l}";
-				      ];
 			channelcharge->channelslice[arrowhead=diamond,headlabel=" 1 ",taillabel=" N "];
-			channelslice->channelstore[arrowhead=diamond,headlabel=" 1 ",taillabel=" N "];
 		}
 
 		subgraph cluster_cells {
@@ -58,24 +50,23 @@ digraph "rootdata" {
 				    label= "{CellCharge|+ cellid : int\l+ charge : float\l}";
 				    ];
 			blob [
-			      label = "{Blob|+ string : technique\l+ tbin : int\l+ qtot : float\l+ quality : vector&lt;float&gt;\l+ cells array&lt;CellCharge&gt;\l}";
+			      label = "{Blob|+ string : technique\l+ tbin : int\l+ qtot : float\l+ qualities : vector&lt;float&gt;\l+ cells array&lt;CellCharge&gt;\l}";
 			      ];
-			blobstore [
-				   label = "{BlobStore|+ blobs : array&lt;Blob&gt;\l}";
-				   ];
-			blobcluster [
-				     label = "{BlobCluster|+ blobid : array&lt;int&gt;\l}";
+			blobcollection [
+				     label = "{BlobCollection|+ blobids : array&lt;int&gt;\l}";
 				     ];
-			clusterstore [
-				      label = "{ClusterStore|+ cluster : array&lt;Cluster&gt;\l}";
-				      ];
-			{rank=same; blobcluster; blobstore;}
+
 			cellcharge->blob[arrowhead=diamond,headlabel=" 1 ",taillabel=" N "];
-			blob->blobstore[arrowhead=diamond,headlabel=" 1   ",taillabel=" N "];
-			blob->blobcluster[arrowhead=odiamond,headlabel=" 1 ",taillabel=" N  "];
-			blobcluster->clusterstore[arrowhead=diamond,headlabel=" 1 ",taillabel=" N "];
-			blobcluster->blobstore;
+			blob->blobcollection[arrowhead=odiamond,headlabel=" 1 ",taillabel=" N  "];
 		}
+
+		framestore [
+			    label = "{FrameStore|+ chslices : array&lt;ChannelSlice&gt;\l+ blobs : array&lt;Blob&gt;\l+ blobcollections : array&lt;BlobCollection&gt;\l}";
+				   ];
+		blob->framestore[arrowhead=diamond,headlabel=" 1   ",taillabel=" N "];
+		blobcollection->framestore[arrowhead=diamond,headlabel="1   ",taillabel=" N "];
+		channelslice->framestore[arrowhead=diamond,headlabel=" 1 ",taillabel="N   "];
+
 	}
 }
 
