@@ -7,12 +7,12 @@ digraph "rootdata" {
 		label = "Geometry (one entry/file)";
 		apoint [ label = "{Point|+ x : float\l+ y : float\l+ z : float\l}"; ];
 
-		awire [ label = "{Wire|+ chid : int\l+ point1 : int\l+ point2 : int\l}"; ];
+		awire [ label = "{Wire|+ chid : int\l+ ident : int\l+ plane : int\l+ point1 : int\l+ point2 : int\l}"; ];
 
 		geostore [ label = "{GeometryStore|+ wires : array&lt;Wire&gt;\l+ cells : array&lt;Cell&gt;\l+ points : array&lt;Point&gt;}"; ];
 		      
 		cell [
-			  label = "{Cell|+ uid : int\l+ vid : int\l+ wid : int\l+ center : int\l+ corners : array&lt;int&gt;\l}"
+			  label = "{Cell|+ uid : int\l+ vid : int\l+ wid : int\l+ corners : array&lt;int&gt;\l}"
 			  ];	
 		{rank=same; awire; apoint;}
 			

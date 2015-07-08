@@ -67,18 +67,16 @@
         
             <ul>
             
-                <li class="toctree-l3"><a href="#prerequisites">Prerequisites</a></li>
-                
-                    <li><a class="toctree-l4" href="#automated-installation">Automated installation</a></li>
-                
-                    <li><a class="toctree-l4" href="#manual-installation">Manual installation</a></li>
+                <li class="toctree-l3"><a href="#installation-of-prerequisites">Installation of prerequisites</a></li>
                 
             
-                <li class="toctree-l3"><a href="#build">Build</a></li>
+                <li class="toctree-l3"><a href="#preparing-wire-cell-source">Preparing wire-cell source</a></li>
                 
-                    <li><a class="toctree-l4" href="#preparing-the-source">Preparing the source</a></li>
+            
+                <li class="toctree-l3"><a href="#building-wire-cell">Building wire-cell</a></li>
                 
-                    <li><a class="toctree-l4" href="#building">Building</a></li>
+            
+                <li class="toctree-l3"><a href="#run-time-environment">Run-time environment</a></li>
                 
             
             </ul>
@@ -176,6 +174,21 @@
     </ul>
 <li>
           
+            <li>
+    <ul class="subnav">
+    <li><span>Meta</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../meta/meta/">About</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
         </ul>
       </div>
       &nbsp;
@@ -218,24 +231,15 @@
               
                 <div class="toc">
 <ul>
-<li><a href="#prerequisites">Prerequisites</a><ul>
-<li><a href="#automated-installation">Automated installation</a></li>
-<li><a href="#manual-installation">Manual installation</a></li>
-</ul>
-</li>
-<li><a href="#build">Build</a><ul>
-<li><a href="#preparing-the-source">Preparing the source</a></li>
-<li><a href="#building">Building</a></li>
-</ul>
-</li>
+<li><a href="#installation-of-prerequisites">Installation of prerequisites</a></li>
+<li><a href="#preparing-wire-cell-source">Preparing wire-cell source</a></li>
+<li><a href="#building-wire-cell">Building wire-cell</a></li>
+<li><a href="#run-time-environment">Run-time environment</a></li>
 </ul>
 </div>
-<h1 id="prerequisites">Prerequisites</h1>
-<p>Some external packages are required as described in this section.</p>
-<h2 id="automated-installation">Automated installation</h2>
+<h1 id="installation-of-prerequisites">Installation of prerequisites</h1>
 <p>It is recommended to use the automated installation method to install the required externals. Follow the directions in <a href="../external/">Install Externals</a> and come back here after setting up your user environment.</p>
-<h2 id="manual-installation">Manual installation</h2>
-<p>You may provide the external packages yourself. The definitive list of required packages, their versions and build details are kept in wire-cell-externals worch.cfg file. Refer to that for the most up-to-date information on what software is needed. In summary you will need:</p>
+<p>However, you may instead provide the external packages yourself. The definitive list of required packages, their versions and build details are kept in wire-cell-externals worch.cfg file. Refer to that for the most up-to-date information on what software is needed. In summary you will need:</p>
 <ul>
 <li>ROOT v6</li>
 <li>Python 2.7</li>
@@ -250,8 +254,7 @@ $ python -c 'import ROOT; print ROOT.gROOT.GetVersion()'
 6.02/05
 </code></pre>
 
-<h1 id="build">Build</h1>
-<h2 id="preparing-the-source">Preparing the source</h2>
+<h1 id="preparing-wire-cell-source">Preparing wire-cell source</h1>
 <p>The wire cell source project uses <code>git-submodules</code> to bring all the source together:</p>
 <pre><code class="bash">$ git clone git@github.com:BNLIF/wire-cell.git
 $ cd wire-cell
@@ -261,23 +264,27 @@ $ git submodule update
 $ alias waf=`pwd`/waf-tools/waf
 </code></pre>
 
-<h2 id="building">Building</h2>
+<h1 id="building-wire-cell">Building wire-cell</h1>
 <p>To configure, build and install the wire cell code do:</p>
 <pre><code class="bash">$ waf --prefix=/path/to/install configure build install
 </code></pre>
 
 <p>Note: this is not a Worch build - there is no <code>--orch-config</code> option.</p>
-<p>If you followed the <em>single rooted install</em> pattern then the <code>/path/to/install</code> can be <code>/path/to/single-rooted</code> and no additional user environment will be needed for run-time and the following command line should succeed:</p>
-<pre><code class="bash">$ python -c 'import ROOT; print ROOT.WireCellData'
-Warning in &lt;TInterpreter::ReadRootmapFile&gt;: class  pair&lt;float,float&gt; found in libCore.so  is already in libWireCellDataDict.so
-Warning in &lt;TInterpreter::ReadRootmapFile&gt;: class  pair&lt;int,float&gt; found in libCore.so  is already in libWireCellDataDict.so
-&lt;class 'ROOT.WireCellData'&gt;
-</code></pre>
-
-<p>If you provided your own externals or used the name/version tree pattern (using environment modules) then you will need to set your environment properly. Besides the usual <code>$PATH</code>, <code>$LD_LIBRARY_PATH</code>, etc pointing at <code>/path/to/install</code> you may need to set <code>PYTHONPATH</code>.</p>
-<p>Independent from how you installed the code, if you have the broken ROOT packages for Ubuntu installed you will have to set:</p>
-<pre><code class="bash">$ export PYTHONNOUSERSITE=yes
-</code></pre>
+<h1 id="run-time-environment">Run-time environment</h1>
+<p>Set up the run time environment needed by however you chose to install the externals.</p>
+<p>For wire-cell itself you will need to set or add to the usual:</p>
+<ul>
+<li><code>PATH</code></li>
+<li><code>LD_LIBRARY_PATH</code></li>
+<li><code>PYTHONPATH</code></li>
+</ul>
+<p>to point to directories under <code>/path/to/install</code>.</p>
+<p>Special notes:</p>
+<ul>
+<li><strong>Ubuntu:</strong> :: Set <code>PYTHONNOUSERSITE</code> to <code>yes</code> (or anything) if you also have Ubuntu ROOT packages installed.  This will stop the system PyROOT from being picked up</li>
+<li><strong>Scientific Linux:</strong> :: the build currently installs to both <code>lib/</code> and <code>lib64/</code> directories so add both to your <code>LD_LIBRARY_PATH</code>.</li>
+<li><strong>Install to single root:</strong> :: If you followed the <em>single rooted install</em> pattern <strong>and</strong> chose the <code>/path/to/install</code> to be coincident with <code>/path/to/single-rooted</code> then probably no additional user environment will be needed beyond sourcing ROOT's <code>thisroot.sh</code>.</li>
+</ul>
               
             </div>
           </div>

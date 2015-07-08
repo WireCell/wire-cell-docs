@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Testing - Wire Cell Documentation</title>
+  <title>About - Wire Cell Documentation</title>
   
 
   <link rel="shortcut icon" href="../../img/favicon.ico">
@@ -20,7 +20,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Testing";
+    var mkdocs_page_name = "About";
   </script>
   
   <script src="../../js/jquery-2.1.1.min.js"></script>
@@ -85,44 +85,35 @@
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../overview/">Overview</a>
+        <a class="" href="../../dev/overview/">Overview</a>
         
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../dev/">Building</a>
+        <a class="" href="../../dev/dev/">Building</a>
         
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../iface/">Interfaces</a>
+        <a class="" href="../../dev/iface/">Interfaces</a>
         
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../data/">Persistency</a>
+        <a class="" href="../../dev/data/">Persistency</a>
         
     </li>
 
         
             
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Testing</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#tests">Tests</a></li>
-                
-                    <li><a class="toctree-l4" href="#c-tests">C++ tests</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../../dev/test/">Testing</a>
         
     </li>
 
@@ -173,8 +164,21 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../../meta/meta/">About</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">About</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#about-this-site">About this site</a></li>
+                
+                    <li><a class="toctree-l4" href="#to-edit">To edit</a></li>
+                
+                    <li><a class="toctree-l4" href="#to-preview">To preview</a></li>
+                
+                    <li><a class="toctree-l4" href="#to-deploy">To deploy</a></li>
+                
+            
+            </ul>
         
     </li>
 
@@ -204,11 +208,11 @@
     
       
         
-          <li>Developer &raquo;</li>
+          <li>Meta &raquo;</li>
         
       
     
-    <li>Testing</li>
+    <li>About</li>
     <li class="wy-breadcrumbs-aside">
       
         
@@ -222,39 +226,32 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="tests">Tests</h1>
-<p>Tests go under the <code>test/</code> (or <code>tests/</code>) sub-directory of the package.  There are two types, C++ and Python.  In both cases, only files that begin with "<code>test_*</code>" will be considered tests.  Tests are automatically run as part of the build procedure (fixme: just C++ ones are automatic right now) and will be rerun when they or code they depend on changes.   When tests are run by the build the <code>stdout/stderr</code> is typically captured.  You can run them manually to observe any print statements.  Tests are not installed but left in the "<code>build/</code>" (or sometimes "<code>tmp/</code>") output directory.</p>
-<p>Here are a few general guidelines for writing tests:</p>
-<ul>
-<li>write many tests</li>
-<li>write tests as fine grained as convenient</li>
-<li>the best tests are written before or while the code they test is being written</li>
-<li>test code does need not be "pretty", it will never be called from anywhere else</li>
-<li>tests should run quickly</li>
-<li>do use contrived data or mocked code to provide a bit of test code it's needed input or code support</li>
-</ul>
-<h2 id="c-tests">C++ tests</h2>
-<p>Writing a C++ test is to write a <code>main()</code> program which takes <strong>no arguments</strong>.  If a test fails, either let it crash the test program or call <code>exit(1)</code>.</p>
-<p>You can explicitly run C++ test programs.  When they are run as part of the build, their full path is printed.  When run automatically, waf takes care of setting up their environment so that their libraries are found.  When run manually you will have to assure this.  The simplest way is to <code>waf install</code>" the package first.</p>
-<pre><code class="bash">$ waf
-...
-execution summary
-  tests that pass 3/4
-    /home/bviren/projects/wire-cell/top/build/data/test_construct
-    /home/bviren/projects/wire-cell/top/build/nav/test_geomdatasource
-    /home/bviren/projects/wire-cell/top/build/sst/tgeomdatasource
-  tests that fail 1/4
-    /home/bviren/projects/wire-cell/top/build/data/test_fail
-'build' finished successfully
-
-$ waf install
-
-$ /home/bviren/projects/wire-cell/top/build/sst/test_sst_geomdatasource
-Wire: 0 plane=1 index=0
-Wire: 0 plane=1 index=1
-Wire: 0 plane=1 index=2
-...
+                <h1 id="about-this-site">About this site</h1>
+<p>This site uses MkDocs and is served by GitHub.</p>
+<h3 id="to-edit">To edit</h3>
+<pre><code class="bash">$ git clone git@github.com:BNLIF/wire-cell-docs.git
+$ cd wire-cell-docs
+$ emacs 
+$ git commit -a -m &quot;...&quot;
+$ git push
 </code></pre>
+
+<h3 id="to-preview">To preview</h3>
+<pre><code class="bash">$ mkdocs server
+INFO    -  Building documentation... 
+[I 150708 17:57:26 server:271] Serving on http://127.0.0.1:8000
+[I 150708 17:57:26 handlers:58] Start watching changes
+[I 150708 17:57:26 handlers:60] Start detecting changes
+</code></pre>
+
+<p>Click on the link to view the result in your browser.  As you continue
+to edit the server should notice the change, regenerate and trigger
+your browser to refresh.</p>
+<h3 id="to-deploy">To deploy</h3>
+<pre><code class="bash">$ mkdocs gh-deploy --clean
+</code></pre>
+
+<p>After a brief moment this will update <a href="http://bnlif.github.io/wire-cell-docs/">the main docs site</a>.</p>
               
             </div>
           </div>
@@ -262,10 +259,8 @@ Wire: 0 plane=1 index=2
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../alg/cell/" class="btn btn-neutral float-right" title="Making Cells"/>Next <span class="icon icon-circle-arrow-right"></span></a>
       
-      
-        <a href="../data/" class="btn btn-neutral" title="Persistency"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../viz/webgl/" class="btn btn-neutral" title="WebGL"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -293,10 +288,8 @@ Wire: 0 plane=1 index=2
           <a class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../data/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../../viz/webgl/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
-      
-        <span style="margin-left: 15px"><a href="../../alg/cell/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

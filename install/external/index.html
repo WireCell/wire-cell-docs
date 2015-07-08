@@ -74,24 +74,21 @@
         
             <ul>
             
-                <li class="toctree-l3"><a href="#quickstart">Quickstart</a></li>
+                <li class="toctree-l3"><a href="#manual-installation-of-externals">Manual installation of externals</a></li>
                 
             
-                <li class="toctree-l3"><a href="#preparation">Preparation</a></li>
+                <li class="toctree-l3"><a href="#automated-installation-with-worch">Automated installation with Worch</a></li>
+                
+                    <li><a class="toctree-l4" href="#quickstart">Quickstart</a></li>
+                
+                    <li><a class="toctree-l4" href="#preparing-worch">Preparing Worch</a></li>
+                
+                    <li><a class="toctree-l4" href="#build">Build</a></li>
+                
+                    <li><a class="toctree-l4" href="#install">Install</a></li>
                 
             
-                <li class="toctree-l3"><a href="#build">Build</a></li>
-                
-            
-                <li class="toctree-l3"><a href="#install">Install</a></li>
-                
-                    <li><a class="toctree-l4" href="#nameversion-tree">name/version tree</a></li>
-                
-                    <li><a class="toctree-l4" href="#single-rooted-directory">single-rooted directory</a></li>
-                
-                    <li><a class="toctree-l4" href="#install-to-nameversion-tree">Install to name/version tree</a></li>
-                
-                    <li><a class="toctree-l4" href="#single-rooted-install">Single-rooted install</a></li>
+                <li class="toctree-l3"><a href="#racf-setup">RACF Setup</a></li>
                 
             
             </ul>
@@ -182,6 +179,21 @@
     </ul>
 <li>
           
+            <li>
+    <ul class="subnav">
+    <li><span>Meta</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../meta/meta/">About</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
         </ul>
       </div>
       &nbsp;
@@ -224,21 +236,36 @@
               
                 <div class="toc">
 <ul>
+<li><a href="#manual-installation-of-externals">Manual installation of externals</a></li>
+<li><a href="#automated-installation-with-worch">Automated installation with Worch</a><ul>
 <li><a href="#quickstart">Quickstart</a></li>
-<li><a href="#preparation">Preparation</a></li>
+<li><a href="#preparing-worch">Preparing Worch</a><ul>
+<li><a href="#install-worch-in-virtualenv">Install Worch in Virtualenv</a></li>
+<li><a href="#install-worch-in-user-dir">Install Worch in user dir</a></li>
+<li><a href="#wire-cell-worch-configuration">Wire-Cell Worch Configuration</a></li>
+</ul>
+</li>
 <li><a href="#build">Build</a></li>
 <li><a href="#install">Install</a><ul>
-<li><a href="#nameversion-tree">name/version tree</a></li>
-<li><a href="#single-rooted-directory">single-rooted directory</a></li>
 <li><a href="#install-to-nameversion-tree">Install to name/version tree</a></li>
 <li><a href="#single-rooted-install">Single-rooted install</a></li>
 </ul>
 </li>
 </ul>
+</li>
+<li><a href="#racf-setup">RACF Setup</a></li>
+</ul>
 </div>
-<p>The <code>wire-cell</code> software in <a href="https://github.com/BNLIF">BNL IF GitHub</a> depends on some software that may not come with your OS, in particular <a href="http://root.cern.ch">ROOT</a>.  This package provides a <a href="https://github.com/brettviren/worch">Worch</a> configuration file to build that software.</p>
+<p>The <code>wire-cell</code> software in <a href="https://github.com/BNLIF">BNL IF GitHub</a> depends on some software that may not come with your OS, in particular <a href="http://root.cern.ch">ROOT</a> v6 and a compiler supports C++11.</p>
+<p>You can provide the prerequisites as you wish or you can make use of the provided <a href="https://github.com/brettviren/worch">Worch</a>-based automation to build the prerequisites from source.</p>
+<h1 id="manual-installation-of-externals">Manual installation of externals</h1>
+<p>This is left as an excercise to the reader.</p>
+<h1 id="automated-installation-with-worch">Automated installation with Worch</h1>
+<p>This method will automatically build the necessary packages from
+source.  It requires some initial manual preparation followed by
+unattended, if lengthy, building.</p>
 <h2 id="quickstart">Quickstart</h2>
-<p>If you don’t care what this does, just cut and paste:</p>
+<p>If you don’t care what this does, just cut and paste.  If something "doesn't work" then read the subsequent sections.</p>
 <pre><code class="bash">$ virtualenv /path/to/buildenv
 $ source /path/to/buildenv/bin/activate
 $ pip install worch
@@ -262,42 +289,60 @@ $ python -c 'import ROOT; print ROOT.gROOT.GetVersion()'
 </code></pre>
 
 <p>More details and build options are described in the following sections.</p>
-<h2 id="preparation">Preparation</h2>
-<p>It is recommended to install the Worch build system into a Python virtual environment. This environment will be used only for building these externals.</p>
+<h2 id="preparing-worch">Preparing Worch</h2>
+<h3 id="install-worch-in-virtualenv">Install Worch in Virtualenv</h3>
+<p>It is recommended to install the Worch build orchestration system into a Python virtual environment. This environment will be used only for building these externals.</p>
 <pre><code class="bash">$ virtualenv /path/to/buildenv
-$ source /path/to/buildenv/bin/activate
+</code></pre>
+
+<p>If you system does not already provide it, <a href="https://virtualenv.pypa.io/en/latest/installation.html">download virtualenv</a> and unpack it.  From the unpacked directory you can simply run</p>
+<pre><code class="bash">$ python virtualenv.py /path/to/buildenv
+</code></pre>
+
+<p>In either case one activates the virtual environment and installs worch like:</p>
+<pre><code class="bash">$ source /path/to/buildenv/bin/activate
 $ pip install worch
 </code></pre>
 
-<p>This wire-cell-externals repository provides the rest of what is needed. Clone it to some place with ample disk space (10s of GB).</p>
+<h3 id="install-worch-in-user-dir">Install Worch in user dir</h3>
+<p>Optionally, if you already have <code>pip</code> available you may avoid using <code>virtualenv</code> and install Worch into your "user" area under <code>~/.local/</code>:</p>
+<pre><code class="bash">$ pip install --user worch
+</code></pre>
+
+<p>You will need to assure <code>$HOME/.local/bin</code> is in your <code>PATH</code>.</p>
+<h3 id="wire-cell-worch-configuration">Wire-Cell Worch Configuration</h3>
+<p>However you end up supplying Worch, the <code>wire-cell-externals</code> repository provides the rest of what is needed. Clone it to some place with ample disk space (10s of GB).</p>
 <pre><code class="bash">$ git clone git@github.com:BNLIF/wire-cell-externals.git /path/to/work
 $ cd /path/to/work
+$ waf --help
 </code></pre>
 
 <h2 id="build">Build</h2>
 <p>After the above is done, this one command builds all the external software:</p>
-<pre><code class="bash">(1)  $ waf --prefix=/path/to/install --orch-config=worch.cfg configure
-(2)  $ waf
-(3)  $ deactivate
+<pre><code class="bash">(1)  $ ls worch-*.cfg
+(2)  $ waf --prefix=/path/to/install --orch-config=worch-&lt;config&gt;.cfg configure
+(3)  $ waf
+(4)  $ deactivate
 </code></pre>
 
 <p>This does:</p>
 <ol>
-<li>Configures the build according to the <code>worch.cfg</code> file and tells it where to install the final results</li>
+<li>See which main configuration file is suited to your environment.</li>
+<li>Configures the build according to the <code>worch-&lt;config&gt;.cfg</code> file and tells it where to install the final results.</li>
 <li>Performs the automated build of external packages. This takes ~1 hour on Intel i7 w/ an SSD.</li>
 <li>Exit the virtualenv as it is no longer needed (<code>/path/to/buildenv</code> may be removed)</li>
 </ol>
 <h2 id="install">Install</h2>
 <p>There are two ways to install the results of the build which differ in the organization of the installation directory layout. They are:</p>
-<h4 id="nameversion-tree">name/version tree</h4>
-<blockquote>
-<p>each package is installed into <code>/path/to/install/&lt;name&gt;/&lt;version&gt;/{bin,lib,include}</code>. This allows for multiple versions of each package to be installed in parallel supporting different versions of an overall collection. It allows purging of a particular version by simply deleting the directory, although with care not to break other packages which depend on it. The user environment must be modified (<code>PATH</code>, etc) to pick up all run-time aspects of each individual package.</p>
-</blockquote>
-<h4 id="single-rooted-directory">single-rooted directory</h4>
-<blockquote>
-<p>all packages are installed in the same <code>/path/to/install/{bin,lib,include}</code> directory. User run-time environment still requires adjustment but only for a single aspect. Only one version of a package may be installed, and removing an installed package is not supported (but is possible).
+<ul>
+<li>
+<p><strong>name/version tree:</strong> Each package is installed into <code>/path/to/install/&lt;name&gt;/&lt;version&gt;/{bin,lib,include}</code>. This allows for multiple versions of each package to be installed in parallel supporting different versions of an overall collection. It allows purging of a particular version by simply deleting the directory, although with care not to break other packages which depend on it. The user environment must be modified (<code>PATH</code>, etc) to pick up all run-time aspects of each individual package.</p>
+</li>
+<li>
+<p><strong>single-rooted directory:</strong> All packages are installed in the same <code>/path/to/install/{bin,lib,include}</code> directory. User run-time environment still requires adjustment but only for a single aspect. Only one version of a package may be installed, and removing an installed package is not supported (but is possible).
 This package supports both paradigms.</p>
-</blockquote>
+</li>
+</ul>
 <p>This package supports both paradigms.</p>
 <h3 id="install-to-nameversion-tree">Install to name/version tree</h3>
 <p>By default, and as part of the build procedure, one will produce a name/version tree installation area as designated by the <code>--prefix</code> option to <code>waf</code>. The user run-time environment can be set up with the help of <a href="http://modules.sf.net/">Environment Modules</a> (EM) which are provided by the build.</p>
@@ -314,13 +359,13 @@ $ python -c 'import ROOT; print ROOT.gROOT.GetVersion()'
 </code></pre>
 
 <h3 id="single-rooted-install">Single-rooted install</h3>
-<p>In addition to the population of /path/to/install as above, the build will produce a “tarpack” binary package file. These can simply be unpacked into a single-rooted directory.</p>
+<p>In addition to the population of <code>/path/to/install</code> as above, the build will produce a "tarpack" binary package file. These can simply be unpacked into a single-rooted directory.</p>
 <pre><code class="bash">$ cd /path/to/work
 $ mkdir -p /path/to/single-rooted
 $ for n in tmp/tarpack/*.tgz; do tar -C /path/to/single-rooted -xf $n; done
 </code></pre>
 
-<p>No special environment setup mechanism is provided for this mechanism however one can largely piggy-back on the one ROOT provides:</p>
+<p>No special environment setup mechanism is provided for this mechanism as one can largely piggy-back on the one ROOT provides:</p>
 <pre><code class="bash">$ source /path/to/single-rooted/bin/thisroot.sh
 
 $ root -b -q
@@ -330,6 +375,16 @@ $ root -b -q
 
 $ python -c 'import ROOT; print ROOT.gROOT.GetVersion()'
 6.02/05
+</code></pre>
+
+<h1 id="racf-setup">RACF Setup</h1>
+<p>At BNL's RACF, a simple, single-rooted installation of Wire Cell external packages is provided.</p>
+<p>Bash users do:</p>
+<pre><code class="bash">$ source /gpfs01/lbne/users/sw/wc/bin/thisroot.sh
+</code></pre>
+
+<p>Or, if you are still stuck using <code>tcsh</code> do:</p>
+<pre><code class="csh">&gt; source /gpfs01/lbne/users/sw/wc/bin/thisroot.csh
 </code></pre>
               
             </div>
