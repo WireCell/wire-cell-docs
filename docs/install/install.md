@@ -1,15 +1,10 @@
 [TOC]
 
-# Prerequisites
-Some external packages are required as described in this section.
-
-## Automated installation
+# Installation of prerequisites
 
 It is recommended to use the automated installation method to install the required externals. Follow the directions in [Install Externals](external.md) and come back here after setting up your user environment.
 
-## Manual installation
-
-You may provide the external packages yourself. The definitive list of required packages, their versions and build details are kept in wire-cell-externals worch.cfg file. Refer to that for the most up-to-date information on what software is needed. In summary you will need:
+However, you may instead provide the external packages yourself. The definitive list of required packages, their versions and build details are kept in wire-cell-externals worch.cfg file. Refer to that for the most up-to-date information on what software is needed. In summary you will need:
 
 * ROOT v6
 * Python 2.7
@@ -26,9 +21,7 @@ $ python -c 'import ROOT; print ROOT.gROOT.GetVersion()'
 6.02/05
 ```
 
-# Build
-
-## Preparing the source
+# Preparing wire-cell source
 
 The wire cell source project uses ``git-submodules`` to bring all the source together:
 
@@ -41,7 +34,7 @@ $ git submodule update
 $ alias waf=`pwd`/waf-tools/waf
 ```
 
-## Building
+# Building wire-cell
 
 To configure, build and install the wire cell code do:
 
@@ -51,19 +44,21 @@ $ waf --prefix=/path/to/install configure build install
 
 Note: this is not a Worch build - there is no `--orch-config` option.
 
-If you followed the *single rooted install* pattern then the ``/path/to/install`` can be ``/path/to/single-rooted`` and no additional user environment will be needed for run-time and the following command line should succeed:
+# Run-time environment
 
-```bash
-$ python -c 'import ROOT; print ROOT.WireCellData'
-Warning in <TInterpreter::ReadRootmapFile>: class  pair<float,float> found in libCore.so  is already in libWireCellDataDict.so
-Warning in <TInterpreter::ReadRootmapFile>: class  pair<int,float> found in libCore.so  is already in libWireCellDataDict.so
-<class 'ROOT.WireCellData'>
-```
+Set up the run time environment needed by however you chose to install the externals.
 
-If you provided your own externals or used the name/version tree pattern (using environment modules) then you will need to set your environment properly. Besides the usual ``$PATH``, ``$LD_LIBRARY_PATH``, etc pointing at ``/path/to/install`` you may need to set ``PYTHONPATH``.
+For wire-cell itself you will need to set or add to the usual:
 
-Independent from how you installed the code, if you have the broken ROOT packages for Ubuntu installed you will have to set:
+- `PATH`
+- `LD_LIBRARY_PATH`
+- `PYTHONPATH`
 
-```bash
-$ export PYTHONNOUSERSITE=yes
-```
+to point to directories under `/path/to/install`.
+
+Special notes:
+
+- **Ubuntu:** :: Set `PYTHONNOUSERSITE` to `yes` (or anything) if you also have Ubuntu ROOT packages installed.  This will stop the system PyROOT from being picked up
+- **Scientific Linux:** :: the build currently installs to both `lib/` and `lib64/` directories so add both to your `LD_LIBRARY_PATH`.
+- **Install to single root:** :: If you followed the *single rooted install* pattern **and** chose the ``/path/to/install`` to be coincident with ``/path/to/single-rooted`` then probably no additional user environment will be needed beyond sourcing ROOT's `thisroot.sh`.
+
