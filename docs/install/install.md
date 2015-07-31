@@ -2,35 +2,77 @@
 
 # Installation of prerequisites
 
-It is recommended to use the automated installation method to install the required externals. Follow the directions in [Install Externals](external.md) and come back here after setting up your user environment.
+An automated installation method for the externals is provided.  If
+you elect to use it, see [Install Externals](external.md) and come
+back here after setting up your user environment.
 
-However, you may instead provide the external packages yourself. The definitive list of required packages, their versions and build details are kept in wire-cell-externals worch.cfg file. Refer to that for the most up-to-date information on what software is needed. In summary you will need:
+Otherwise, you must provide the external packages yourself. The Wire
+Cell build system assumes they are available and found in the "usual
+manner".  The definitive, full list of required packages, their
+versions and build details are kept in `worch.cfg` file in
+`wire-cell-externals`. Refer to that for the most up-to-date
+information on what software is needed. In summary you will need:
 
-* ROOT v6
-* Python 2.7
 * BOOST 1.55 (or equiv)
+* ROOT v6
+* Python 2.7 (optional unless you want Python bindings)
 
-You will need to set up your run-time environment so that these commands do not fail and give the expected version:
+You will need to set up your run-time environment so that these
+commands do not fail and give the expected version:
 
 ```bash
 $ root -b -q
 ...
-| Welcome to ROOT 6.02/05                http://root.cern.ch |
+| Welcome to ROOT 6.05/01                    http://root.cern.ch |
 ...
 $ python -c 'import ROOT; print ROOT.gROOT.GetVersion()'
-6.02/05
+6.05/01
 ```
 
 # Preparing wire-cell source
 
-The wire cell source project uses ``git-submodules`` to bring all the source together:
+Wire Cell is made up of several source packages.  A top-level
+`wire-cell` package is used to aggregate them together as well as
+provide the top-level build environment.  The aggregation is done
+using Git modules.
+
+If you are a developer wanting to use SSH keys (default) to access the
+repository clone with the appropriate URL:
 
 ```bash
 $ git clone git@github.com:BNLIF/wire-cell.git
-$ cd wire-cell
+$ cd wire-cell/
+```
+
+If you are anonymous or in any case prefer to use HTTPS instead of SSH
+you will need to clone as shown below and then convert the submodules
+to likewise use HTTPS via the provided script.
+
+
+```bash
+$ git clone https://github.com/BNLIF/wire-cell.git
+$ cd wire-cell/
+$ ./switch-git-urls
+```
+
+Later, you can switch back to developer/SSH URLs with:
+
+```bash
+$ ./switch-git-urls dev
+```
+
+Now get the submodules:
+
+```bash
 $ git submodule init
 $ git submodule update
+```
 
+Finally, it is convenient to set an alias to the copy of waf.
+Otherwise you'll need to specify it's full path or make it available
+in your `$PATH`.
+
+```bash
 $ alias waf=`pwd`/waf-tools/waf
 ```
 
@@ -42,11 +84,14 @@ To configure, build and install the wire cell code do:
 $ waf --prefix=/path/to/install configure build install
 ```
 
-Note: this is not a Worch build - there is no `--orch-config` option.
+(If you came here after exercising the automatic external
+installation, take note this is not a Worch build - there is no
+`--orch-config` option.)
 
 # Run-time environment
 
-Set up the run time environment needed by however you chose to install the externals.
+Set up your run time environment following whatever method you chose
+to supply the external packages.
 
 For wire-cell itself you will need to set or add to the usual:
 
