@@ -1,19 +1,40 @@
 digraph "Packages" {
-	label = "Wire Cell Packages";
-	node[shape=componenet];
-	edge[arrowhead=ftriangle];
+	label = "Interface Pattern";
+	rankdir=LR;
+	
+	node[shape=box];
+	edge[arrowhead=onormal];
+
+	IFrameDataSource;
+	ISimDataSource
+	ISliceDataSource;
+
+	SstDataSource ->IFrameDataSource;
+	SstDataSource ->ISimDataSource;	
+
+	NavSliceDataSource->IFrameDataSource[label="uses",arrowhead=vee,style=dashed];
+	
 
 	data;
+	inter
+
 	nav->inter;
-	nav->data;
+	nav->data[arrowhead=vee];
+
 	alg->inter;
 	alg->data;
 
-	2dtoy->nav;
-	2dtoy->data;
-	2dtoy->tiling;
-	2dtoy->sst;
-	2dtoy->lsp;
+	tiling->inter;
+	tiling->data[arrowhead=vee];
+	
+	sst->inter;
+	sst->data;
+	
+
+	toy->nav;
+	toy->data;
+	toy->tiling;
+	toy->sst;
 	
 
 	}

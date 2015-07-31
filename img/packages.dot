@@ -5,36 +5,9 @@ digraph "Packages" {
 	node[shape=box];
 	edge[arrowhead=onormal];
 
-	IFrameDataSource;
-	ISimDataSource
-	ISliceDataSource;
+	util;
+	iface;
 
-	SstDataSource ->IFrameDataSource;
-	SstDataSource ->ISimDataSource;	
-
-	NavSliceDataSource->IFrameDataSource[label="uses",arrowhead=vee,style=dashed];
+	iface->util;
 	
-
-	data;
-	inter
-
-	nav->inter;
-	nav->data[arrowhead=vee];
-
-	alg->inter;
-	alg->data;
-
-	tiling->inter;
-	tiling->data[arrowhead=vee];
-	
-	sst->inter;
-	sst->data;
-	
-
-	toy->nav;
-	toy->data;
-	toy->tiling;
-	toy->sst;
-	
-
-	}
+}
