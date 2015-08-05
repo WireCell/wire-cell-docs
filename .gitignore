@@ -6,3 +6,4 @@ site/
 .wafpickle*
 c4che
 config.log
+upload.sh
