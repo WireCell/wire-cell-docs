@@ -121,19 +121,21 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-5 col-sm-6">
-                    <img class="img-responsive" src="home/img/signal.png" alt="">
+                    <img class="img-responsive" src="home/img/signal.gif" alt="">
                 </div>
                 <div class="col-lg-6 col-lg-offset-1 col-sm-6">
                     <hr class="section-heading-spacer">
                     <div class="clearfix"></div>
                     <h2 class="section-heading">Signals in LArTPC</h2>
                     <p class="lead">
-                     The principle of the single-phase LArTPC is shown in the left. When energetic charged particles pass through the detector medium, they will ionize argon atoms. These ionization electrons are effectively a record of the locations and amount of energy deposited in liquid Argon. This record can be extracted from the detector volume by applying an electric field which will make these electrons drift until they pass through a series of three planes of parallel readout wires. Each plane is oriented at a different angle with respect to the others.  As the charge drifts past the first two planes and is collected on the last plane it produces electrical signals on the nearby wires.  These signals are digitized and recorded.  The wire pitch and the sampling clock rate coupled with the constant drift velocity give a spatial resolution at the scale of a few millimeters.
+                     <!-- The principle of the single-phase LArTPC is shown in the left.  -->
+                     When energetic charged particles pass through the detector medium, they will ionize argon atoms. These ionization electrons are effectively a record of the locations and amount of energy deposited in liquid argon. This record can be extracted from the detector volume by applying an electric field, which will make these electrons drift until they pass through a series of three planes of parallel readout wires. Each plane is oriented at a different angle with respect to the others.
+                    </p>
+                    <p class="lead">
+                     As the charge drifts past the first two planes and is collected on the last plane it produces electrical signals on the nearby wires.  These signals are then digitized and recorded.  The wire pitch and the sampling frequency coupled with the electron drift velocity give a fine spatial resolution at the scale of a few millimeters.
                     </p>
                 </div>
-
             </div>
-
         </div>
     </div>
 
@@ -153,6 +155,49 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="content-section-b">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <img class="img-responsive" src="home/img/bee-white.png" alt="">
+                </div>
+                <div class="col-lg-6 col-lg-offset-1 col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">The Bee Event Display</h2>
+                    <p class="lead">
+                    A novel web-based event display <span class="text-success">Bee</span> (<a href="" data-toggle="modal" data-target="#myModal">why the name?</a>) is being developed to visualize <a href="http://www.phy.bnl.gov/wire-cell/examples/list/">different types of LArTPC events</a> reconstructed by Wire-Cell. <span class="text-success">Bee</span> uses <a href="https://en.wikipedia.org/wiki/WebGL">WebGL</a> to draw interactive 3D graphics in the browser through the <a href="http://threejs.org/">three.js</a> JavaScript library. The list of compatible browsers can be found <a href="http://caniuse.com/#feat=webgl">here</a>.
+                    </p>
+                    <p class="lead">
+                    With the <span class="text-success">Bee</span> event display, users can freely examine the details of event topology in the 3D space, compare the performance of different reconstruction results, show the true Monte-Carlo trajectories, enter the sliced mode to view the development of tomographic images, and even play the animations in fullscreen.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Why the name "Bee"?</h4>
+          </div>
+          <div class="modal-body">
+            <ul>
+                <li>Bees are known to make <a href="https://en.wikipedia.org/wiki/Honeycomb">cells</a>.</li>
+                <li>Bees <a href=" http://www.nature.com/news/bumblebees-sense-electric-fields-in-flowers-1.12480">sense electric fields</a>  by building up electric charges.</li>
+            </ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+
+      </div>
     </div>
 
 <!-- 	<a  name="contact"></a>

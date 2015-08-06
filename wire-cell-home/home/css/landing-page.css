@@ -27,7 +27,7 @@ h6 {
 
 .lead {
     font-size: 18px;
-    font-weight: 400;
+    font-weight: 500;
 }
 
 .intro-header {
@@ -169,3 +169,6 @@ footer {
 p.copyright {
     margin: 15px 0 0;
 }
+
+a { color: #00e; }
+a:hover { color: #06e; }​
