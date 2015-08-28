@@ -1,7 +1,0 @@
-Wire Cell has a simple ROOT I/O persistency module.  
-
-# Schema
-
-The data is saved to several ROOT TFiles is shown in the following figure.  Refer to the [terms](#terms) section for a nomenclature.
-
-![rootdata](../img/rootdata.svg)
