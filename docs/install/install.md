@@ -40,7 +40,7 @@ If you are a developer wanting to use SSH keys (default) to access the
 repository clone with the appropriate URL:
 
 ```bash
-$ git clone git@github.com:BNLIF/wire-cell.git
+$ git clone git@github.com:WireCell/wire-cell.git
 $ cd wire-cell/
 ```
 
@@ -50,7 +50,7 @@ to likewise use HTTPS via the provided script.
 
 
 ```bash
-$ git clone https://github.com/BNLIF/wire-cell.git
+$ git clone https://github.com/WireCell/wire-cell.git
 $ cd wire-cell/
 $ ./switch-git-urls
 ```

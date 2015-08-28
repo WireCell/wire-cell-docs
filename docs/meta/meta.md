@@ -5,7 +5,7 @@ This site uses MkDocs and is served by GitHub.
 ### To edit
 
 ```bash
-$ git clone git@github.com:BNLIF/wire-cell-docs.git
+$ git clone git@github.com:WireCell/wire-cell-docs.git
 $ cd wire-cell-docs
 $ emacs 
 $ git commit -a -m "..."

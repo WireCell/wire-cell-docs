@@ -1,8 +1,8 @@
-repo_url: https://github.com/BNLIF/wire-cell-docs/
+repo_url: https://github.com/WireCell/wire-cell-docs/
 repo_name: GitHub
 site_name: Wire Cell Documentation
 site_description: Documentation for the LArTPC Wire Cell reconstruction packages
-site_url: https://BNLIF.github.io/wire-cell-docs/
+site_url: https://wirecell.github.io/
 theme: readthedocs
 pages:
   - Overview: index.md

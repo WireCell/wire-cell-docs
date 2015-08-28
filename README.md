@@ -1,4 +1,10 @@
-# [Wire Cell Documentation](http://bnlif.github.io/wire-cell-docs/)
+# Wire Cell Documentation
+
+This documentation is online at http://wirecell.github.io/wire-cell-docs/
+
+Prototype version at http://BNLIF.github.io/wire-cell-docs/
+
+# Build this documentation
 
 Use [MkDocs](http://www.mkdocs.org/) to generate documentation for ``wire cell``.
 

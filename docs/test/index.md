@@ -41,11 +41,11 @@ Some external packages are required as described in this section.
 
 ## Automated installation<a id="sec-1-1" name="sec-1-1"></a>
 
-It is recommended to use the automated installation method to install the required externals.  Follow the directions in [wire-cell-externals](https://github.com/BNLIF/wire-cell-externals) and come back here after setting up your user environment.
+It is recommended to use the automated installation method to install the required externals.  Follow the directions in [wire-cell-externals](https://github.com/WireCell/wire-cell-externals) and come back here after setting up your user environment.
 
 ## Manual installation<a id="sec-1-2" name="sec-1-2"></a>
 
-You may provide the external packages yourself.  The definitive list of required packages, their versions and build details are kept in wire-cell-externals [worch.cfg](https://github.com/BNLIF/wire-cell-externals/blob/master/worch.cfg) file.  Refer to that for the most up-to-date information on what software is needed.  In summary you will need:
+You may provide the external packages yourself.  The definitive list of required packages, their versions and build details are kept in wire-cell-externals [worch.cfg](https://github.com/WireCell/wire-cell-externals/blob/master/worch.cfg) file.  Refer to that for the most up-to-date information on what software is needed.  In summary you will need:
 
 -   ROOT v6
 -   Python 2.7
@@ -66,7 +66,7 @@ You will need to set up your run-time environment so that these commands do not 
 
 The wire cell source project uses `git-submodules` to bring all the source together:
 
-    $ git clone git@github.com:BNLIF/wire-cell.git
+    $ git clone git@github.com:WireCell/wire-cell.git
     $ cd wire-cell
     $ git submodule init
     $ git submodule update
@@ -81,7 +81,7 @@ To configure, build and install the wire cell code do:
 
 Note: this is not a Worch build - there is no `--orch-config` option.
 
-If you followed the [single rooted install](https://github.com/BNLIF/wire-cell-externals#single-rooted-install) pattern then the `/path/to/install` can be `/path/to/single-rooted` and no additional user environment will be needed for run-time and the following command line should succeed:
+If you followed the [single rooted install](https://github.com/WireCell/wire-cell-externals#single-rooted-install) pattern then the `/path/to/install` can be `/path/to/single-rooted` and no additional user environment will be needed for run-time and the following command line should succeed:
 
     $ python -c 'import ROOT; print ROOT.WireCellData'
     Warning in <TInterpreter::ReadRootmapFile>: class  pair<float,float> found in libCore.so  is already in libWireCellDataDict.so 
@@ -172,7 +172,7 @@ The contents of the source package must be organized following these sub-directo
 -   **`python/NAME`:** python modules (todo: not yet supported)
 -   **`wscript_build`:** a brief waf file
 
-The `wscript_build` file specifies a name for the binary package (in general similar but not identical to the source package name) and a list of any other packages part of the wire-cell system on which it depends.  For example the `wire-cell-nav` source package builds to a `WireCellNav` binary package and it depends on the `WireCellData` package and so its [`wscript_build`](https://github.com/BNLIF/wire-cell-nav/blob/master/wscript_build) file is:
+The `wscript_build` file specifies a name for the binary package (in general similar but not identical to the source package name) and a list of any other packages part of the wire-cell system on which it depends.  For example the `wire-cell-nav` source package builds to a `WireCellNav` binary package and it depends on the `WireCellData` package and so its [`wscript_build`](https://github.com/WireCell/wire-cell-nav/blob/master/wscript_build) file is:
 
     bld.make_package('WireCellNav', use='WireCellData')
 
@@ -192,16 +192,16 @@ To add a new code package to a build package (such as this one) one must do a li
 
 Replace "`<name>`" with your package name.  And, of course, you may want to put more code than just the `wscript_build` file. Also, that file should list what packages your package depends on.
 
-Now, make a new repository by going to the [BNLIF GitHub](https://github.com/BNLIF) and clicking "New repository" button.  Give it a name like `wire-cell-<name>`.  Copy-and-paste the two command it tells you to use:
+Now, make a new repository by going to the [WireCell GitHub](https://github.com/WireCell) and clicking "New repository" button.  Give it a name like `wire-cell-<name>`.  Copy-and-paste the two command it tells you to use:
 
-    $ git remote add origin git@github.com:BNLIF/wire-cell-<name>.git
+    $ git remote add origin git@github.com:WireCell/wire-cell-<name>.git
     $ git push -u origin master
 
 Finally, move aside the local repository and add it right back as a submodule:
 
     $ cd ..  # back to top
     $ mv <name> <name>.moved
-    $ git submodule add -- git@github.com:BNLIF/wire-cell-<name>.git <name>
+    $ git submodule add -- git@github.com:WireCell/wire-cell-<name>.git <name>
     $ git submodule update
     $ git commit -a -m "Added <name> to top-level build package."
     $ git push

@@ -5,7 +5,7 @@ Wire Cell uses Interfaces to access major components.
 Wire Cell has a number of high-level concepts which are implemented as
 C++ "Interface" classes.  Such classes expose only methods which take
 or return either Plain Old Data (POD) or instances from the
-[Wire Cell Data](https://github.com/BNLIF/wire-cell-data) package.
+[Wire Cell Data](https://github.com/WireCell/wire-cell-data) package.
 
 The reason for this additional layer is to provide a decoupling
 between the different Wire Cell packages and to allow one to set
@@ -20,7 +20,7 @@ interface.
 
 A concrete implementation may present multiple interfaces.  For
 example the `GeomDataSource` from the
-[Wire Cell Nav](https://github.com/BNLIF/wire-cell-nav) package
+[Wire Cell Nav](https://github.com/WireCell/wire-cell-nav) package
 provides both `IWireGeometry` and `IWireDatabase` interfaces.
 
 # Providing Interfaces
@@ -53,7 +53,7 @@ application code as the code for creating and initializing a specific
 context can be provided as a high-level library.  For example, all
 geometry and readout data may come from some domain.  One example is
 if the input to Wire Cell originates from
-[Wire Cell SST](https://github.com/BNLIF/wire-cell-sst) files.
+[Wire Cell SST](https://github.com/WireCell/wire-cell-sst) files.
 High-level application code can depend on SST, produce an SST-based
 context and feed its content to the Wire Cell code as generic
 interfaces.

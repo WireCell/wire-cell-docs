@@ -1,7 +1,7 @@
 [TOC]
 
 
-The ``wire-cell`` software in [BNL IF GitHub](https://github.com/BNLIF) depends on some software that may not come with your OS, in particular [ROOT](http://root.cern.ch) v6 and a compiler supports C++11.
+The ``wire-cell`` software in [Wire Cell GitHub](https://github.com/WireCell) depends on some software that may not come with your OS, in particular [ROOT](http://root.cern.ch) v6 and a compiler supports C++11/14.
 
 You can provide the prerequisites as you wish or you can make use of the provided [Worch](https://github.com/brettviren/worch)-based automation to build the prerequisites from source.
 
@@ -24,7 +24,7 @@ $ virtualenv /path/to/buildenv
 $ source /path/to/buildenv/bin/activate
 $ pip install worch
 
-$ git clone git@github.com:BNLIF/wire-cell-externals.git /path/to/work
+$ git clone git@github.com:WireCell/wire-cell-externals.git /path/to/work
 $ cd /path/to/work
 $ waf --prefix=/path/to/install --orch-config=worch.cfg configure build
 $ deactivate
@@ -84,7 +84,7 @@ You will need to assure `$HOME/.local/bin` is in your `PATH`.
 However you end up supplying Worch, the `wire-cell-externals` repository provides the rest of what is needed. Clone it to some place with ample disk space (10s of GB).
 
 ```bash
-$ git clone git@github.com:BNLIF/wire-cell-externals.git /path/to/work
+$ git clone git@github.com:WireCell/wire-cell-externals.git /path/to/work
 $ cd /path/to/work
 $ waf --help
 ```
