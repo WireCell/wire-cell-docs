@@ -1,23 +1,25 @@
-[TOC]
+# External Packages
 
-
-The ``wire-cell`` software in [Wire Cell GitHub](https://github.com/WireCell) depends on some software that may not come with your OS, in particular [ROOT](http://root.cern.ch) v6 and a compiler supports C++11/14.
+The ``wire-cell`` software in
+[Wire Cell GitHub](https://github.com/WireCell) depends on some
+software that may not come with your OS, in particular
+[ROOT](http://root.cern.ch) v6 and a compiler supports C++11/14.
 
 You can provide the prerequisites as you wish or you can make use of the provided [Worch](https://github.com/brettviren/worch)-based automation to build the prerequisites from source.
 
-# Manual installation of externals
+# Automated installation of externals with Worch
 
-This is left as an excercise to the reader.
+The Wire Cell software requires external packages of correct versions
+as described [here](install) but does not require them to be installed
+in any particular manner.
 
-# Automated installation with Worch
+A [Worch](https://github.com/brettviren/worch/) build orchestration
+configuration is provided which will allow automated installation of
+the required externals.
 
-This method will automatically build the necessary packages from
-source.  It requires some initial manual preparation followed by
-unattended, if lengthy, building.
+## Quick start
 
-## Quickstart
-
-If you don’t care what this does, just cut and paste.  If something "doesn't work" then read the subsequent sections.
+The build may be as simple as:
 
 ```bash
 $ virtualenv /path/to/buildenv
@@ -32,7 +34,6 @@ $ deactivate
 $ source /path/to/install/env.sh
 $ module load root
 ```
-
 You would repeat those last two lines in any new shells. You can now test:
 
 ```bash
@@ -44,9 +45,10 @@ $ python -c 'import ROOT; print ROOT.gROOT.GetVersion()'
 6.02/05
 ```
 
-More details and build options are described in the following sections.
-
 ## Preparing Worch
+
+More details on the Worch automation and build options are described
+in the following sections.
 
 ### Install Worch in Virtualenv
 

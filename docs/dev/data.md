@@ -1,3 +1,5 @@
+(FIXME: this needs rewriting.)
+
 Wire Cell has a simple ROOT I/O persistency module.  
 
 # Schema

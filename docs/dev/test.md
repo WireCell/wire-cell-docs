@@ -1,3 +1,5 @@
+(FIXME: this section needs work.)
+
 # Tests
 
 Tests go under the `test/` (or `tests/`) sub-directory of the package.  There are two types, C++ and Python.  In both cases, only files that begin with "`test_*`" will be considered tests.  Tests are automatically run as part of the build procedure (fixme: just C++ ones are automatic right now) and will be rerun when they or code they depend on changes.   When tests are run by the build the `stdout/stderr` is typically captured.  You can run them manually to observe any print statements.  Tests are not installed but left in the "`build/`" (or sometimes "`tmp/`") output directory.

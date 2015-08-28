@@ -1,4 +1,4 @@
-Wire Cell uses Interfaces to access major components.
+(FIXME: this needs rewriting.)
 
 # Overview of Interfaces
 

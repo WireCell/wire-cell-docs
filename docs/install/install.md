@@ -1,109 +1,88 @@
-[TOC]
+# Dependencies in Wire Cell
 
-# Installation of prerequisites
+Wire Cell software suite is composed of multiple packages with a
+carefully considered on themselves and on external packages.  Wire
+Cell software is designed in layers to provide as much or as little
+functionality as needed.  The more layer, the more dependencies.  The
+core part of Wire Cell has minimal dependencies:
 
-An automated installation method for the externals is provided.  If
-you elect to use it, see [Install Externals](external.md) and come
-back here after setting up your user environment.
+- C++11/14 compiler (GCC most tested)
+- BOOST (1.59 if pipeline is used)
 
-Otherwise, you must provide the external packages yourself. The Wire
-Cell build system assumes they are available and found in the "usual
-manner".  The definitive, full list of required packages, their
-versions and build details are kept in `worch.cfg` file in
-`wire-cell-externals`. Refer to that for the most up-to-date
-information on what software is needed. In summary you will need:
+Wire Cell packages have many unit tests and they tend to also required
+ROOT and some Wire Cell shared libraries explicitly require root (eg,
+Rio and RootDict).
 
-* BOOST 1.55 (or equiv)
-* ROOT v6
-* Python 2.7 (optional unless you want Python bindings)
+- ROOT 6
 
-You will need to set up your run-time environment so that these
-commands do not fail and give the expected version:
+FIXME: we will eventually likely require:
 
-```bash
-$ root -b -q
-...
-| Welcome to ROOT 6.05/01                    http://root.cern.ch |
-...
-$ python -c 'import ROOT; print ROOT.gROOT.GetVersion()'
-6.05/01
-```
+- Eigen3
+- Boost.Pipeline
 
-# Preparing wire-cell source
+And maybe others.
 
-Wire Cell is made up of several source packages.  A top-level
-`wire-cell` package is used to aggregate them together as well as
-provide the top-level build environment.  The aggregation is done
-using Git modules.
 
-If you are a developer wanting to use SSH keys (default) to access the
-repository clone with the appropriate URL:
+# Getting Wire Cell source package
+
+Wire Cell source code is available from the
+[Wire Cell GitHub organization](https://github.com/wirecell).
+
+The recommended access is via Wire Cell developer SSH keys:
 
 ```bash
-$ git clone git@github.com:WireCell/wire-cell.git
-$ cd wire-cell/
-```
-
-If you are anonymous or in any case prefer to use HTTPS instead of SSH
-you will need to clone as shown below and then convert the submodules
-to likewise use HTTPS via the provided script.
-
-
-```bash
-$ git clone https://github.com/WireCell/wire-cell.git
-$ cd wire-cell/
-$ ./switch-git-urls
-```
-
-Later, you can switch back to developer/SSH URLs with:
-
-```bash
-$ ./switch-git-urls dev
-```
-
-Now get the submodules:
-
-```bash
+$ git clone git@github.com:WireCell/wire-cell-build.git
+$ cd wire-cell-build/
 $ git submodule init
 $ git submodule update
 ```
 
-Finally, it is convenient to set an alias to the copy of waf.
-Otherwise you'll need to specify it's full path or make it available
-in your `$PATH`.
+If you are anonymous then you may instead clone through HTTPS and
+switch git URLs before running `git submodule`:
 
 ```bash
-$ alias waf=`pwd`/waf-tools/waf
+$ git clone https://github.com/WireCell/wire-cell-build.git
+$ cd wire-cell-build/
+$ ./switch-git-urls
 ```
 
 # Building wire-cell
 
+Wire Cell software is built with [waf](https://waf.io/).  A custom Waf
+command (`wcb` = "wire cell builder") is provided:
+
 To configure, build and install the wire cell code do:
 
 ```bash
-$ waf --prefix=/path/to/install configure build install
+$ ./wcb --prefix=/path/to/install configure build install
 ```
 
-(If you came here after exercising the automatic external
-installation, take note this is not a Worch build - there is no
-`--orch-config` option.)
+If dependencies are not found you may specify them with additional
+flags as shown by the help.  Eg:
+
+```bash
+$ ./wcb --help
+$ ./wcb --boost-libs=... --boost-includes=... --with-root=... configure
+$ ./wcb
+$ ./wcb install
+```
 
 # Run-time environment
 
-Set up your run time environment following whatever method you chose
-to supply the external packages.
-
-For wire-cell itself you will need to set or add to the usual:
+It is assumed you have already set up your run-time environment so
+that you can access the external dependencies in the "usual manner".
+For wire-cell itself you will need to further set or add to the usual
+environment variables:
 
 - `PATH`
 - `LD_LIBRARY_PATH`
 - `PYTHONPATH`
 
-to point to directories under `/path/to/install`.
+to point to directories under the `/path/to/install` you used with `wcb configure`.
 
-Special notes:
+# Platform notes:
 
 - **Ubuntu:** :: Set `PYTHONNOUSERSITE` to `yes` (or anything) if you also have Ubuntu ROOT packages installed.  This will stop the system PyROOT from being picked up
 - **Scientific Linux:** :: the build currently installs to both `lib/` and `lib64/` directories so add both to your `LD_LIBRARY_PATH`.
-- **Install to single root:** :: If you followed the *single rooted install* pattern **and** chose the ``/path/to/install`` to be coincident with ``/path/to/single-rooted`` then probably no additional user environment will be needed beyond sourcing ROOT's `thisroot.sh`.
+
 
