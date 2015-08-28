@@ -256,7 +256,7 @@
 <li><a href="#racf-setup">RACF Setup</a></li>
 </ul>
 </div>
-<p>The <code>wire-cell</code> software in <a href="https://github.com/BNLIF">BNL IF GitHub</a> depends on some software that may not come with your OS, in particular <a href="http://root.cern.ch">ROOT</a> v6 and a compiler supports C++11.</p>
+<p>The <code>wire-cell</code> software in <a href="https://github.com/WireCell">Wire Cell GitHub</a> depends on some software that may not come with your OS, in particular <a href="http://root.cern.ch">ROOT</a> v6 and a compiler supports C++11/14.</p>
 <p>You can provide the prerequisites as you wish or you can make use of the provided <a href="https://github.com/brettviren/worch">Worch</a>-based automation to build the prerequisites from source.</p>
 <h1 id="manual-installation-of-externals">Manual installation of externals</h1>
 <p>This is left as an excercise to the reader.</p>
@@ -270,7 +270,7 @@ unattended, if lengthy, building.</p>
 $ source /path/to/buildenv/bin/activate
 $ pip install worch
 
-$ git clone git@github.com:BNLIF/wire-cell-externals.git /path/to/work
+$ git clone git@github.com:WireCell/wire-cell-externals.git /path/to/work
 $ cd /path/to/work
 $ waf --prefix=/path/to/install --orch-config=worch.cfg configure build
 $ deactivate
@@ -312,7 +312,7 @@ $ pip install worch
 <p>You will need to assure <code>$HOME/.local/bin</code> is in your <code>PATH</code>.</p>
 <h3 id="wire-cell-worch-configuration">Wire-Cell Worch Configuration</h3>
 <p>However you end up supplying Worch, the <code>wire-cell-externals</code> repository provides the rest of what is needed. Clone it to some place with ample disk space (10s of GB).</p>
-<pre><code class="bash">$ git clone git@github.com:BNLIF/wire-cell-externals.git /path/to/work
+<pre><code class="bash">$ git clone git@github.com:WireCell/wire-cell-externals.git /path/to/work
 $ cd /path/to/work
 $ waf --help
 </code></pre>

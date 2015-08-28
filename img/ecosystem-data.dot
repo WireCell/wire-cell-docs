@@ -6,15 +6,15 @@ digraph "Wire Cell Ecosystem" {
 	wclmod[color=red,shape=component,label="Wire Cell LArSoft 'glue' module"];
 	
 	larfile[shape=folder, label="Art ROOT file"];
-	lardata[color=darkorchid,shape=component,URL="https://github.com/BNLIF/wire-cell-celltree",label="MC truth+wire sig\n(wire-cell-celltree)"];
-	largeom[color=darkorchid,shape=component,URL="https://github.com/BNLIF/wire-cell-celltree",label="Geo dumped from larsoft\n(wire-cell-celltree)\n(can we directly generate w/out larsoft?)"];
+	lardata[color=darkorchid,shape=component,URL="https://github.com/WireCell/wire-cell-celltree",label="MC truth+wire sig\n(wire-cell-celltree)"];
+	largeom[color=darkorchid,shape=component,URL="https://github.com/WireCell/wire-cell-celltree",label="Geo dumped from larsoft\n(wire-cell-celltree)\n(can we directly generate w/out larsoft?)"];
 	celltree[shape=folder, label="celltree ROOT file"];
 	geomfile_ub[shape=folder, label="geometry text file\n(uboone)"];
 	geomfile_dune[shape=folder, label="geometry text files\n(DUNE wrapped wires)"];
-	sst[color=darkorchid,shape=component,URL="https://github.com/BNLIF/wire-cell-sst",label="wire-cell-sst\nGDS, FDS, SimDS\nfor reading 'celltree' files"];
+	sst[color=darkorchid,shape=component,URL="https://github.com/WireCell/wire-cell-sst",label="wire-cell-sst\nGDS, FDS, SimDS\nfor reading 'celltree' files"];
 	params[shape=ellipse,label="parameters"];
 	
-	nav[color=darkorchid,shape=component,URL="https://github.com/BNLIF/wire-cell-nav",label="wire-cell-nav\nnavigational data struction\nGenerative FrameDataSource (FDS+SimDS)\nParam GeomDataSource\nVarious Hit Depositors"];
+	nav[color=darkorchid,shape=component,URL="https://github.com/WireCell/wire-cell-nav",label="wire-cell-nav\nnavigational data struction\nGenerative FrameDataSource (FDS+SimDS)\nParam GeomDataSource\nVarious Hit Depositors"];
 	algs[color=darkorchid,shape=component,label="Wire Cell algorithms\n(various packages: 2dtoy+nav+graph+tiling+...)"];
 
 	xinfile[shape=folder,label="Xin ROOT file"];
@@ -23,7 +23,7 @@ digraph "Wire Cell Ecosystem" {
 	cellio[style=filled,fillcolor=red,shape=doubleoctagon,label="Reco cell I/O\n(needs implementing)"];
 	cellfile[shape=folder,label="Reco cell files"];
 
-	root2json[color=darkorchid,shape=component,URL="https://github.com/BNLIF/wire-cell-viz-webgl",label="Converter\n(wire-cell-viz-webgl)"];
+	root2json[color=darkorchid,shape=component,URL="https://github.com/WireCell/wire-cell-viz-webgl",label="Converter\n(wire-cell-viz-webgl)"];
 	json[shape=folder,label="JSON files"];
 	
 	lard[shape=box,URL="https://github.com/brettviren/lard",label="LAr Data Server\n(lard-server)"];

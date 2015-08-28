@@ -332,15 +332,15 @@ $ git commit -a -m &quot;Start code package &lt;name&gt;&quot;
 </code></pre>
 
 <p>Replace <code>&lt;name&gt;</code> with your package name. And, of course, you may want to put more code than just the <code>wscript_build</code> file. Also, that file should list what packages your package depends on.</p>
-<p>Now, make a new repository by going to the <a href="https://github.com/BNLIF">BNLIF GitHub</a> and clicking "New repository" button. Give it a name like <code>wire-cell-&lt;name&gt;</code>. Copy-and-paste the two command it tells you to use:</p>
-<pre><code class="bash">$ git remote add origin git@github.com:BNLIF/wire-cell-&lt;name&gt;.git
+<p>Now, make a new repository by going to the <a href="https://github.com/WireCell">WireCell GitHub</a> and clicking "New repository" button. Give it a name like <code>wire-cell-&lt;name&gt;</code>. Copy-and-paste the two command it tells you to use:</p>
+<pre><code class="bash">$ git remote add origin git@github.com:WireCell/wire-cell-&lt;name&gt;.git
 $ git push -u origin master
 </code></pre>
 
 <p>Finally, move aside the local repository and add it right back as a submodule:</p>
 <pre><code class="bash">$ cd ..  # back to top
 $ mv &lt;name&gt; &lt;name&gt;.moved
-$ git submodule add -- git@github.com:BNLIF/wire-cell-&lt;name&gt;.git &lt;name&gt;
+$ git submodule add -- git@github.com:WireCell/wire-cell-&lt;name&gt;.git &lt;name&gt;
 $ git submodule update
 $ git commit -a -m &quot;Added &lt;name&gt; to top-level build package.&quot;
 $ git push

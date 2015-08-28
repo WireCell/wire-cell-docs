@@ -44,7 +44,7 @@
 </g>
 <!-- largeom -->
 <g id="node5" class="node"><title>largeom</title>
-<g id="a_node5"><a xlink:href="https://github.com/BNLIF/wire-cell-celltree" xlink:title="Geo dumped from larsoft\n(wire&#45;cell&#45;celltree)\n(can we directly generate w/out larsoft?)">
+<g id="a_node5"><a xlink:href="https://github.com/WireCell/wire-cell-celltree" xlink:title="Geo dumped from larsoft\n(wire&#45;cell&#45;celltree)\n(can we directly generate w/out larsoft?)">
 <polygon fill="none" stroke="darkorchid" points="433.5,-800.168 196.5,-800.168 196.5,-796.168 192.5,-796.168 192.5,-792.168 196.5,-792.168 196.5,-755.168 192.5,-755.168 192.5,-751.168 196.5,-751.168 196.5,-747.168 433.5,-747.168 433.5,-800.168"/>
 <polyline fill="none" stroke="darkorchid" points="196.5,-796.168 200.5,-796.168 200.5,-792.168 196.5,-792.168 "/>
 <polyline fill="none" stroke="darkorchid" points="196.5,-755.168 200.5,-755.168 200.5,-751.168 196.5,-751.168 "/>
@@ -62,7 +62,7 @@
 </g>
 <!-- lardata -->
 <g id="node4" class="node"><title>lardata</title>
-<g id="a_node4"><a xlink:href="https://github.com/BNLIF/wire-cell-celltree" xlink:title="MC truth+wire sig\n(wire&#45;cell&#45;celltree)">
+<g id="a_node4"><a xlink:href="https://github.com/WireCell/wire-cell-celltree" xlink:title="MC truth+wire sig\n(wire&#45;cell&#45;celltree)">
 <polygon fill="none" stroke="darkorchid" points="178.5,-792.668 59.5,-792.668 59.5,-788.668 55.5,-788.668 55.5,-784.668 59.5,-784.668 59.5,-762.668 55.5,-762.668 55.5,-758.668 59.5,-758.668 59.5,-754.668 178.5,-754.668 178.5,-792.668"/>
 <polyline fill="none" stroke="darkorchid" points="59.5,-788.668 63.5,-788.668 63.5,-784.668 59.5,-784.668 "/>
 <polyline fill="none" stroke="darkorchid" points="59.5,-762.668 63.5,-762.668 63.5,-758.668 59.5,-758.668 "/>
@@ -130,7 +130,7 @@
 </g>
 <!-- sst -->
 <g id="node9" class="node"><title>sst</title>
-<g id="a_node9"><a xlink:href="https://github.com/BNLIF/wire-cell-sst" xlink:title="wire&#45;cell&#45;sst\nGDS, FDS, SimDS\nfor reading &#39;celltree&#39; files">
+<g id="a_node9"><a xlink:href="https://github.com/WireCell/wire-cell-sst" xlink:title="wire&#45;cell&#45;sst\nGDS, FDS, SimDS\nfor reading &#39;celltree&#39; files">
 <polygon fill="none" stroke="darkorchid" points="398,-592.168 246,-592.168 246,-588.168 242,-588.168 242,-584.168 246,-584.168 246,-547.168 242,-547.168 242,-543.168 246,-543.168 246,-539.168 398,-539.168 398,-592.168"/>
 <polyline fill="none" stroke="darkorchid" points="246,-588.168 250,-588.168 250,-584.168 246,-584.168 "/>
 <polyline fill="none" stroke="darkorchid" points="246,-547.168 250,-547.168 250,-543.168 246,-543.168 "/>
@@ -185,7 +185,7 @@
 </g>
 <!-- nav -->
 <g id="node11" class="node"><title>nav</title>
-<g id="a_node11"><a xlink:href="https://github.com/BNLIF/wire-cell-nav" xlink:title="wire&#45;cell&#45;nav\nnavigational data struction\nGenerative FrameDataSource (FDS+SimDS)\nParam GeomDataSource\nVarious Hit Depositors">
+<g id="a_node11"><a xlink:href="https://github.com/WireCell/wire-cell-nav" xlink:title="wire&#45;cell&#45;nav\nnavigational data struction\nGenerative FrameDataSource (FDS+SimDS)\nParam GeomDataSource\nVarious Hit Depositors">
 <polygon fill="none" stroke="darkorchid" points="683.5,-607.168 420.5,-607.168 420.5,-603.168 416.5,-603.168 416.5,-599.168 420.5,-599.168 420.5,-532.168 416.5,-532.168 416.5,-528.168 420.5,-528.168 420.5,-524.168 683.5,-524.168 683.5,-607.168"/>
 <polyline fill="none" stroke="darkorchid" points="420.5,-603.168 424.5,-603.168 424.5,-599.168 420.5,-599.168 "/>
 <polyline fill="none" stroke="darkorchid" points="420.5,-532.168 424.5,-532.168 424.5,-528.168 420.5,-528.168 "/>
@@ -250,7 +250,7 @@
 </g>
 <!-- root2json -->
 <g id="node16" class="node"><title>root2json</title>
-<g id="a_node16"><a xlink:href="https://github.com/BNLIF/wire-cell-viz-webgl" xlink:title="Converter\n(wire&#45;cell&#45;viz&#45;webgl)">
+<g id="a_node16"><a xlink:href="https://github.com/WireCell/wire-cell-viz-webgl" xlink:title="Converter\n(wire&#45;cell&#45;viz&#45;webgl)">
 <polygon fill="none" stroke="darkorchid" points="463,-252 331,-252 331,-248 327,-248 327,-244 331,-244 331,-222 327,-222 327,-218 331,-218 331,-214 463,-214 463,-252"/>
 <polyline fill="none" stroke="darkorchid" points="331,-248 335,-248 335,-244 331,-244 "/>
 <polyline fill="none" stroke="darkorchid" points="331,-222 335,-222 335,-218 331,-218 "/>
