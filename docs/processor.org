@@ -1,0 +1,118 @@
+* Big picture
+
+Wire Cell applications (be they main programs or if called from other
+code) consist of a graph of vertices of computing units ("processors")
+connected by edges of data queues.  The simplest application is a
+graph with a single vertex, a single processor.
+
+Some code outside of the processors must arrange to push data into
+sinks and request data from sources.  See [[Execution Models]] for what
+Wire Cell provides.
+
+* A processor.
+
+A Wire Cell processor is given data from zero or more input ports (a
+"sink") and returns data through zero or more output ports (source).
+For input or output, different ports are distinguished by the type of
+data they accept or return.
+
+The ports are implemented as functions and are called by external
+code.  The processor has no control over the order or timing of their
+calling.  The processor implementation inherits from the templated
+interface classes =WireCell::ISink= or =WireCell::ISource= once for
+every port desired.  These classes define a typed method call which
+the subclass must implent.  The calling prototypes are:
+
+#+BEGIN_SRC c++
+bool sink(const Type& obj);
+bool source(Type& ret);
+#+END_SRC
+
+The =sink()= method must return =true= if the object was accepted.
+The =source()= method must return true if the returned value was set.
+
+* Execution Models
+
+Independent of the conceptual processor/data graph is the execution
+model that drives data through the processors.  Two execution models
+are provided by Wire Cell: a synchronous "pull" and one which supports
+multiprocessor, parallel execution with buffered queues.
+
+A model is implemented as a set of adaptive wrappers (executors)
+around the processors which implement some sort of connection between
+their ports.
+
+** Synchronous Pull
+
+The "synchronous pull" execution model runs the entire Wire Cell
+application in a single execution thread.  Connections between
+executors are formed by Boost signals/slots.  When an executors slot
+is called it will call its processors =source()=.  If successful
+(=true= returned), the slot will return the data.  If failed, it will
+call its signals (attached to executors providing input) and feed the
+results to its processor.  This is repeated until its processors
+=source()= succeeds.
+
+** Asynchronous Parallel
+
+The "asynchronous parallel" execution model runs each executor in its
+own thread.  Connections between executors are via thread-safe data
+queues.  Executors read from input queues in a blocking manner.  When
+data is returned it is fed into its processor.  Then, all =source()=
+methods are called and any successful will have the resulting data fed
+into the executor's corresponding output queue.
+
+* Buffering Issues
+
+There are several areas where buffering may occur in a Wire Cell
+application.  These include:
+
+- Data queues connecting executors are filled by the execution method.
+  In the case of async-parallel, they are filled at the whim of the
+  parallel thread scheduler.
+
+- Executors will buffer at least one data element as it takes if from
+  a queue output to a port input or vice versa.  If a =sink()= fails
+  the executor may buffer its input until a follow-on =source()= (or
+  it may throw an exception).
+
+- Processors may buffer either input or output data as is needed.  
+
+Regardless of the origin of buffering the requirements on the buffers are:
+
+- Data entering a buffer must eventually exit the buffer (no loss of data).
+
+- Data returned by a processor or an executor must not be retained in a buffer (no data duplication).
+
+- Buffer owners must be able to fully drain buffers when [[End Of Input]]
+  condition is reached.
+
+* End Of Input
+
+This paradigm support infinite streaming of data at all levels.
+However, in real applications the data must eventually come to an end.
+Typically when this occurs the data that is buffered in the graph
+should be drained.  It is typical to design processors which require
+buffering to produce output based on some characteristic of fresh
+input (eg, its time).  Thus to notify processors that the data stream
+has terminated an "end of input" (EOI) instruction needs to be added
+to the data stream and passed down through the graph.  Since input and
+output data may be of different types, this requires the EOI
+information to likewise transform.  All in all this sets up a simple
+communication protocol.  A special "illegal" data value is used to
+mark EOI depending on the data type:
+
+|-----------+-----------|
+| type      | EOI value |
+|-----------+-----------|
+| =pointer= | =nullptr= |
+| container | empty     |
+| number    | special   |
+| object    | specific  |
+|-----------+-----------|
+
+For numerical data types, a "special" number must be defined to
+indicate EOI and agreed to by participating processors.  Objects
+passed by value should have some method to indicate EOI or in general
+invalidity.  Implementing =operator bool()= is one good option.
+
