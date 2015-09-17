@@ -1,0 +1,53 @@
+digraph "flow" {
+	
+	g4[label="Geant4",shape=diamond];
+	depo[label="Hits"];
+	detsim[label="External\nDetector\nSimulation\n(LArSoft)",shape=diamond];
+	// extdigi[label="Digitized\nSignals"];
+	// extreco[label="Other\nReconstruction",shape=diamond];
+	extcluster[label="Other\nClustering",shape=diamond];
+	exttracking[label="Other\nTracking",shape=diamond];
+	extpid[label="Other\nPID",shape=diamond];
+	
+	
+	daq[label="Detector\nDAQ", shape=diamond];
+
+	subgraph cluster_wc {
+		label="WIRE CELL";
+		node[fillcolor=lightgrey,shape=diamond,style=filled];
+		
+		wcsimpsim[label="Simple\nSimulation"];
+		wcdepo[label="Hits",shape=ellipse,style=none];
+		wcdrifter[label="Drifting &\ndiffusion", shape=diamond];
+		wcdd[label="Drifted &\nDiffused",shape=ellipse,style=none];
+		wcdigitizer[label="Digitize",shape=diamond];
+		wcdigi[label="Digitized\nSignals",shape=ellipse,style=none];
+		wcframe[label="Raw Data\nFrame",shape=ellipse,style=none];
+		wcframer[label="Framer", shape=diamond];
+		wcslicer[label="Slicer", shape=diamond];
+		// wcslice[label="Time\nSlice",shape=ellipse,style=none];
+		wctiling[label="Cell\nFinder",shape=diamond];
+		// wcblober[label="Blob\nMaker",shape=diamond];
+		wcmatrix[label="Matrix\nSolver",shape=diamond];
+		wccluster[label="Clustering",shape=diamond];
+		wctracker[label="Tracking",shape=diamond];
+		wcpid[label="Particle ID",shape=diamond];
+	}
+	
+	g4->depo->detsim->wcdd;
+	// detsim->extdigi;
+	// daq->extdigi;
+	// extdigi->extreco;
+
+	wcsimpsim->wcdepo->wcdrifter->wcdd->wcdigitizer->wcdigi->wcframer->wcframe->wcslicer->wctiling->wcmatrix->wccluster->wctracker->wcpid;
+
+	g4->wcdepo;
+	detsim->wcdepo;
+	detsim->wcdigi;
+	daq->wcframe;
+	
+	wcmatrix->extcluster;
+	wccluster->exttracking;
+	wctracker->extpid;
+	
+}
