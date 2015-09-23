@@ -1,0 +1,14 @@
+_region_.*
+*.aux
+*.dvi
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
+wire-cell.pdf
+*.autosave
+auto

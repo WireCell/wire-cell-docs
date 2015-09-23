@@ -1,0 +1,50 @@
+digraph "G" {
+	title="Wire Cell Data Flow";
+	
+	IWireParameters;
+	IWireGenerator[shape=diamond];
+	IWireVector;
+
+	ICellMaker[shape=diamond];
+	ICellVector;
+	
+	IDepositor[shape=diamond];
+	IDepo;
+	IDrifter[shape=diamond];
+	IDepoDrifted[label="IDepo (drifted)"];
+	IDiffuser[shape=diamond];
+	IDiffused;
+	IPlaneDuctor[shape=diamond];
+	IPlaneSlice;
+	IDigitizer[shape=diamond];
+	IChannelSlice;
+	IFramer[shape=diamond];
+	IFrame;
+	ISlicer[shape=diamond]
+
+	IChannelCellSelector[shape=diamond];
+	ICellSlice;
+
+	IBlobMaker[shape=diamond];
+	ICellSliceBlobbed[label="ICellSlice (blobed)"];
+
+	IMatrixSolver[shape=diamond];
+	ICellSliceSolved[label="ICellSlice (solved)"];
+
+	IClustering[shape=diamond];
+	IClusterVector;
+
+	ITracking[shape=diamond];
+	ITrackVector;
+	
+
+	IWireParameters->IWireGenerator->IWireVector->ICellMaker->ICellVector;
+	IWireParameters->IDiffuser;
+	IDepositor->IDepo->IDrifter->IDepoDrifted->IDiffuser->IDiffused->IPlaneDuctor->IPlaneSlice->IDigitizer->IChannelSlice;
+	IWireVector->IDigitizer;
+	IChannelSlice->IFramer->IFrame;
+	IFrameDataSource->IFrame;
+	ICellVector->IChannelCellSelector;
+	IFrame->ISlicer->IChannelSlice->IChannelCellSelector->ICellSlice->IBlobMaker->ICellSliceBlobbed->IMatrixSolver->ICellSliceSolved->IClustering->IClusterVector->ITracking->ITrackVector;
+
+}

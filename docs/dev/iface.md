@@ -2,26 +2,11 @@
 
 # Overview of Interfaces
 
+https://github.com/WireCell/wire-cell-iface
+
 Wire Cell has a number of high-level concepts which are implemented as
 C++ "Interface" classes.  Such classes expose only methods which take
-or return either Plain Old Data (POD) or instances from the
-[Wire Cell Data](https://github.com/WireCell/wire-cell-data) package.
-
-The reason for this additional layer is to provide a decoupling
-between the different Wire Cell packages and to allow one to set
-actual implementations at the application layer.  This allows for
-competing implementations to be swapped in a transparent manner.  For
-example, one may have a wire geometry that comes from a parameterized
-model that generates wire placements or one may have a detailed as-is
-survey where each wire is painstakingly described and stored.  The
-code that uses such a geometry doesn't care and instead accesses
-whatever the application layer gives it via the `IWireGeometry`
-interface.
-
-A concrete implementation may present multiple interfaces.  For
-example the `GeomDataSource` from the
-[Wire Cell Nav](https://github.com/WireCell/wire-cell-nav) package
-provides both `IWireGeometry` and `IWireDatabase` interfaces.
+or return either Plain Old Data (POD) or instances of Interface classes.  
 
 # Providing Interfaces
 
