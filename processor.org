@@ -1,0 +1,219 @@
+* Big picture
+
+The internals of a Wire Cell application (be it an entire main program
+or as something embedded in a larger application) follows the
+so-called /data flow programming/ (DFP) paradigm.  As such, consist of
+a /graph/ of /vertices/ of computational units or /nodes/ which are
+connected by /edges/ which supply a node with input data or accept
+output data.
+
+A graph node is structured in the following layers.  From outermost to
+innermost:
+
+- executor :: provides for the execution model of the application.  It
+              is an adapter between the top-level data interconnects
+              (graph edges) of the execution model and the next, lower layer.
+
+- processor :: provides a common interface between the executor and
+               whatever interface the next, lower layer requires.  The
+               interface with the executor makes the processor
+               independent from the overall execution model.
+
+- implementation :: the lowest later is the actual implementation.
+                    The implementation is made as a concrete subclass
+                    of a Wire Cell abstract interface.
+                    Implementations must not make assumptions as to
+                    the overall execution model and in particular must
+                    not access outside resources in a thread-unsafe
+                    manner.
+
+Code external to the nodes are responsible for constructing these
+layers and connecting them and driving overall data flow.  See
+[[Execution Models]] for what Wire Cell provides.
+
+* Wire Cell Node Implementations
+
+Every Wire Cell node is of a particular type which identifies its
+input and output data and its intended behavior.  Actual node
+implementation (lowest level) is done by inheriting from a
+corresponding Wire Cell interface class.  If any internal buffering is
+required by the implementation it must follow the buffering protocol
+described below.
+
+* Wire Cell Processors and Data Flow Protocol.
+
+A Wire Cell processor is an adapter between the execution model and
+the node implementation.  It presents a uniform interface to that
+execution model across all node types.  Regardless of the execution
+model internally if follows a fully synchronous execution model.  In
+principle, the node implementation can be coded directly in a
+processor class but Wire Cell provides interface classes which
+correspond to Wire Cell node types form which implementations may
+inherit.
+
+** Processor method interface
+
+A processor is defined through a number of methods.  All are optional
+with defaults provided by the base class =WireCell::IProcessor=.
+
+*** Initialize and finalize
+
+For convenience to the processors, the methods:
+
+#+BEGIN_SRC c++
+void initialize();
+void finalize();
+#+END_SRC
+
+will be called before any data flows and after all data has been fully
+exhausted, respectively.  They default to no-ops.
+
+*** Input and output
+
+A processor provides zero or more data /ports/.  Ports can either
+accept input data or produce output data.  Ports are identified by an
+index with an interpretation that is specific to each particular node
+type.  The port index of input and output ports need not have any
+correspondence.
+
+Data I/O through ports is strictly synchronous.  The controlling
+executor will "push" data into input ports and will "pull" data out of
+output ports.  In both cases, the processor is meant to react to these
+actions and can not make assumptions as to the order in which they
+will occur.  Data object I/O through the ports are embodied by the
+methods:
+
+#+BEGIN_SRC c++
+bool input(const boost::any& data, int port);
+bool output(boost::any& data, int port);
+#+END_SRC
+
+The first must return =true= if the input was accepted by the
+processor and =false= otherwise.  Likewise, the second must return
+=true= if the returned data object was set and =false= otherwise.  The
+default implementation is to return =false=.
+
+See [[Data]] for description of the =data= argument and [[Internal Buffering]]
+for an understanding of how the return values are interpreted by the
+executor layer..
+
+*** Reset
+
+If the processor implements the method:
+
+#+BEGIN_SRC c++
+void reset();
+#+END_SRC
+
+it will be informed that the current data flow is immediately invalid
+and that any internal buffers should be unconditionally purged.  The
+data stream may or may not restart.
+
+** Data
+
+Any particular data object is conceptually produced by one node and
+consumed by another.  Nodes are free to pass a data object through
+from input port to output port but crossing a port boundary implies a
+copy.  
+
+Data objects are passed in and out of nodes as =boost::any=.  It is up
+to the processor to do any required routing and casting between the
+processor and its implementation layer.
+
+** End of Input
+
+Data streams are allowed to begin and end multiple times within one,
+overall application run.  In addition to an exceptional interruption
+leading to a reset as described above, an /end of input/ (EOI)
+condition can occur when all input has been naturally exhausted.  
+
+EOI condition is indicated by the =any::empty= method on the data
+object returning =true=.  When this is encountered the process must do
+two things:
+
+1) Drain and process any internal buffers and queue them for output.
+
+2) Arrange for a final empty =any= object to be output after any
+   remaining data has been sent out.
+
+
+
+* Execution Models
+
+Independent of the conceptual graph of exeuctor/processor nodes is the
+execution model that drives data through the graph.  Two execution
+models are provided by Wire Cell: a synchronous "pull" and one which
+supports multiprocessor, parallel execution with buffered queues.
+
+A particular model is implemented as a set of adaptive wrappers called
+/executors/ around the processors which implement some sort of
+connection between their ports.
+
+** Synchronous Pull
+
+The "synchronous pull" execution model runs the entire Wire Cell
+application in a single execution thread.  Connections between
+executors are formed by Boost signals/slots.  When an executors slot
+is called it will call its processors =source()=.  If successful
+(=true= returned), the slot will return the data.  If failed, it will
+call its signals (attached to executors providing input) and feed the
+results to its processor.  This is repeated until its processors
+=source()= succeeds.
+
+** Asynchronous Parallel
+
+The "asynchronous parallel" execution model runs each executor in its
+own thread.  Connections between executors are via thread-safe data
+queues.  Executors read from input queues in a blocking manner.  When
+data is returned it is fed into its processor.  Then, all =source()=
+methods are called and any successful will have the resulting data fed
+into the executor's corresponding output queue.
+
+* Buffering Issues
+
+There are several areas where buffering may occur in a Wire Cell
+application.  
+
+** Internal Buffering
+
+The processor or the implementation may buffer input or output as
+data.  The return values of the =input()= and =output()= methods of a
+processor are interpreted by the executor in the following manner:
+
+- a =false= on output is interpreted to mean the processor is starved.
+  The executor attempts to feed more data.
+
+- a =false= on =input()= is interpreted to mean the processor
+   buffering is full.  The data is held by the executor and =output()=
+   is called.  
+
+- a =false= on =input()= directly following a =false= on =output()= is
+  interpreted as a deadlock.
+
+** Execution Buffering
+
+The implementation of the execution model may have its own buffering.
+In the case of the async-parallel model there are thread-safe data
+queues connecting the executors.  They are filled based on which
+executors have ran in the recent past.  The scheduling of these
+executors is at the whim of the parallel thread scheduler.
+
+The sync-pull model has a transient buffer of most one data object as
+it passes from an output processor port, out of its executor and to
+the downstream executor and the input port of its processor.
+
+Regardless of the nature of buffering the following must be satisfied:
+
+- During nominal running, data entering a buffer must eventually exit
+  the buffer (no leaky buffers).
+
+- As an exception and on notice of reset, buffers must be
+  unconditionally purged.
+
+- Data returned by a processor or an executor must not be retained in
+  the originating buffer (no data duplication).
+
+- Input buffers must be fully drained to output when [[End of Input]]
+  condition is reached.
+
+

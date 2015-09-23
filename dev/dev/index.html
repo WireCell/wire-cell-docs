@@ -96,6 +96,9 @@
         
             <ul>
             
+                <li class="toctree-l3"><a href="#developer-activities">Developer activities</a></li>
+                
+            
                 <li class="toctree-l3"><a href="#build-dancing">Build Dancing</a></li>
                 
             
@@ -238,46 +241,56 @@
           <div role="main">
             <div class="section">
               
-                <div class="toc">
-<ul>
-<li><a href="#build-dancing">Build Dancing</a></li>
-<li><a href="#debug">Debug</a></li>
-<li><a href="#new-packages">New packages</a><ul>
-<li><a href="#considerations">Considerations</a></li>
-<li><a href="#source-package-conventions">Source Package Conventions</a></li>
-<li><a href="#build-packages">Build packages</a></li>
-</ul>
-</li>
-<li><a href="#namespaces">Namespaces</a></li>
-<li><a href="#dealing-with-git-submodules">Dealing with git submodules</a></li>
-</ul>
-</div>
-<p>Here is what you will do in the act of developing code.</p>
+                <h1 id="developer-activities">Developer activities</h1>
+<p>This section describes details of how to develop.</p>
 <h1 id="build-dancing">Build Dancing</h1>
-<p>To rebuild after hacking on the source just type:</p>
-<pre><code class="bash">$ waf
+<p>It is useful to define an alias to the <code>wcb</code> command:</p>
+<pre><code class="bash">$ cd wire-cell-build/
+$ alias wcb=`pwd`/wcb
 </code></pre>
 
-<p>When ready to install into the configured “prefix” installation area:</p>
-<pre><code class="bash">$ waf install
+<p>To rebuild after hacking on the source just type:</p>
+<pre><code class="bash">$ wcb
+</code></pre>
+
+<p>When ready to install into the configured ``prefix'' installation area.  It is good to always do this as explicitly, by-hand running tests will link against libraries found in your environment which likely means where you are installing.</p>
+<pre><code class="bash">$ wcb install
 </code></pre>
 
 <p>To force a full rebuild:</p>
-<pre><code class="bash">$ waf clean build
+<pre><code class="bash">$ wcb clean build
 </code></pre>
 
-<p>To limit building to just one submodule:</p>
+<p>To blow away all build and configuration products:</p>
+<pre><code class="bash">$ wcb distclean
+$ wcb --prefix=.... [...] configure
+</code></pre>
+
+<p>To limit building to just one submodule (and its dependencies):</p>
 <pre><code class="bash">$ cd &lt;subdir&gt;/
-$ waf
+$ wcb
+</code></pre>
+
+<p>To avoid running tests:</p>
+<pre><code class="bash">$ wcb --notests install
+</code></pre>
+
+<p>To list build targets and build a specific one:</p>
+<pre><code class="bash">$ wcb list
+$ wcb --target test_cpp
 </code></pre>
 
 <h1 id="debug">Debug</h1>
-<p>To build for debugging one needs to reconfigure waf with a <code>--build-debug=&lt;flags&gt;</code> option and then the project must be cleaned and rebuilt. This can be done all at once like:</p>
-<pre><code class="bash">$ waf --prefix=/path/to/install --build-debug=-ggdb3 clean configure build install
+<p>To build for debugging one needs to reconfigure waf with a
+<code>--build-debug=&lt;flags&gt;</code> option and then the project must be cleaned
+and rebuilt. This can be done all at once like:</p>
+<pre><code class="bash">$ wcb --prefix=/path/to/install --build-debug=-ggdb3 clean configure build install
 </code></pre>
 
-<p>You may also want to see what commands Waf is actually running to confirm this option is transmitted, just add a <code>-v</code> to the command line:</p>
-<pre><code class="bash">$ waf -v
+<p>You may also want to see what commands Waf is actually running to
+confirm this option is transmitted, just add a <code>-v</code> to the command
+line:</p>
+<pre><code class="bash">$ wcb -v
 </code></pre>
 
 <p>Finally, run GDB in your usual, preferred manner:</p>
@@ -286,22 +299,31 @@ $ waf
 </code></pre>
 
 <h1 id="new-packages">New packages</h1>
-<p>New wire-cell packages can be added easily.</p>
+<p>New packages can be added to Wire Cell easily.</p>
+<p>Violating the dependency contracts among the existing packages is
+strictly forbidden.</p>
 <h2 id="considerations">Considerations</h2>
-<p>Wire Cell packages are organized to be easy to create. It's much better to create many small packages and maybe later merge them than it is to split apart ones which have grown too monolithic. When thinking about writing some code consider</p>
+<p>Wire Cell packages are organized to be easy to create. It's much
+better to create many small packages and maybe later merge them than
+it is to split apart ones which have grown too monolithic. When
+thinking about writing some code consider</p>
 <ul>
 <li>What other packages will I need?</li>
 <li>What future packages will need mine?</li>
 </ul>
-<p>You may have an idea for a package but in reality it is better split up into others. Here are reasons to believe your ideas fit into multiple packages:</p>
+<p>You may have an idea for a package but in reality it is better split
+up into others. Here are reasons to believe your ideas fit into
+multiple packages:</p>
 <ul>
 <li>When I describe my expected package functionality I use the word "and".</li>
 <li>Some other package should use part of my package but the other part is not needed.</li>
 </ul>
-<p>If in doubt, make more, smaller packages.</p>
+<p>If in doubt, make more, smaller packages (and talk to the devs).</p>
 <h2 id="source-package-conventions">Source Package Conventions</h2>
-<p>To make them easy to build and aggregate they must follow a layout convention.</p>
-<p>First, each source package should be kept in it's own git repository. The recommended package naming convention is:</p>
+<p>To make them easy to build and aggregate they must follow a layout
+convention.</p>
+<p>First, each source package must be kept in it's own git
+repository. The recommended package naming convention is:</p>
 <pre><code>wire-cell-NAME
 </code></pre>
 
@@ -316,23 +338,42 @@ python/NAME      # python modules (todo: not yet supported)
 wscript_build    # a brief waf file
 </code></pre>
 
-<p>The <code>wscript_build</code> file specifies a name for the binary package (in general similar but not identical to the source package name) and a list of any other packages part of the wire-cell system on which it depends. For example the <code>wire-cell-nav</code> source package builds to a <code>WireCellNav</code> binary package and it depends on the WireCellData package and so its <code>wscript_build</code> file is:</p>
-<pre><code>bld.make_package('WireCellNav', use='WireCellData')
+<p>The <code>wscript_build</code> file specifies a name for the package which is
+generally the CamelCase version of the source package name.  It also
+specifies a list Wire Cell and external package dependencies.</p>
+<p>For example the <code>wire-cell-iface</code> source package build a
+<code>WireCellIface</code> binary package with a <code>libWireCellIface.so</code> library
+headers under <code>WireCellIface/</code>.  It depends on the <code>wire-cell-util</code>
+source package which builds <code>WireCellUtil</code>.  Thus its <code>wscript_build</code>
+file is:</p>
+<pre><code>bld.simplpkg('WireCellIface', use='WireCellUtil')
 </code></pre>
 
-<p>This is Python and the <code>bld</code> object is a Waf build context. It is provided automagically when waf interprets this file.</p>
+<p>This is Python and the <code>bld</code> object is a Waf build context. It is
+provided automagically when waf interprets this file.</p>
 <h2 id="build-packages">Build packages</h2>
-<p>The above is about code packages. Code packages are built via a build package. This build package, <code>wire-cell</code> is but one possible "view" into all the wire cell packages. Other build packages may be created which only build some sub-set of all wire cell packages.</p>
-<p>To add a new code package to a build package (such as this one) one must do a little, annoying dance:</p>
+<p>The above is about <em>code packages</em>. Code packages are built via a
+<em>build package</em>. This main build package, <code>wire-cell-build</code> is but one
+possible "view" into all the wire cell packages. Other build packages
+may be created which only build some sub-set of all wire cell
+packages.</p>
+<p>To add a new code package to a build package (such as this one) one
+must do a quick little dance:</p>
 <pre><code>$ mkdir &lt;name&gt;
 $ cd &lt;name&gt;/
-$ echo &quot;bld.make_package('WireCell&lt;Name&gt;', use='WireCellNav WireCellData')&quot; &gt; wscript_build
+$ echo &quot;bld.smplpkg('WireCell&lt;Name&gt;', use='WireCellUtil WireCellIface')&quot; &gt; wscript_build
 $ git init
 $ git commit -a -m &quot;Start code package &lt;name&gt;&quot;
 </code></pre>
 
-<p>Replace <code>&lt;name&gt;</code> with your package name. And, of course, you may want to put more code than just the <code>wscript_build</code> file. Also, that file should list what packages your package depends on.</p>
-<p>Now, make a new repository by going to the <a href="https://github.com/WireCell">WireCell GitHub</a> and clicking "New repository" button. Give it a name like <code>wire-cell-&lt;name&gt;</code>. Copy-and-paste the two command it tells you to use:</p>
+<p>Replace <code>&lt;name&gt;</code> with your package name. And, of course, you may want
+to put more code than just the <code>wscript_build</code> file. Also, that file
+should list what packages your package depends on.</p>
+<p>Now, make a new repository by going to the
+<a href="https://github.com/WireCell">WireCell GitHub</a> and clicking "New
+repository" button. Give it a name like
+<code>wire-cell-&lt;name&gt;</code>. Copy-and-paste the two command it tells you to
+use:</p>
 <pre><code class="bash">$ git remote add origin git@github.com:WireCell/wire-cell-&lt;name&gt;.git
 $ git push -u origin master
 </code></pre>
@@ -346,10 +387,21 @@ $ git commit -a -m &quot;Added &lt;name&gt; to top-level build package.&quot;
 $ git push
 </code></pre>
 
-<p>Whew!</p>
+<p>Whew!  Not bad, and you only need to do this dance with brand new packages once.</p>
 <h1 id="namespaces">Namespaces</h1>
-<p>The namespace WireCell is used for all "core" wire cell code. Code that is used to glue this core functionality into other systems may use another namespace but should not use WireCell. For example, the "simple simulation tree" uses <code>WireCellSst</code>.</p>
-<p>It can be tedious to type explicit namespace qualifiers all the time. You can use the using namespace WireCell; directive where in implementation files (*.cxx) but you should never use it in (top-scope) of header files as it will then leak the contents of the namespace into any unsuspecting file that #include’s it.</p>
+<p>The namespace <code>WireCell</code> is used for all "core" wire cell code.  Code
+which is optional or for interfacing with external systems must not
+exist inside <code>WireCell</code>.  For example, the "simple simulation tree"
+uses <code>WireCellSst</code>.</p>
+<p>It can be tedious to type explicit namespace qualifiers all the
+time. You may use the directive</p>
+<pre><code class="C++">// only in .cxx files!
+using namespace WireCell;
+</code></pre>
+
+<p>in order to avoid this typing.  However you may <strong>only</strong> use this in
+implementation files (<code>*.cxx</code>) and you may <strong>never</strong> use it in
+(public) header files.</p>
 <h1 id="dealing-with-git-submodules">Dealing with git submodules</h1>
 <p>From <a href="http://git-scm.com/book/en/v2/Git-Tools-Submodules#Working-on-a-Project-with-Submodules">the git book</a>, do you updates like:</p>
 <pre><code>$ git submodule update --remote --rebase

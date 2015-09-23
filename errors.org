@@ -1,0 +1,27 @@
+
+* Forgot to link up some slot to some signal
+
+Calling a Boost signal returns a slot a =boost::optional=.  If the program never connects a slot to the signal and dereferences  =optional= object returned by the signal without testing it then a run-time error like the following will occur:
+
+#+BEGIN_EXAMPLE
+test_framer: /opt/bv/projects/wire-cell/install/include/boost/optional/optional.hpp:1025: boost::optional<T>::reference_type boost::optional<T>::get() [with T = std::shared_ptr<const WireCell::IDepo>; boost::optional<T>::reference_type = std::shared_ptr<const WireCell::IDepo>&]: Assertion `this->is_initialized()' failed.
+#+END_EXAMPLE
+
+The solution is to fix the code to actually connect a slot to the signal.
+
+* Trying to copy a signal
+
+A =boost::signal= can not be copied.  If some object has a signal in its inheritance chain and does nothing special about it then that object also can not be copied.
+
+Attempting to copy a Boost signal will give a compile-time error like:
+
+#+BEGIN_EXAMPLE
+../gen/test/test_framer.cxx:40:7: error: use of deleted function [...]
+#+END_EXAMPLE
+
+One simple solution is to wrap the signal (or signal-owning object) in a =boost::ref()= at the site of the copy.
+
+#+BEGIN_SRC c++
+// Connect driftse0 to signal in pdse0 but driftse0 itself has a boost::signal
+pdse0.connect(boost::ref(driftse0));
+#+END_SRC

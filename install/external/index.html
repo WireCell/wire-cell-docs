@@ -74,12 +74,12 @@
         
             <ul>
             
-                <li class="toctree-l3"><a href="#manual-installation-of-externals">Manual installation of externals</a></li>
+                <li class="toctree-l3"><a href="#external-packages">External Packages</a></li>
                 
             
-                <li class="toctree-l3"><a href="#automated-installation-with-worch">Automated installation with Worch</a></li>
+                <li class="toctree-l3"><a href="#automated-installation-of-externals-with-worch">Automated installation of externals with Worch</a></li>
                 
-                    <li><a class="toctree-l4" href="#quickstart">Quickstart</a></li>
+                    <li><a class="toctree-l4" href="#quick-start">Quick start</a></li>
                 
                     <li><a class="toctree-l4" href="#preparing-worch">Preparing Worch</a></li>
                 
@@ -234,38 +234,21 @@
           <div role="main">
             <div class="section">
               
-                <div class="toc">
-<ul>
-<li><a href="#manual-installation-of-externals">Manual installation of externals</a></li>
-<li><a href="#automated-installation-with-worch">Automated installation with Worch</a><ul>
-<li><a href="#quickstart">Quickstart</a></li>
-<li><a href="#preparing-worch">Preparing Worch</a><ul>
-<li><a href="#install-worch-in-virtualenv">Install Worch in Virtualenv</a></li>
-<li><a href="#install-worch-in-user-dir">Install Worch in user dir</a></li>
-<li><a href="#wire-cell-worch-configuration">Wire-Cell Worch Configuration</a></li>
-</ul>
-</li>
-<li><a href="#build">Build</a></li>
-<li><a href="#install">Install</a><ul>
-<li><a href="#install-to-nameversion-tree">Install to name/version tree</a></li>
-<li><a href="#single-rooted-install">Single-rooted install</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#racf-setup">RACF Setup</a></li>
-</ul>
-</div>
-<p>The <code>wire-cell</code> software in <a href="https://github.com/WireCell">Wire Cell GitHub</a> depends on some software that may not come with your OS, in particular <a href="http://root.cern.ch">ROOT</a> v6 and a compiler supports C++11/14.</p>
+                <h1 id="external-packages">External Packages</h1>
+<p>The <code>wire-cell</code> software in
+<a href="https://github.com/WireCell">Wire Cell GitHub</a> depends on some
+software that may not come with your OS, in particular
+<a href="http://root.cern.ch">ROOT</a> v6 and a compiler supports C++11/14.</p>
 <p>You can provide the prerequisites as you wish or you can make use of the provided <a href="https://github.com/brettviren/worch">Worch</a>-based automation to build the prerequisites from source.</p>
-<h1 id="manual-installation-of-externals">Manual installation of externals</h1>
-<p>This is left as an excercise to the reader.</p>
-<h1 id="automated-installation-with-worch">Automated installation with Worch</h1>
-<p>This method will automatically build the necessary packages from
-source.  It requires some initial manual preparation followed by
-unattended, if lengthy, building.</p>
-<h2 id="quickstart">Quickstart</h2>
-<p>If you don’t care what this does, just cut and paste.  If something "doesn't work" then read the subsequent sections.</p>
+<h1 id="automated-installation-of-externals-with-worch">Automated installation of externals with Worch</h1>
+<p>The Wire Cell software requires external packages of correct versions
+as described <a href="../install">here</a> but does not require them to be installed
+in any particular manner.</p>
+<p>A <a href="https://github.com/brettviren/worch/">Worch</a> build orchestration
+configuration is provided which will allow automated installation of
+the required externals.</p>
+<h2 id="quick-start">Quick start</h2>
+<p>The build may be as simple as:</p>
 <pre><code class="bash">$ virtualenv /path/to/buildenv
 $ source /path/to/buildenv/bin/activate
 $ pip install worch
@@ -288,8 +271,9 @@ $ python -c 'import ROOT; print ROOT.gROOT.GetVersion()'
 6.02/05
 </code></pre>
 
-<p>More details and build options are described in the following sections.</p>
 <h2 id="preparing-worch">Preparing Worch</h2>
+<p>More details on the Worch automation and build options are described
+in the following sections.</p>
 <h3 id="install-worch-in-virtualenv">Install Worch in Virtualenv</h3>
 <p>It is recommended to install the Worch build orchestration system into a Python virtual environment. This environment will be used only for building these externals.</p>
 <pre><code class="bash">$ virtualenv /path/to/buildenv
