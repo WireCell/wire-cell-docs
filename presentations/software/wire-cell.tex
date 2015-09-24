@@ -53,11 +53,55 @@ for LArTPC Detectors}
                 morecomment=[l][\color{magenta}]{\#}
 }
 
-\section {Physics Context}
+\section {Introduction}
 
 \begin{frame}
-  \frametitle{}
-  
+  \frametitle{Who, What, Why}
+
+  \begin{description}
+  \item[who] \textbf{Wire Cell} development is centered in the
+    \textbf{Electronic Detector Group}, of the \textbf{BNL Physics
+      Department}.
+  \item[what] Our focus is the experimental study of the properties of
+    \textbf{neutrinos} and \textbf{muons}.
+  \item[why] Our neutrino detectors are \textbf{Liquid Argon Time
+      Proportion Chambers} (LArTPC), a technology \textbf{pioneered by
+      BNL} since 1974.
+  \end{description}
+  Main Physics interests:
+  \begin{itemize}
+  \item Observe CP symmetry violation in neutrino interactions.
+  \item Determination of neutrino mass ordering.
+  \item Precision measurement of neutrino oscillation parameters.
+  \item Observation of neutrino bursts from supernova explosions.
+  \item Search for Proton decay and sterile neutrino.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Why LArTPC}
+  Measuring neutrino interactions require detectors that are:
+  \begin{description}\footnotesize
+  \item[big] active mass of \num{10} -- \SI{100}{\kilo\tonne}'s to
+    mitigate tiny neutrino interaction cross sections.
+  \item[efficient] capture of neutrino interactions
+  \item[accurate] measure of energy, neutrino flavor and interaction type (ie, very good signal
+    vs. background).
+  \item[quiet] low background environment shielded against
+    cosmic-$\mu$ and natural radioactivity, $\Rightarrow$ deep
+    underground + active shielding.
+  \end{description}
+
+  Two main technologies:
+  \begin{description}\footnotesize
+  \item[Water Cherenkov] big++, efficient++, accurate+, quiet+\\
+    simple understood technology modest S/B.
+  \item[LArTPC] big+, eficient++, accurate++, quiet++, \\
+    R\&D still improving, excellent future potential.
+  \end{description}
+
+  Many challenges still to overcome, but LArTPC's promises make it the
+  chosen technology for future Neutrino experiments in the US.
 \end{frame}
 
 \begin{frame}
@@ -68,7 +112,8 @@ for LArTPC Detectors}
       \begin{itemize}
       \item Two \SI{300}{\tonne} modules in Gran Sasso tunnel, Italy.
       \item Took data from CERN neutrino beam.
-      \item Moving to Fermilab for short-baseline neutrino program.
+      \item Moving to Fermilab as part of the \textbf{Short-Baseline
+        Neutrino} Program.
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
@@ -78,7 +123,7 @@ for LArTPC Detectors}
 \end{frame}
 
 \begin{frame}
-  \frametitle{LArTPC Experiments - MicroBoone}
+  \frametitle{LArTPC Experiments - MicroBooNE}
 
   \begin{columns}
     \begin{column}{0.5\textwidth}
@@ -92,7 +137,7 @@ for LArTPC Detectors}
       \item \SI{85}{\tonne} fiducial mass.
       \item 8256 channels
       \item 3 mm wire pitch.
-      \item Investigate LSND-effect, look for sterile-$\nu$, $\nu$-Ar
+      \item Investigate LSND-effect, look for sterile-$\nu$, measure $\nu$-Ar
         cross sections.
       \end{itemize}
     \end{column}
@@ -102,27 +147,40 @@ for LArTPC Detectors}
     Just started taking data at Fermilab!    
   \end{center}
 
+  MicroBooNE is the initial test bed for Wire Cell reconstruction.
+
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{LArTPC Experiments - \includegraphics[height=7mm,trim=4cm 9.2cm 4cm 9.3cm,clip,valign=c]{DUNElogo_colorHORIZONTAL.pdf}}
-  \begin{itemize}\footnotesize
-  \item \SI{35}{\tonne} prototype (at FNAL) commissioning now, running early 2016.
-  \item Full-scale ``protoDUNE'' (at CERN) 2017 with $\pi, K, p$ beam tests.
-  \item Full far detector to be underground in South Dakota $\sim$2025.
-    \begin{itemize}
-    \item \SI{40}{\kilo\tonne} fiducial mass in 4 modules.
-    \item 5 mm wire pitch, 1.5M channels.
-    \item \textbf{CP-violation, proton decay, supernovae neutrino bursts}.
-    \end{itemize}
-  \item Underground construction forces added complication of wrapped
-    induction wires and two sided anode planes.
-  \end{itemize}
-
   \begin{center}
-    \includegraphics[height=3cm]{LBNF_Graphic_021715-1024x340.png}
+    ``International \textbf{mega-science} project''
   \end{center}
 
+  Three stages of LArTPC detectors:
+  \begin{enumerate}\footnotesize
+  \item ``\textbf{35ton}'' prototype (at FNAL) commissioning now, running early 2016.
+  \item Full-scale ``\textbf{protoDUNE}'' (at CERN) 2017 with $\pi, K, p$ beam tests.
+  \item Full ``\textbf{DUNE}'' far detector underground in South Dakota $\sim$2025.
+    \begin{itemize}
+    \item \textbf{40 kt fiducial mass} in 4 modules.
+    \item 5 mm wire pitch, \textbf{1.5M channels}.
+    \end{itemize}
+  \end{enumerate}
+  Full DUNE: \textbf{underground + size} $\Rightarrow$ must design for: \textbf{wrapped
+    induction wires} and \textbf{two sided anode planes}.\\
+  $\rightarrow$ extra challenges to event reconstruction!
+
+  \begin{center}
+    \includegraphics[height=25mm]{LBNF_Graphic_021715-1024x340.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \begin{center}
+    Next: primer on how LArTPC works.
+  \end{center}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -189,6 +247,50 @@ for LArTPC Detectors}
       OTOH, Wire Cell goes directly to 3D imaging.}
 
   \end{minipage}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Data Numerology}
+  
+  \vspace{-10mm}
+
+  \begin{columns}
+    \begin{column}{0.8\textwidth}
+      LArTPC can produce prodigious quantities of data:
+      \begin{itemize}
+      \item $10^4$ -- $10^6$ channels
+      \item 2MHz @ 12 bit FADC digitization
+      \item each ``event'' spans several milliseconds
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.2\textwidth}
+      \begin{center}
+        \includegraphics[width=\textwidth,trim=13cm 0cm 0cm 0cm,clip]{signal-15.png}
+
+        \scriptsize \SI{0.5}{\micro\second} waveform digitization.
+      \end{center}
+    \end{column}
+  \end{columns}
+
+  \vspace{-5mm}
+
+  \footnotesize
+  Two DAQ modes:
+  \begin{description}
+  \item[full-stream] read out entire waveform (\textbf{MicroBooNE})
+    \begin{itemize}
+    \item \textbf{30GB/s in 120 MB chunks}.
+    \item DUNE would produce 3TB/s in 12 GB chunks.
+    \end{itemize}
+  \item[zero-supression] drop waveform chunks below a threshold (\textbf{DUNE})
+    \begin{itemize}
+    \item Threshold based on noise ($E_{equiv} <$\SI{0.5}{\mega\electronvolt})
+    \item 2.5 MB/event $\rightarrow$ \textbf{100's TB/year}
+    \item 50 PB/year if $^{39}$Ar decay backgrounds can not be
+      rejected by DAQ.
+    \end{itemize}
+  \end{description}
 
 \end{frame}
 
@@ -500,19 +602,31 @@ for LArTPC Detectors}
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \begin{center}
-        \includegraphics[width=\textwidth]{payoff-true.png}
+        \includegraphics[width=\textwidth,trim=0cm 10cm 0cm 0cm,clip]{payoff-true.png}
 
         True energy depositions.
       \end{center}
     \end{column}
     \begin{column}{0.5\textwidth}
       \begin{center}
-        \includegraphics[width=\textwidth]{payoff-reco.png}
+        \includegraphics[width=\textwidth,trim=0cm 10cm 0cm 0cm,clip]{payoff-reco.png}
 
-        Blob-level reconstruction.
+        Wire Cell imaging.
       \end{center}
     \end{column}
   \end{columns}
+  \footnotesize
+  \begin{itemize}
+  \item Excellent imaging of major track features as well as isolated
+    activity.
+    \begin{itemize}\scriptsize
+    \item[$\rightarrow$] a static 2D view doesn't do it justice!  \href{http://www.phy.bnl.gov/wire-cell/bee/set/6/event/0/}{See it for yourself.}
+    \end{itemize}
+  \item Remaining ambiguity seen as wide blue patches.
+    \begin{itemize}\scriptsize
+    \item[$\rightarrow$] inherent in LArTPC technology, Wire Cell makes it evident.
+    \end{itemize}
+  \end{itemize}
 \end{frame}
 
 
@@ -536,7 +650,10 @@ for LArTPC Detectors}
   \item[undefined] no well-suited categorization.
   \end{description}
 
-  This is an active area of development.
+  \begin{itemize}
+  \item Active area of Wire Cell development.
+  \item May benefit from collaboration with machine learning experts. 
+  \end{itemize}
 
 \end{frame}
 
@@ -573,7 +690,7 @@ for LArTPC Detectors}
   \item[visualization] the ``Bee'' web application (Chao Zhang)
   \item[prototype] reconstruction algorithms, initial proof of
     principle (Xin Qian)
-  \item[toolkit] production toolkit (bv)
+  \item[toolkit] ``production'' toolkit for LArTPC reconstruction (bv)
   \end{description}
 
 \end{frame}
@@ -587,9 +704,10 @@ for LArTPC Detectors}
   \begin{itemize}
   \item Displays results of different reconstruction algorithms.
   \item Shows ``true'' particle trajectories from simulation.
-  \item Very good for developers to compare and debug and users to
-    gain Physics intuition.
-  \item Implemented as JavaScript/WebGL front-end and Django back-end.
+  \item Very good for developers to debug and compare different
+    methods and for users to gain Physics/LArTPC intuition.
+  \item Implemented as \textbf{JavaScript/WebGL} front-end and
+    \textbf{Django} back-end.
   \item Works on popular desktop and mobile browsers.
   \item Requires hardware WebGL support.
   \item JSON data file format, easy to implement schema.
@@ -600,78 +718,101 @@ for LArTPC Detectors}
   \end{itemize}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Bee: Select and upload event sets}
   \begin{center}
-    \includegraphics[height=0.8\textheight]{bee-event-sets-page.png}    
-  \end{center}
-\end{frame}
-\begin{frame}
-  \frametitle{Interactive 3D visualization}
-  \begin{center}
-    \includegraphics[height=0.8\textheight]{bee-full-gui.png}    
+    \includegraphics[height=0.8\textheight]{bee-event-sets-page.png}
+
+    \vspace{-3cm}
+    \flushright \footnotesize Simple JSON format\\
+    \includegraphics[width=3cm]{json-data.png}
   \end{center}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Bee: Online Demo}
+  \frametitle{Interactive 3D visualization}
   \begin{center}
-    \url{http://www.phy.bnl.gov/wire-cell/bee/}
+    \includegraphics[height=0.7\textheight]{bee-full-gui.png}    
+  \end{center}
+  \begin{center}
+    Try it yourself! \url{http://www.phy.bnl.gov/wire-cell/bee/}
   \end{center}
 \end{frame}
+
 
 \subsection{Prototype}
 
 \begin{frame}
   \frametitle{Wire Cell Working Prototype}
   \footnotesize
-  The prototype:
+
   \begin{itemize}
   \item \textbf{Very successful proof of principle!}
   \item Currently \textbf{leads the state of the art} in LArTPC
     reconstruction techniques.
   \item Amazingly fast development (\textbf{Xin Qian}!)
+    \begin{itemize}\scriptsize
+    \item[$\rightarrow$] Work started only $\sim$5 months ago!
+    \end{itemize}
   \end{itemize}
-  Some compromises:
+
+  \begin{center}
+    \includegraphics[height=0.5\textheight,trim=0cm 0cm 0cm 2cm,clip]{xin-shower.png}
+
+    \scriptsize
+    Colors indicate identified tracks and showers.
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Compromises to Remedy}
+
+  Some compromises were accepted for the rapid prototype and now need
+  ``back-filling''.  Need to remedy:
+
   \begin{itemize}
-  \item Avoid support for long-term, multi-developer contributions.
+  \item No support for long-term, multi-developer contributions.
   \item Many monolithic, single-threaded applications.
-  \item Some hard-coded ``magic'' numbers, lack of configuration.
-  \item Rigid code structure, hard-coded workflows.
-  \item Integrate with external frameworks via exchange files.
-  \item Some spot CPU/memory optimization, expect more improvement.
-  \item Some high-level tests but lack of granular coverage.
-  \item Intimate dependency on ROOT\footnote{\url{https://root.cern.ch/}}.
+  \item Hard-coded ``magic'' numbers.
+  \item Rigid code structure and hard-coded workflows.
+  \item Exchange files are only integration with external frameworks.
+  \item Need comprehensive CPU/memory optimization campaign.
+  \item Some tests but better coverage/granularity needed.
+  \item Intimate dependency on the large
+    ROOT\footnote{\url{https://root.cern.ch/}} toolkit.
   \end{itemize}
+
+  Decision: rewrite rather than refactor $\longrightarrow$
   
-  The ``production'' toolkit attempts to address these issues
 \end{frame}
 
 \subsection{Toolkit}
 
 \begin{frame}
   \frametitle{Wire Cell Toolkit}
-      
   \begin{columns}
-    \begin{column}{0.6\paperwidth}
+    \begin{column}{0.65\paperwidth}
     \end{column}
-    \begin{column}{0.4\paperwidth}
+    \begin{column}{0.35\paperwidth}
       \vspace{-20mm}
       \includegraphics[width=\textwidth]{deps.pdf}      
     \end{column}
   \end{columns}
 
-  \vspace{-10mm}
+  \vspace{-15mm}
 
   High level overview:
   \begin{itemize}
-  \item Software \textbf{packaging and build} system.
+  \item Includes \textbf{packaging and build} system.
   \item Comprehensive \textbf{API} via abstract base classes.
-  \item Wire and cell \textbf{geometry} descriptions.
-  \item Simple LArTPC detector \textbf{simulation}.
-  \item Refactored implementation of \textbf{prototype algorithms}.
-  \item Abstracted \textbf{execution model}.
-  \item Support for internal and external \textbf{file I/O}.
+  \item Mindful of \textbf{dependencies}, external and internal.
+  \item Built-in wire and cell \textbf{geometry descriptions} or load from file.
+  \item Includes simple \textbf{LArTPC detector simulation}.
+  \item Refactored implementations of core \textbf{prototype algorithms}.
+  \item Abstracted \textbf{execution model}, step towards parallelism.
+  \item Support for native and foreign \textbf{file I/O}.
+  \item Follow ``toolkit'' software paradigm.
   \end{itemize}
 
 \end{frame}
@@ -682,7 +823,9 @@ for LArTPC Detectors}
   \begin{itemize}
   \item Code in GitHub \href{https://github.com/WireCell/}{WireCell} organization.
   \item Code aggregation with \textbf{git submodule}.
-  \item A simple, customized \href{https://waf.io/}{waf}-based build.
+  \item A simple, customized \href{https://waf.io/}{waf}-based build.\footnote{\texttt{wcb} = \texttt{waf} + extra Waf tools for Boost, ROOT, Eigen and Wire Cell packaging}
+  
+
   \end{itemize}
 
   \begin{lstlisting}{langauge=shell}
@@ -696,15 +839,12 @@ $ ./wcb --prefix=/path/to/install configure build install
 
   Builds, tests and installs:
   \begin{itemize}
-  \item shared libraries + header files,
+  \item toolkit shared libraries + header files,
   \item main applications,
   \item many unit tests,
   \item \href{http://www.phy.bnl.gov/wire-cell/doxy/html/}{Doxygen reference} and \href{http://wirecell.github.io/wire-cell-docs/}{MkDocs user documentation}.
   \end{itemize}
 
-  \scriptsize Note: \texttt{wcb} = \texttt{waf} + extra Waf tools for Boost, ROOT, Eigen
-  and Wire Cell packaging
-  
 
 \end{frame}
 
@@ -714,34 +854,45 @@ $ ./wcb --prefix=/path/to/install configure build install
   The \href{https://github.com/WireCell/wire-cell-iface}{\texttt{wire-cell-iface}} package:
 
   \begin{itemize}
-  \item Comprehensive detailed API
+  \item API composed of abstract base classes covering:
     \begin{itemize}
-    \item Data model (wires, cells, frames, slices, tracks, ...)
-    \item Active components (blob maker, matrix solver, clutering, ...)
+    \item \textbf{Data model} (wires, cells, frames, slices, tracks, ...)
+    \item \textbf{Active components} (blob maker, matrix solver, clustering, ...)
     \end{itemize}
-  \item Use of C++ \verb|shared_ptr<>| memory management.
+  \item Use of C++ \verb|shared_ptr<>| for (mostly) \textbf{worry-free memory management}.
   \item Dynamic instance lookup via \texttt{NamedFactory} pattern
-    allows for a plugin architecture.
-  \item Initial support for user configuration system based on Boost
+    allows for a \textbf{plugin architecture}.
+  \item Initial support for \textbf{user configuration} system based on Boost
     property trees.
-  \item Initial abstract execution model (more on this)
+  \item Initial support exists for an \textbf{abstract execution model}.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
+
   \frametitle{Wire Cell Simulation}
 
-  The \href{https://github.com/WireCell/wire-cell-gen}{\texttt{wire-cell-gen}} package:
-  \begin{itemize}
-  \item Simple and granular implementation of the 4 LArTPC D's:
-    deposit, drift, diffuse, digitize.
-  \item Reference implementation for external frameworks to start from.
-  \item Test bed for Wire Cell 
-    architectural/toolkit concepts
-  \item Provides on-the-fly generated input data for unit tests.
-  \end{itemize}
-
-
+  \begin{columns}
+    \begin{column}{0.75\textwidth}
+      \begin{itemize}\footnotesize
+      \item Provided by the \href{https://github.com/WireCell/wire-cell-gen}{\texttt{wire-cell-gen}} package.
+      \item Simple implementation of the 4 ``D''s of LArTPC:\\
+        \textbf{deposit, drift, diffuse, digitize}.
+      \item Granular, user may tak as little or as much as needed.
+        \begin{itemize}\scriptsize
+        \item[$\rightarrow$] Parts can be replaced by external
+          simulation, \\or bypassed entirely with real DAQ data.
+        \item[$\rightarrow$] External integration via file I/O or API calls.
+        \end{itemize}
+      \item Provides reference implementation to guide external frameworks integrator/developers.
+      \item Useful for quickly generating data to feed unit tests.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.25\textwidth}
+      \vspace{-10mm}
+      \includegraphics[width=\textwidth]{sim-flow.pdf}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -750,7 +901,7 @@ $ ./wcb --prefix=/path/to/install configure build install
   \begin{columns}
     \begin{column}{0.7\textwidth}
       \footnotesize 
-      The toolkit supports \textit{data flow programming} paradigm
+      The toolkit supports \textbf{data flow programming} paradigm
       \begin{itemize}
         \item Directly influenced by \href{http://www0.bnl.gov/events/details.php?q=8932}{CSC Seminar on VisTrails, March 2013}!
         \item Data flows through a graph made from:
@@ -758,14 +909,16 @@ $ ./wcb --prefix=/path/to/install configure build install
           \item[vertices] computational units / algorithms
           \item[edges] data queues of a given type
           \end{description}
-        \item Vtx has well defined input/output data types.
+        \item Vertex has well defined input/output data types.
         \item Edges can be thread-safe queues.
-        \item Graph-level programming.
-        \item Can minimize necessary data buffering.
-        \item Graph machinery replaceable: uniproc, multiproc, or
+        \item Streamed data, minimizing unneeded buffering.
+        \item Graph-level ``programming'' to define workflows.
+        \item Graph execution machinery swapable: uniproc, multiproc, or
           distributed (MPI) parallel.
         \item Encourages isolated, targeted development and testing of each
           compute vertex.
+        \item Feedback loops to implement iterative workflows.
+        \item Instrument graph to collect performance data.
         \end{itemize}
       \end{column}
       \begin{column}{0.3\textwidth}
@@ -779,14 +932,20 @@ $ ./wcb --prefix=/path/to/install configure build install
 
 \begin{frame}
   \frametitle{Abstract execution model}
-  Three layers for each graph vertex, outside to in:
+
+  \scriptsize Want to swap execution model while leaving ``real'' algorithm code untouched!
+
+\footnotesize
   
   \begin{columns}
     \begin{column}{0.6\textwidth}
+      Each graph vertex made from three layers.  From outside to in:
       \begin{enumerate}
       \item Execution model layer implementing data flow control
-        (eg: sync'ed load-and-flush, async, multi-processing, ...)
-      \item Adapter to abstract execution model client, calls actual algorithm.
+        \begin{itemize}\scriptsize
+        \item sync'ed load-and-flush, async, multi-processing, message-passing, ...
+        \end{itemize}
+      \item Adapter between actual algorithm and execution model ``client''.
       \item Algorithm implementation and interface unrestricted except ``no shared
         globals'' 
       \end{enumerate}
@@ -804,37 +963,57 @@ $ ./wcb --prefix=/path/to/install configure build install
   \tableofcontents[currentsection,hideothersubsections]
 \end{frame}
 
-\subsection{Bee 2.0}
+\begin{frame}\frametitle{Future Plans}
+  \begin{center}
+    ...in which I frequently beg for help : )
+  \end{center}
+\end{frame}
+
+\subsection{Algorithm Development}
 
 \begin{frame}
-  \frametitle{Current Limitations}
-  Pattern recognition stage is turning out to be ``hard''(er!)
+  \frametitle{Pattern Recognition}
+  It is turning out to be ``hard''.
+  \footnotesize
   \begin{itemize}
-  \item The problem is largely independent of Wire Cell imaging techniques.
-  \item Very large solution space with many corner cases.
-  \item Humans excel at ad-hoc, high quality, Physics-driven solutions.  But, difficult to:
-    \begin{itemize}
-    \item estimate humans' systematic uncertainies and biases.
-    \item enumerate and teach computers all these solutions.
-    \item (impossible?) to teach computers to come up with
-      solutions themselves.
+  \item Many challenges are \textbf{inherent to the LArTPC technology}.  
+    \begin{itemize}\scriptsize
+    \item[$\rightarrow$] Wire Cell has just allowed us to reach them.
     \end{itemize}
+  \item Current implementation is largely \textbf{heuristic based}
+    \begin{itemize}\scriptsize
+    \item many ``cross-algorithm assumptions''
+    \item \textbf{large solution space} with \textbf{many corner cases}.
+    \item human Physicists find good, \textbf{per-event/ad-hoc solutions}.
+    \item[$\rightarrow$] but how to teach them to the computer?
+    \end{itemize}
+  \item[$\rightarrow$] Our attempt: Bee 2.0 (next slide) 
   \end{itemize}
   
-  Probably entering an area of ``real'' computer science problems like machine learning.  
+  We feel we may be entering to the area of ``real'' computer science
+  problems like machine learning.
 
-  And we are no experts!
+  \vspace{2mm}
+
+  And we are not experts. 
+
+  \vspace{2mm}
+
+  \textbf{Help Wanted!}
 
 \end{frame}
+
+\subsection{Bee 2.0}
+
 
 \begin{frame}
   \frametitle{Bee 2.0: Human-directed Automated Reconstruction}
   Interim Solution: inject human judgment to guide Wire Cell reconstruction.
   \begin{enumerate}
-  \item Develop \textbf{Bee} to provide human-driven interactive control of reconstruction.
+  \item Bee will let humans \textbf{interactively control reconstruction}.
     \begin{itemize}
-    \item ``Join Cluster X to Cluster Y''
-    \item ``Remove Blob AAA from Cluster Z''
+    \item ``Join cluster X to cluster Y''
+    \item ``Remove blob AAA from cluster Z''
     \end{itemize}
   \item Convert human commands into operational objects.
   \item Send to back end, execute inside a Wire Cell service.
@@ -842,21 +1021,22 @@ $ ./wcb --prefix=/path/to/install configure build install
   \item Record everything in a database to mine for potential Wire
     Cell improvements.
   \end{enumerate}
-  Think: ``\textbf{Physics-PhotoShop}'' + ``\textbf{Google Analytics}''
+  Think: ``\textbf{Physics-PhotoShop}'' + ``\textbf{Google Analytics}''.
+
 \end{frame}
 
 \begin{frame}
   \frametitle{Bee 2.0: Architecture}
-  Interactive Wire Cell will likely include:
+  Plans include:
   \begin{itemize}
-  \item Move Bee from Three.js to a new JS/WebGL framework to support interactive controls (eg ``picking'').
-  \item Develop a web-friendly batch workflow system (probably based on Celery).
-  \item Develop a database system to capture and control the system (likely to use MongoDB).
-  \item Develop the Django back end into a middle-ware layer to tie this all together.
-  \item Provision the hardware to support all this.
+  \item Move Bee from \href{http://threejs.org/}{\texttt{three.js}} to a new JS/WebGL framework to support interactive controls (eg ``picking'').
+  \item Develop a web-friendly \textbf{batch workflow system} (probably based on Celery) to run Wire Cell promptly.
+  \item Develop a \textbf{database} system to capture ``analytics'' and coordinate the system (likely to use MongoDB).
+  \item Develop the Django \textbf{middleware} to tie this all together.
+  \item Provision the \textbf{hardware} to support all this (at BNL).
   \end{itemize}
 
-  These are big plans and we are not experts in much of it.  
+  Early ideas but conceptually a \texttt{rather big} system.
 
   \textbf{Help wanted!}
 
@@ -865,52 +1045,99 @@ $ ./wcb --prefix=/path/to/install configure build install
 \subsection{Parallel Wire Cell}
 
 \begin{frame}
-  \frametitle{Taking Wire Cell Parallel}
-  Wire Cell is a 1-2 punch for today's computing:
+  \frametitle{Wire Cell Production Processing}
+
+  A 1-2 punch for today's computing:
   \begin{itemize}\footnotesize
-  \item[$\rightarrow$] Needs high thoughput to keep up with detector data rates.
-  \item[$\rightarrow$] Needs high performance due to CPU-heavy algorithms.
+  \item[$\rightarrow$] Need high thoughput to keep up with detector data rates.
+  \item[$\rightarrow$] Need high performance due to CPU-heavy algorithms.
   \end{itemize}
-  Plans, roughly in order:
+
+  \footnotesize
+
+  \begin{columns}
+    \begin{column}{0.70\textwidth}
+      Data volumes:
+      \begin{description}
+      \item[MicroBooNE] $\sim$630 TB/year (compressed)
+      \item[protoDUNE] $\mathcal{O}$(1PB) total, (ZS, uncomp.)
+      \item[DUNE 40kt] $\mathcal{O}$(PB)/year (ZS, uncomp.)
+      \end{description}
+      \begin{itemize}
+      \item Okay, it's not quite ATLAS-levels 
+        \begin{itemize}\scriptsize
+        \item Run 1 produced $\sim$3PB/year raw.
+        \end{itemize}
+      \item \textbf{Wire Cell needs raw wire data}
+        \begin{itemize}\scriptsize
+        \item No Level-X triggers to save you.
+        \item MicroBooNE: offline sees full-stream, no-ZS.
+        \item Surface protoDUNE: $\sim$60 cosmic-$\mu$s per readout.
+        \item Underground DUNE: all detector activity is sacred.
+        \end{itemize}
+      \item Current speed: \textbf{30 minutes -- 1day / event!}
+        \begin{itemize}\scriptsize
+        \item Optimization expected, etc, etc, but:  \textbf{gulp!}
+        \end{itemize}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.30\textwidth}
+      \begin{center}
+        \includegraphics[width=\textwidth,trim=5cm 9cm 3cm 6cm,clip]{frank-abuse.pdf}
+
+        \scriptsize (with apologies to \href{https://www.bnl.gov/events/details.php?q=11000}{Frank Wuerthwein})
+      \end{center}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Taking Wire Cell Parallel}
+
+  Plans are focused on implementing parallel execution models:
+
   \begin{enumerate}\footnotesize
-  \item Exec. model for \href{https://github.com/erenon/pipeline}{Boost.Pipeline} nice, simple threaded data flow package, but experimental (not officially part of BOOST)
-  \item Exec. model for \href{https://www.threadingbuildingblocks.org/}{Intel TBB} a common and well supported library with a fantastic looking ``flow graph designer'' tool.
-  \item Exec. model for MPI or other ways to run Wire Cell as multi-node (eg \textbf{HPC}) distributed process.
-  \item Investigate potential for \textbf{GPU/Phi} hardware acceleration.
+  \item \href{https://github.com/erenon/pipeline}{Boost.Pipeline} nice
+    and simple threaded data flow package.  Easy to start with but not
+    yet officially part of BOOST (longevity concerns?).
+  \item \href{https://www.threadingbuildingblocks.org/}{Intel TBB} a
+    common and well supported library with a fantastic looking ``flow
+    graph designer'' tool.  Some effort needed to learn/adopt.
+  \item MPI/ZeroMQ or other ways to run Wire Cell as multiple-node
+    distributed process (maybe on \textbf{HPC}).  Big learning curve
+    for us.
+  \item Investigate potential for \textbf{GPU/Phi} hardware
+    acceleration.  \\ Even bigger learning curve!
   \end{enumerate}
 
-  This level of parallelism is new to us (and to much of HEP in general) and is a subject of a pending LDRD proposal.
+  This level of parallelism is \textbf{new ground for us}\footnote{This is a subject of a pending Computing LDRD proposal.}.
 
   \textbf{Help wanted!}
 \end{frame}
 
-\subsection{Algorithm Development}
-
-\begin{frame}
-  \frametitle{}
-  
-  
-  
-  
-\end{frame}
 
 \section{}
 
 \begin{frame}
   \frametitle{Summary}
+  \footnotesize
   \begin{itemize}
   \item The \textbf{Wire Cell working prototype LArTPC reconstruction} method and software has been developed.
     \begin{itemize}
-    \item producing some of the best results,
-    \item much improvement still needed.
+    \item already producing some of the world's best results,
+    \item technical and performance improvements still needed.
     \end{itemize}
-  \item The \textbf{Bee interactive 3D event visualization} application has been developed.
-  \item The \textbf{Wire Cell Toolkit} for long term development and support of
-    parallel processing has been developed.
-  \item Many areas at different levels are still in development.
-  \item We find that to be successful we are going into \textbf{new waters}
-    (for us) of massive parallel processing, hardware acceleration,
-    computing science and mathematics.
+  \item The \textbf{Bee interactive 3D event visualization}
+    application developed, critical for understanding LArTPC and
+    developing Wire Cell.  Plans to evolve to ``human-directed
+    automated reconstruction''.
+  \item The \textbf{Wire Cell Toolkit} for LArTPC reconstruction
+    partly complete and will be the basis for long term development
+    including investigations into parallel processing.
+  \item To be successful we are going into \textbf{new waters} (for
+    us) of parallel processing, hardware acceleration, computing
+    science and mathematics.
     \begin{itemize}
     \item[$\rightarrow$] \textbf{Expert input, help and collaboration is most welcome!}
     \end{itemize}

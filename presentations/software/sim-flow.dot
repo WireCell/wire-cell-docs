@@ -1,0 +1,36 @@
+digraph "G" {
+	producer[label="External\nProducer\n(sim/DAQ)",shape=box];
+	indata[label="Exeternal\nfile",shape=folder];
+
+	subgraph cluster_sim {
+		label="Wire Cell Sim";
+		
+		params;
+		kingen[shape=box,label="Depositor"];
+		depos[label="deposition"];
+		drift[shape=box, label="Drifter"];
+		depos2[label="drifted"];
+		diffuser[shape=box, label="Diffuser"];
+		diffused[label="diffused"]
+		digitizer[shape=box,label="Digitizer"];
+		channels[label="digitized"];
+		framer[shape=box,label="Framer"];
+	}
+
+	
+	subgraph cluster_alg {
+		label="Wire Cell Algs";
+		frames;
+		wirecell[shape=box, label="Wire Cell\nEvent\nReconstruction\nAlgorithms"];
+	}		  
+
+	producer->indata;
+	indata->depos;
+	indata->depos2;
+	indata->diffused;
+	indata->channels;
+	indata->frames;
+	
+	params->kingen->depos->drift->depos2->diffuser->diffused->digitizer->channels->framer->frames->wirecell;
+	
+}

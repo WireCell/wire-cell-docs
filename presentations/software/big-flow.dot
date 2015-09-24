@@ -1,40 +1,74 @@
 digraph "G" {
 	label="Wire Cell / LArsoft Integration By Files"
 
-subgraph cluster_mainline {
-	label="Wire Cell Mainline";
+	producer[label="external\nsimulation",shape=box];
+	indata[label="exeternal\nfile rep"];
+
+	
+
+subgraph cluster_sim {
+	label="Wire Cell Sim";
 	
 	params;
-	depositions;
-	drift;
-	digitize;
-	readout;
-	hit_cells;
-	blobs;
-	deblob;
-	cluster;
-	pid;
+	kingen[shape=box,label="Generator"];
+	depos[label="deposition"];
+	drift[shape=box, label="Drifter"];
+	depos2[label="drifted"];
+	diffuser[shape=box, label="Diffuser"];
+	diffused[label="diffused"]
+	digitizer[shape=box,label="Digitizer"];
+	channels;
+	framer[shape=box,label="Framer"];
+}
+
+	frames;
+	
+subgraph cluster_alg {
 	wires;
+	tiling[label="Tiling",shape=box];
 	cells;
-	digitize;
 
-	}
-
-	params->depositions->drift->digitize->readout->hit_cells->blobs->deblob->cluster->pid;
-	params->wires->cells->hit_cells;
-	wires->digitize;
-
-	larsoft->celltree->depositions;
-	celltree->wires;
-	celltree->readout;
+	slicer[shape=box,label="Slicer"];
+	slice[label="time slice"];
+	cellsel[label="Cell selector"];
+	hitcells[label="candidate\nhit cells"];
+	blober[shape=box,label="Blober"];
+	blobs;
+	matrix[shape=box,label="Matrix solution"];
+	blobs2[label="Solved Blobs"];
+	clustering[shape=box,label="Cluster"];
+	clusters;
+	tracking[shape=box,label="Tracking"];
+	trkshw[label="tracks/showers"];
+	pid[shape=box,label="Particle\nIdentification"];
+	physics;
 	
-	deblob[label="points"];
-	celltree2[label="celltree"];
-	larsoft2[label="larsoft"];
-	
-	deblob->celltree2;
-	cluster->celltree2;
+}		  
 
-	celltree2->larsoft2;
+	outdata[label="exeternal\nfile rep"];
+	consumer[label="external\nreconstruction",shape=box];
 	
+
+	producer->indata;
+	indata->depos;
+	indata->depos2;
+	indata->diffused;
+	indata->channels;
+	indata->frames;
+	
+	params->kingen->depos->drift->depos2->diffuser->diffused->digitizer->channels->framer->frames;
+	
+	wires->tiling->cells->cellsel;
+	
+	frames->slicer->slice->cellsel->hitcells->blober->blobs->matrix->blobs2->clustering->clusters->tracking->trkshw->pid->physics;
+	wires->outdata;
+	cells->outdata;
+	slice->outdata;
+	hitcells->outdata;
+	blobs->outdata;
+	blobs2->outdata;
+	clusters->outdata;
+	trkshw->outdata;
+	physics->outdata;
+	outdata->consumer;
 }

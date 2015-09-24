@@ -1,9 +1,9 @@
 digraph "Deps" {
+	node[shape=tab];
+	util->iface[dir=back];
+	iface->gen[dir=back];
+	iface->alg[dir=back];
+	iface->sst[dir=back];
+	iface->rio[dir=back];
 
-iface->util;
-gen->iface;
-alg->iface;
-sst->iface;
-rio->iface;
-
-	}
+}
