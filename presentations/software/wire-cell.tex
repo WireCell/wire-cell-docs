@@ -56,56 +56,57 @@ for LArTPC Detectors}
 \section {Introduction}
 
 \begin{frame}
-  \frametitle{Who, What, Why}
+  \frametitle{Who, What, How, Why}
 
   \begin{description}
   \item[who] \textbf{Wire Cell} development is centered in the
-    \textbf{Electronic Detector Group}, of the \textbf{BNL Physics
+    \textbf{Electronic Detector Group} of the \textbf{BNL Physics
       Department}.
-  \item[what] Our focus is the experimental study of the properties of
-    \textbf{neutrinos} and \textbf{muons}.
-  \item[why] Our neutrino detectors are \textbf{Liquid Argon Time
-      Proportion Chambers} (LArTPC), a technology \textbf{pioneered by
-      BNL} since 1974.
+  \item[what] Here, we are focusing on the experimental study of the \textbf{properties of
+    neutrinos}
+  \item[how] using \textbf{Liquid Argon Time
+      Projection Chambers} (LArTPC) and human-made neutrino beams.
+  \item[why] to reach these \textbf{Physics objectives:}
   \end{description}
-  Main Physics interests:
   \begin{itemize}
-  \item Observe CP symmetry violation in neutrino interactions.
-  \item Determination of neutrino mass ordering.
-  \item Precision measurement of neutrino oscillation parameters.
-  \item Observation of neutrino bursts from supernova explosions.
-  \item Search for Proton decay and sterile neutrino.
+  \item Discover and measure \textbf{CP symmetry violation} in neutrino interactions.
+  \item Determination of \textbf{neutrino mass ordering}.
+  \item Precision measurement of \textbf{neutrino oscillation parameters}.
+  \item Observation of \textbf{neutrino bursts from supernova} explosions.
+  \item Search for \textbf{proton decay} and \textbf{sterile neutrinos}.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Why LArTPC}
+  \frametitle{Why Liquid Argon TPC}
   Measuring neutrino interactions require detectors that are:
   \begin{description}\footnotesize
   \item[big] active mass of \num{10} -- \SI{100}{\kilo\tonne}'s to
     mitigate tiny neutrino interaction cross sections.
-  \item[efficient] capture of neutrino interactions
-  \item[accurate] measure of energy, neutrino flavor and interaction type (ie, very good signal
-    vs. background).
+  \item[efficient] use of that mass to capture neutrinos, good signal/background.
+  \item[accurate] and precise measure of energy, neutrino flavor and event type.
   \item[quiet] low background environment shielded against
     cosmic-$\mu$ and natural radioactivity, $\Rightarrow$ deep
-    underground + active shielding.
+    underground.
   \end{description}
 
   Two main technologies:
   \begin{description}\footnotesize
-  \item[Water Cherenkov] big++, efficient++, accurate+, quiet+\\
+  \item[Water Cherenkov] big++, efficient++, \textbf{accurate+}, quiet++\\
     simple understood technology modest S/B.
-  \item[LArTPC] big+, eficient++, accurate++, quiet++, \\
+  \item[LArTPC] \textbf{big+}, eficient++, accurate++, quiet++, \\
     R\&D still improving, excellent future potential.
   \end{description}
 
-  Many challenges still to overcome, but LArTPC's promises make it the
-  chosen technology for future Neutrino experiments in the US.
+  Many challenges still to overcome, but \textbf{LArTPC}'s promises make it the
+  \textbf{chosen technology for future neutrino experiments in the US}.
 \end{frame}
+
 
 \begin{frame}
   \frametitle{LArTPC Experiments - Icarus}
+
+  The origin of LArTPC technology for Neutrinos: \href{http://cds.cern.ch/record/117852/files/CERN-EP-INT-77-8.pdf}{C. Rubbia, 1977} led to first large scale detector ICARUS:
 
   \begin{columns}
     \begin{column}{0.5\textwidth}
@@ -155,7 +156,10 @@ for LArTPC Detectors}
   \frametitle{LArTPC Experiments - \includegraphics[height=7mm,trim=4cm 9.2cm 4cm 9.3cm,clip,valign=c]{DUNElogo_colorHORIZONTAL.pdf}}
   \begin{center}
     ``International \textbf{mega-science} project''
+
+    \includegraphics[height=25mm]{LBNF_Graphic_021715-1024x340.png}
   \end{center}
+
 
   Three stages of LArTPC detectors:
   \begin{enumerate}\footnotesize
@@ -167,20 +171,24 @@ for LArTPC Detectors}
     \item 5 mm wire pitch, \textbf{1.5M channels}.
     \end{itemize}
   \end{enumerate}
-  Full DUNE: \textbf{underground + size} $\Rightarrow$ must design for: \textbf{wrapped
-    induction wires} and \textbf{two sided anode planes}.\\
-  $\rightarrow$ extra challenges to event reconstruction!
 
-  \begin{center}
-    \includegraphics[height=25mm]{LBNF_Graphic_021715-1024x340.png}
-  \end{center}
+  \footnotesize \textbf{Underground + size} $\Rightarrow$ must design
+  for \textbf{two-sided anode planes} around which the \textbf{wires
+    wrap} $\rightarrow$ extra challenges to event reconstruction!
 
 \end{frame}
 
 \begin{frame}
+
+  \vfill
+
   \begin{center}
     Next: primer on how LArTPC works.
   \end{center}
+
+  \vfill
+
+  \flushright \scriptsize Illustration by Bo Yu (BNL)
 \end{frame}
 
 \begin{frame}[fragile]
@@ -193,36 +201,36 @@ for LArTPC Detectors}
 
   \begin{minipage}[t][1cm]{1.0\textwidth}
     \only<1>{Charged particles traverse the detector at relativistic
-      speeds and leave behind ionized Argon.}
+      speeds and leave behind ionized argon and electrons.}
 
     \only<2>{Ion and electron pairs drift off in opposite directions
-      in the E-field applied between anode wires and cathode plane.}
+      in the electric field applied between \textbf{anode wires} and cathode plane.}
 
-    \only<3>{Here we watch the electrons drift.
-      They drift with a speed of
-      \SI{1.6}{\milli\meter\per\micro\second} toward the anode wire planes.}
+    \only<3>{Here, we watch the electrons drift.  They drift with a
+      speed of \SI{1.6}{\milli\meter\per\micro\second} (when E-field is
+      \SI{500}{\volt/\cm}).}
 
-    \only<4>{As they approach, they begin to induce signals on the
-      nearby wires.}
+    \only<4>{Approaching, they begin to induce signals on the
+      nearby wires.  Wires in each of \textbf{three planes provide independent measure} of the drifting charge.}
 
-    \only<5>{There are two planes of induction wires which see a
-      bipolar signal as charge drifts by.}
+    \only<5>{There are \textbf{two} planes of \textbf{induction wires}.\\ They see a
+      \textbf{bipolar signal} as the charge drifts past them.}
 
-    \only<6>{The final plane collects the drifting charge and thus sees a unipolar signal.}
+    \only<6>{The final \textbf{third} plane \textbf{collects the drifting charge} and thus sees a \textbf{unipolar signal}.}
 
-    \only<7>{The exact signal response is complicated and depends on
-      details of the electric field and detector construction.}
+    \only<7>{The exact \textbf{signal response} is complicated and depends on
+      details of the local electric field and readout electronics.}
 
-    \only<8>{Charge on each wire is digitized as a function of time.
+    \only<8>{Charge on each wire is digitized as a function of time.\\
       Typical digitization ``tick'' is
       \SI{0.5}{\micro\second}, wire spacing is \num{3} to \SI{5}{\milli\meter}.}
 
-    \only<9>{Measuring the drifted charge requires a deconvolution of a
+    \only<9>{Measuring the drifted charge requires a \textbf{deconvolution} of a\\
       response function and a noise filter with the raw wire signals.}
 
     \only<10>{As a batch of electrons drift, it diffuses out in both
-      the longitudinal and transverse directions. LAr impurities cause
-      attenuation.} 
+      the longitudinal and transverse directions. LAr impurities 
+      attenuate the charge.} 
 
     \only<11>{At the maximum drift distance allowed by the
       detector, diffusion can be as much as \SI{1}{\micro\second}
@@ -232,19 +240,20 @@ for LArTPC Detectors}
     \only<12>{Still drifting...} 
     
     \only<13>{Still drifting...
-    It's a slow detector!}
+    It's a slow detector!  \\
+    \SI{1.6}{\milli\meter/\micro\second} drift speed $\times$ $\sim$meter drifts = few \si{\milli\second}.}
     
     \only<14>{Still drifting...} 
 
-    \only<15>{Each wire plane reads out one 2D view (wire pitch
+    \only<15>{Finally, each wire plane reads out one 2D view (wire-pitch\\
       direction vs. time) of the drifting charge pattern.}
     
     \only<16>{Combining three 2D views can give a tomographic
       reconstruction of the particle trajectories and their energies.}
     
     \only<17>{Traditional methods work in 2D first, then combine
-      assuming track-like hypothesis.
-      OTOH, Wire Cell goes directly to 3D imaging.}
+      assuming a track-like hypothesis.
+      \textbf{Wire Cell goes directly to 3D imaging}.}
 
   \end{minipage}
 
@@ -257,7 +266,7 @@ for LArTPC Detectors}
 
   \begin{columns}
     \begin{column}{0.8\textwidth}
-      LArTPC can produce prodigious quantities of data:
+      LArTPC can produce prodigious quantities of \textbf{high-resolution} data from \textbf{huge volumes}:
       \begin{itemize}
       \item $10^4$ -- $10^6$ channels
       \item 2MHz @ 12 bit FADC digitization
@@ -276,18 +285,18 @@ for LArTPC Detectors}
   \vspace{-5mm}
 
   \footnotesize
-  Two DAQ modes:
+  Two DAQ readout modes:
   \begin{description}
-  \item[full-stream] read out entire waveform (\textbf{MicroBooNE})
+  \item[Full Stream] read out entire waveform (\textbf{MicroBooNE})
     \begin{itemize}
-    \item \textbf{30GB/s in 120 MB chunks}.
-    \item DUNE would produce 3TB/s in 12 GB chunks.
+    \item \textbf{30GB/s in 120 MB events}.
+    \item DUNE would produce 5 TB/s in 25 GB events!
     \end{itemize}
-  \item[zero-supression] drop waveform chunks below a threshold (\textbf{DUNE})
+  \item[Zero Supression] drop waveform chunks below a threshold (\textbf{DUNE})
     \begin{itemize}
-    \item Threshold based on noise ($E_{equiv} <$\SI{0.5}{\mega\electronvolt})
+    \item Threshold based on noise ($E_{equiv} <$\SI{0.5}{\mega\electronvolt}/wire)
     \item 2.5 MB/event $\rightarrow$ \textbf{100's TB/year}
-    \item 50 PB/year if $^{39}$Ar decay backgrounds can not be
+    \item 50 PB/year if above-threshold $^{39}$Ar decay backgrounds can not be
       rejected by DAQ.
     \end{itemize}
   \end{description}
@@ -313,13 +322,15 @@ for LArTPC Detectors}
         \begin{itemize}        \scriptsize
         \item Identify 3D regions of space that likely contain
           activity consistent with wire signals.
+        \item Central technique of Wire Cell
         \end{itemize}
       \item<4> Pattern Recognition 
         \begin{itemize}         \scriptsize
+        \item Application of Wire Cell imaging
         \item Cluster in space and time
-        \item Categorize as track/shower
+        \item Categorize: track, shower, etc.
         \end{itemize}
-      \item<5> Physics
+      \item<5> Physics Quantities
         \begin{itemize}
         \item Determine particle ID and kinematics of tracks/showers.
         \end{itemize}
@@ -340,41 +351,46 @@ for LArTPC Detectors}
 \begin{frame}
   \frametitle{Framing}
   
-  \vspace{-2.0cm}
+  \vspace{-25mm}
   \begin{center}
     \rotatebox{-90}{\includegraphics[width=6cm]{framing.pdf}}    
   \end{center}
-  \vspace{-1.0cm}
+
+  \vspace{-10mm}
 
   \scriptsize
-  Raw data stream readout in blocks or \textbf{frames} of time.
+  Wire Cell \textbf{input is raw data stream}:  $\sim$\SI{4}{\milli\second} \textbf{frames of time} (\SI{2}{\mega\hertz}, 12 bit).
 
-  Typical digitizing: $\sim$\SI{4}{\milli\second}, \SI{2}{\mega\hertz}, 12 bit/sample.
+  \vspace{2mm}
 
   \begin{columns}
-    \begin{column}{0.5\textwidth}
+    \begin{column}{0.4\textwidth}
       \scriptsize
       \textbf{MicroBooNE:}
       \begin{itemize}
-      \item \textbf{Very active at surface}: $\sim$20 cosmic-$\mu$ events/frame.
+      \item At FNAL, nearby computing infrastructure.
+      \item \textbf{Very active at surface}: \\
+        $\sim$20 cosmic-$\mu$ tracks/frame.
       \item Very ``few'' channels (8256).
-      \item \textbf{full-stream} readout frames, big but manageable:
-        \textbf{$\sim$100 MB/frame}.
+      \item \textbf{full-stream} readout frames:\\
+        \textbf{$\sim$120 MB/frame}.
       \end{itemize}
 
     \end{column}
-    \begin{column}{0.5\textwidth}
+    \begin{column}{0.6\textwidth}
       \scriptsize
       
       \textbf{DUNE:}
       \begin{itemize}
-      \item \textbf{Deep underground}, quiet detector.
-      \item Isolated $^{39}$Ar decays dominant bkg.
+      \item \textbf{Deep underground}:\\ power/cooling/space are at a premium.
       \item \textbf{1.5M channels} could produce: \\
-        4.5 TB/second \textbf{full-stream}!
-      \item DUNE must \textbf{zero-suppress} signals.
+        5 TB/second \textbf{full-stream}!
+      \item DUNE must \textbf{zero-suppress} waveforms.
       \item \textbf{$\sim$2.5 MB/frame} (25 GB if no ZS!)
-      \item requires \textbf{clever DAQ!}
+      \item Isolated $^{39}$Ar decays are dominant bkg.
+        \begin{itemize}\scriptsize
+        \item[$\rightarrow$] requires \textbf{clever DAQ!}
+        \end{itemize}
       \end{itemize}
 
     \end{column}
@@ -395,21 +411,20 @@ for LArTPC Detectors}
 
         \includegraphics[width=\textwidth,trim=0cm 10cm 0cm 0cm,clip]{slice-3D.pdf}
 
-        \scriptsize True hits.
+        \scriptsize One \textbf{time slice} along a plane transverse to the drift.
       \end{center}
     \end{column}
-    \begin{column}{0.6\textwidth}
+    \begin{column}{0.65\textwidth}
 
       \includegraphics[width=\textwidth]{wires-and-true-hits.png}
 
       \begin{itemize} \scriptsize
-      \item One \textbf{time slice} of the frame.
-      \item Slice width is chosen to match electronics shaping time: 4
-        FADC ``ticks'' = \SI{2}{\micro\second}.
-      \item Identify selection of ``hit'' wires in the slice.
-        \begin{itemize} \scriptsize
-        \item[$\rightarrow$] hit = FADC charge above some threshold.
-        \end{itemize}
+      \item Shows ``true'' (simulated) \textcolor{blue}{drifting charge}.
+      \item Select \textcolor{red}{wires hit} in the slice.\\
+        $\rightarrow$ hit = FADC charge-in-slice above a threshold.
+      \item Slice duration is chosen to \textbf{match
+          electronics shaping time}: 4 FADC ``ticks'' =
+        \SI{2}{\micro\second}.
       \end{itemize}
     \end{column}
   \end{columns}
@@ -421,25 +436,31 @@ for LArTPC Detectors}
 \begin{frame}[fragile]
   \frametitle{Tiling}
 
+  \vspace{-5mm}
+
   \begin{center}
+    \scriptsize Zoom in on the wires and their associated (constructed) cells.
+
     \includegraphics[width=0.7\textwidth,trim=8.6cm 9cm 8.6cm 9cm,clip]{test_boundcells.pdf}
 
-    Zoom in on the wires and their associated cells.
+    MicroBooNE geometry shown.
   \end{center}
 
-
+  \vspace{-5mm}
 
   \footnotesize
+  Cell construction:
   \begin{itemize}
-  \item Associate a 2D ``cell'' with small region near every
-    triple-crossing of one wire from each plane.
-  \item Cells completely tile the plane, no gaps, no overlaps.
-  \item Cell shapes and sizes depend on wire plane pitches, angles and
-    offsets.
+  \item Define small, 2D regions near \textit{approximate triple crossings} of one wire from each of the three planes.
+  \item A ``cell'' is the association of this region with the three wires. 
+  \item Cells completely tile the plane (time slice): no gaps, no overlaps.
+  \item Bipartite cell types: \textit{wire-centered} and \textit{gap-centered} cells.
+  \item In general (eg, DUNE), cell shapes and sizes not uniform nor regular,
+    depend on wire plane pitches, angles and offsets.
   \end{itemize}
 
   \textbf{The heart of the Wire Cell concept:} if all three
-  triple-crossing wires are ``hit'', the associated cell likely
+  triple-crossing \textbf{wires} are ``hit'', the associated \textbf{cell} likely
   contains drifted charge.
 
 \end{frame}
@@ -448,29 +469,44 @@ for LArTPC Detectors}
   \frametitle{Cell Ambiguity - Example Hit Pattern}
 
   \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \includegraphics[width=\textwidth,trim=1cm 4cm 2cm 1cm,clip]{example-hit-cells.pdf}
+    \begin{column}{0.35\textwidth}
+      \begin{center}
+        \scriptsize Zoom in on $5 \times 5 \times 3$ wires:
+
+        \includegraphics[width=\textwidth,trim=3.5cm 6cm 5cm 3cm,clip]{example-hit-cells.pdf}        
+
+        \tiny (assume just wire-centered cell def. here)
+      \end{center}
     \end{column}
-    \begin{column}{0.5\textwidth}
-      Ambiguity arises due to spatial multiplexing.
+    \begin{column}{0.65\textwidth}
+
+      Spatial multiplexing $\Rightarrow$ \textbf{ambiguity}:
+
+      \vspace{5mm}
+
       \begin{description}\scriptsize
-      \item[Good] wire v3 measures no charge, all its cells must be unhit.
-      \item[Bad] surrounding hits induce ``ghost'' at \textbf{c4}.
-      \item[Ambiguous] multiple cells measured by same wire.
+      \item[Good] wire \textcolor{blue}{v3} measures no charge, \\$\therefore$ all its cells must not be hit.
+      \item[Bad] hits \textbf{c2}, \textbf{c7} and \textbf{c8} induce ``ghost'' at \textbf{c4}.
+      \item[Ambiguous] multiple cells measured by same wire.\\
+        How much charge is in \textbf{c6}???
       \end{description}
-      In some cases ambiguity can not be resolved at the cell level.
+
+      \vspace{5mm}
+
+      In some cases ambiguity can not be resolved at the cell level!
+
     \end{column}
   \end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Some Formalism}
+  \frametitle{Solution Attempt 1 - cell-level}
   Expected charge measured on \textbf{wires} ($\vec{w}$) can be calculated
-  knowing charge in \textbf{cells} ($\vec{c}$):
+  knowing (unknown) charge in \textbf{cells} ($\vec{c}$):
 
   \[\vec{w} = \mathbf{G_{wc}}\vec{c}\]
 
-  $\mathbf{G_{wc}}$ is the wire/cell \textit{adjacency matrix}, purely
+  $\mathbf{G_{wc}}$ is the \textbf{wire-cell adjacency matrix}, purely
   geometrical and perfectly known, function of detector design.
   
   \begin{columns}
@@ -542,26 +578,26 @@ for LArTPC Detectors}
   \end{columns}
 
 
-  Wish to solve inverse: $\vec{c} = \mathbf{G_{wc}}^{-1}\vec{w}$.
+  Wish to solve inverse: $\vec{c} = \mathbf{G}^{-1}_{\mathbf{wc}}\vec{w}$.
   However, $N_{cells} \approx N_{wires}^2$ \\
   $\Rightarrow$ as $N_{cells}$ grows, more unknowns ($\vec{c}$) than knowns ($\vec{w}$)!
 \end{frame}
 
 \begin{frame}
-  \frametitle{Form Blobs}
+  \frametitle{Solution Attempt 2 - blob-level}
   \vspace{-10mm}
   \begin{columns}
-    \begin{column}{0.5\textwidth}
-      Goal: \textbf{reduce matrix size} and \textbf{remove ambiguity}.
+    \begin{column}{0.6\textwidth}
+      Goal: \textbf{reduce matrix size} and \textbf{remove ambiguity} by making ``blobs'' of cells.
     \end{column}
-    \begin{column}{0.5\textwidth}
+    \begin{column}{0.4\textwidth}
       \includegraphics[width=0.8\textwidth]{wires-and-true-hits.png}          
     \end{column}
   \end{columns}
       
   \begin{enumerate}
-  \item Select all cells with all three wires ``hit''.
-  \item Partition into spatially contiguous subsets: ``\textbf{blobs}''.
+  \item Select set of all cells with all three wires ``hit''.
+  \item Partition set into spatially contiguous subsets: ``\textbf{blobs}''.
   \end{enumerate}
   Equation to solve is now:
   \[\vec{w_b} = \mathbf{G_{wb}} \vec{b}\]
@@ -569,7 +605,7 @@ for LArTPC Detectors}
   \begin{description}
   \item[$\vec{c} \to \vec{b}$] vector of charge in each blob.
   \item[$\mathbf{G_{wc}} \to \mathbf{G_{wb}}$] the wire-blob adjacency matrix for the slice.
-  \item[$\vec{w} \to \vec{w_b}$] vector of charge on all wires associated with blob.
+  \item[$\vec{w} \to \vec{w_b}$] vector of charge on all wires associated with a blob.
   \end{description}
 
 \end{frame}
@@ -578,12 +614,14 @@ for LArTPC Detectors}
 \begin{frame}
   \frametitle{Another wrinkle: charge uncertainty}
 
-  Measures of the drifting charge by a wire has uncertainty.
+  Measure of the drifting charge by a wire has uncertainty:
   \begin{itemize}
-  \item Noise from electronics and thermal fluctuations.
+  \item Environmental, electronic and thermal noise.
+    \begin{itemize}\footnotesize
+    \item[$\rightarrow$] Can be correlated across wires.
+    \end{itemize}
   \item Statistical uncertainty due to digitization.
   \item Systematic uncertainties from detector response deconvolution.
-  \item Can be correlated across wires.
   \end{itemize}
   Compare measured wire charge ($\vec{w}_{meas}$) with expected
   ($\vec{w}_{exp}$) and form a $\chi^2$ with $\mathrm{V}$ a
@@ -594,6 +632,11 @@ for LArTPC Detectors}
   ``It can be shown'' that minimizing this $\chi^2$ is equivalent to
   inverting $\mathbf{G_{wc}}$ (or $\mathbf{G_{wb}}$) matrix equation.
 
+
+  \begin{center}
+    \textbf{$\rightarrow$ This is a very CPU intensive, but critical step!}
+  \end{center}
+
 \end{frame}
 
 \begin{frame}[fragile]
@@ -602,19 +645,22 @@ for LArTPC Detectors}
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \begin{center}
-        \includegraphics[width=\textwidth,trim=0cm 10cm 0cm 0cm,clip]{payoff-true.png}
+        \includegraphics[width=\textwidth,trim=3cm 10cm 3cm 10cm,clip]{payoff-true.png}
 
         True energy depositions.
       \end{center}
     \end{column}
     \begin{column}{0.5\textwidth}
       \begin{center}
-        \includegraphics[width=\textwidth,trim=0cm 10cm 0cm 0cm,clip]{payoff-reco.png}
+        \includegraphics[width=\textwidth,trim=3cm 10cm 3cm 10cm,clip]{payoff-reco.png}
 
-        Wire Cell imaging.
+        Wire Cell Imaging.
       \end{center}
     \end{column}
   \end{columns}
+
+  \vfill
+
   \footnotesize
   \begin{itemize}
   \item Excellent imaging of major track features as well as isolated
@@ -624,7 +670,8 @@ for LArTPC Detectors}
     \end{itemize}
   \item Remaining ambiguity seen as wide blue patches.
     \begin{itemize}\scriptsize
-    \item[$\rightarrow$] inherent in LArTPC technology, Wire Cell makes it evident.
+    \item[$\rightarrow$] inherent in LArTPC technology, Wire Cell just makes it evident.
+    \item[$\rightarrow$] battling this will likely require CPU-intensive algorithms and/or relying on iterative reconstruction.
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -679,7 +726,6 @@ for LArTPC Detectors}
   \tableofcontents[currentsection,hideothersubsections]
 \end{frame}
 
-\subsection{Software Overview}
 
 \begin{frame}
   \frametitle{Wire Cell Software Ecosystem}
@@ -698,16 +744,15 @@ for LArTPC Detectors}
 \subsection{Bee Display}
 
 \begin{frame}
-  \frametitle{Bee Features}
+  \frametitle{Bee: an interactive 3D visualization system}
 
-  Bee is a 3D interactive visualization system:
+  \textbf{Bee} features:
   \begin{itemize}
   \item Displays results of different reconstruction algorithms.
   \item Shows ``true'' particle trajectories from simulation.
   \item Very good for developers to debug and compare different
     methods and for users to gain Physics/LArTPC intuition.
-  \item Implemented as \textbf{JavaScript/WebGL} front-end and
-    \textbf{Django} back-end.
+  \item Implemented in \textbf{JavaScript/WebGL} + \textbf{Django}.
   \item Works on popular desktop and mobile browsers.
   \item Requires hardware WebGL support.
   \item JSON data file format, easy to implement schema.
@@ -774,11 +819,11 @@ for LArTPC Detectors}
   \begin{itemize}
   \item No support for long-term, multi-developer contributions.
   \item Many monolithic, single-threaded applications.
-  \item Hard-coded ``magic'' numbers.
+  \item Hard-coded ``magic'' numbers $\to$ configuration.
   \item Rigid code structure and hard-coded workflows.
-  \item Exchange files are only integration with external frameworks.
+  \item External software integrated only through file exchange.
   \item Need comprehensive CPU/memory optimization campaign.
-  \item Some tests but better coverage/granularity needed.
+  \item Some high-level tests, need coverage/granularity.
   \item Intimate dependency on the large
     ROOT\footnote{\url{https://root.cern.ch/}} toolkit.
   \end{itemize}
@@ -809,11 +854,15 @@ for LArTPC Detectors}
   \item Mindful of \textbf{dependencies}, external and internal.
   \item Built-in wire and cell \textbf{geometry descriptions} or load from file.
   \item Includes simple \textbf{LArTPC detector simulation}.
-  \item Refactored implementations of core \textbf{prototype algorithms}.
+  \item Rewrite implementations of core \textbf{prototype algorithms}.
   \item Abstracted \textbf{execution model}, step towards parallelism.
   \item Support for native and foreign \textbf{file I/O}.
-  \item Follow ``toolkit'' software paradigm.
+  \item Follow ``\textbf{toolkit}'' software paradigm.
   \end{itemize}
+
+  \vfill
+
+  Good progress along all fronts but still much work to do.
 
 \end{frame}
 
@@ -840,10 +889,9 @@ $ ./wcb --prefix=/path/to/install configure build install
   Builds, tests and installs:
   \begin{itemize}
   \item toolkit shared libraries + header files,
-  \item main applications,
-  \item many unit tests,
-  \item \href{http://www.phy.bnl.gov/wire-cell/doxy/html/}{Doxygen reference} and \href{http://wirecell.github.io/wire-cell-docs/}{MkDocs user documentation}.
+  \item no main applications yet but many, unit+integration tests
   \end{itemize}
+  Also: \href{http://www.phy.bnl.gov/wire-cell/doxy/html/}{Doxygen reference} and \href{http://wirecell.github.io/wire-cell-docs/}{MkDocs user documentation}.
 
 
 \end{frame}
@@ -859,12 +907,15 @@ $ ./wcb --prefix=/path/to/install configure build install
     \item \textbf{Data model} (wires, cells, frames, slices, tracks, ...)
     \item \textbf{Active components} (blob maker, matrix solver, clustering, ...)
     \end{itemize}
-  \item Use of C++ \verb|shared_ptr<>| for (mostly) \textbf{worry-free memory management}.
+  \item Pervasive use of C++ \verb|shared_ptr<>| for (mostly) \textbf{worry-free memory management}.
   \item Dynamic instance lookup via \texttt{NamedFactory} pattern
     allows for a \textbf{plugin architecture}.
   \item Initial support for \textbf{user configuration} system based on Boost
     property trees.
   \item Initial support exists for an \textbf{abstract execution model}.
+    \begin{itemize}\scriptsize
+    \item[$\rightarrow$] more on this coming up.
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -878,13 +929,13 @@ $ ./wcb --prefix=/path/to/install configure build install
       \item Provided by the \href{https://github.com/WireCell/wire-cell-gen}{\texttt{wire-cell-gen}} package.
       \item Simple implementation of the 4 ``D''s of LArTPC:\\
         \textbf{deposit, drift, diffuse, digitize}.
-      \item Granular, user may tak as little or as much as needed.
+      \item Granular, use as little or as much as needed.
         \begin{itemize}\scriptsize
         \item[$\rightarrow$] Parts can be replaced by external
           simulation, \\or bypassed entirely with real DAQ data.
         \item[$\rightarrow$] External integration via file I/O or API calls.
         \end{itemize}
-      \item Provides reference implementation to guide external frameworks integrator/developers.
+      \item Provides reference implementation to guide integrator/developers of external frameworks.
       \item Useful for quickly generating data to feed unit tests.
       \end{itemize}
     \end{column}
@@ -903,16 +954,17 @@ $ ./wcb --prefix=/path/to/install configure build install
       \footnotesize 
       The toolkit supports \textbf{data flow programming} paradigm
       \begin{itemize}
-        \item Directly influenced by \href{http://www0.bnl.gov/events/details.php?q=8932}{CSC Seminar on VisTrails, March 2013}!
+        \item Design directly influenced by
+          \href{http://www0.bnl.gov/events/details.php?q=8932}{CSC Seminar on VisTrails, March 2013}!
         \item Data flows through a graph made from:
           \begin{description}
-          \item[vertices] computational units / algorithms
-          \item[edges] data queues of a given type
+          \item[vertices:] computational units / algorithms
+          \item[edges:] data queues of a given type
           \end{description}
-        \item Vertex has well defined input/output data types.
-        \item Edges can be thread-safe queues.
-        \item Streamed data, minimizing unneeded buffering.
+        \item Each queue carries well defined data types.
+        \item Streamed processing minimizes RAM usage.
         \item Graph-level ``programming'' to define workflows.
+        \item Thread-safe queues $\Rightarrow$ parallel processing.
         \item Graph execution machinery swapable: uniproc, multiproc, or
           distributed (MPI) parallel.
         \item Encourages isolated, targeted development and testing of each
@@ -926,6 +978,8 @@ $ ./wcb --prefix=/path/to/install configure build install
         \vspace{-10mm}
 
         \includegraphics[width=\textwidth]{dataflow.pdf}
+
+        \tiny One possible high-level flow.
       \end{column}
     \end{columns}
 \end{frame}
@@ -933,21 +987,22 @@ $ ./wcb --prefix=/path/to/install configure build install
 \begin{frame}
   \frametitle{Abstract execution model}
 
-  \scriptsize Want to swap execution model while leaving ``real'' algorithm code untouched!
+  \scriptsize Want ability to change execution model while leaving ``real'' algorithm code untouched!
 
 \footnotesize
   
   \begin{columns}
     \begin{column}{0.6\textwidth}
-      Each graph vertex made from three layers.  From outside to in:
+      Each graph vertex made from \textbf{three layers}.\\
+      From outside to in:
       \begin{enumerate}
       \item Execution model layer implementing data flow control
         \begin{itemize}\scriptsize
         \item sync'ed load-and-flush, async, multi-processing, message-passing, ...
         \end{itemize}
-      \item Adapter between actual algorithm and execution model ``client''.
-      \item Algorithm implementation and interface unrestricted except ``no shared
-        globals'' 
+      \item Adapter wraps actual algorithm and matches to a uniform execution model interface.
+      \item Algorithm implementation and interface left unrestricted
+        except ``no shared globals'' (thread safety).
       \end{enumerate}
     \end{column}
     \begin{column}{0.4\textwidth}
@@ -973,7 +1028,7 @@ $ ./wcb --prefix=/path/to/install configure build install
 
 \begin{frame}
   \frametitle{Pattern Recognition}
-  It is turning out to be ``hard''.
+  Pattern recognition stage is turning out to be ``hard''.
   \footnotesize
   \begin{itemize}
   \item Many challenges are \textbf{inherent to the LArTPC technology}.  
@@ -984,14 +1039,16 @@ $ ./wcb --prefix=/path/to/install configure build install
     \begin{itemize}\scriptsize
     \item many ``cross-algorithm assumptions''
     \item \textbf{large solution space} with \textbf{many corner cases}.
-    \item human Physicists find good, \textbf{per-event/ad-hoc solutions}.
-    \item[$\rightarrow$] but how to teach them to the computer?
+    \item human Physicists find good but \textbf{per-event/ad-hoc solutions}.
+    \item[$\rightarrow$] how to teach them to the computer?
     \end{itemize}
   \item[$\rightarrow$] Our attempt: Bee 2.0 (next slide) 
   \end{itemize}
   
-  We feel we may be entering to the area of ``real'' computer science
-  problems like machine learning.
+  \vfill
+
+  We have a few ideas but we feel we may be entering to the area of ``real'' computer science
+  problems like \textbf{machine learning} and maybe \textbf{machine vision}.
 
   \vspace{2mm}
 
@@ -1008,15 +1065,16 @@ $ ./wcb --prefix=/path/to/install configure build install
 
 \begin{frame}
   \frametitle{Bee 2.0: Human-directed Automated Reconstruction}
-  Interim Solution: inject human judgment to guide Wire Cell reconstruction.
+  Interim Solution: inject human judgment to guide pattern recognition.
   \begin{enumerate}
-  \item Bee will let humans \textbf{interactively control reconstruction}.
-    \begin{itemize}
+  \item Bee will let humans \textbf{interactively inject commands}, eg:
+    \begin{enumerate}
     \item ``Join cluster X to cluster Y''
     \item ``Remove blob AAA from cluster Z''
-    \end{itemize}
+    \item ``Now, rerun automatic reconstruction''
+    \end{enumerate}
   \item Convert human commands into operational objects.
-  \item Send to back end, execute inside a Wire Cell service.
+  \item Send to back-end, execute inside a Wire Cell service.
   \item Send results back to user.
   \item Record everything in a database to mine for potential Wire
     Cell improvements.
@@ -1027,16 +1085,20 @@ $ ./wcb --prefix=/path/to/install configure build install
 
 \begin{frame}
   \frametitle{Bee 2.0: Architecture}
-  Plans include:
+  Architectural plans include:
   \begin{itemize}
   \item Move Bee from \href{http://threejs.org/}{\texttt{three.js}} to a new JS/WebGL framework to support interactive controls (eg ``picking'').
   \item Develop a web-friendly \textbf{batch workflow system} (probably based on Celery) to run Wire Cell promptly.
   \item Develop a \textbf{database} system to capture ``analytics'' and coordinate the system (likely to use MongoDB).
-  \item Develop the Django \textbf{middleware} to tie this all together.
-  \item Provision the \textbf{hardware} to support all this (at BNL).
+  \item Further develop the Django \textbf{middleware} to tie it together.
+  \item Provision the \textbf{hardware} to support/run all of this (\textbf{at BNL}).
   \end{itemize}
 
-  Early ideas but conceptually a \texttt{rather big} system.
+  \vfill
+
+  Ideas are still early but conceptually it is a \textbf{rather big} system.
+
+  \vfill
 
   \textbf{Help wanted!}
 
@@ -1068,7 +1130,7 @@ $ ./wcb --prefix=/path/to/install configure build install
         \begin{itemize}\scriptsize
         \item Run 1 produced $\sim$3PB/year raw.
         \end{itemize}
-      \item \textbf{Wire Cell needs raw wire data}
+      \item But: \textbf{Wire Cell needs raw wire data} as input
         \begin{itemize}\scriptsize
         \item No Level-X triggers to save you.
         \item MicroBooNE: offline sees full-stream, no-ZS.
@@ -1077,7 +1139,8 @@ $ ./wcb --prefix=/path/to/install configure build install
         \end{itemize}
       \item Current speed: \textbf{30 minutes -- 1day / event!}
         \begin{itemize}\scriptsize
-        \item Optimization expected, etc, etc, but:  \textbf{gulp!}
+        \item Major caveat: some optimization expected, will
+          paralleize, etc, etc, but: \textbf{*GULP*!}
         \end{itemize}
       \end{itemize}
     \end{column}
@@ -1095,7 +1158,8 @@ $ ./wcb --prefix=/path/to/install configure build install
 \begin{frame}
   \frametitle{Taking Wire Cell Parallel}
 
-  Plans are focused on implementing parallel execution models:
+  Parallel processing plans mostly involve implementing different
+  execution models:
 
   \begin{enumerate}\footnotesize
   \item \href{https://github.com/erenon/pipeline}{Boost.Pipeline} nice
@@ -1107,11 +1171,15 @@ $ ./wcb --prefix=/path/to/install configure build install
   \item MPI/ZeroMQ or other ways to run Wire Cell as multiple-node
     distributed process (maybe on \textbf{HPC}).  Big learning curve
     for us.
-  \item Investigate potential for \textbf{GPU/Phi} hardware
-    acceleration.  \\ Even bigger learning curve!
+  \item Also, investigate potential for \textbf{GPU/Phi} hardware
+    acceleration of particular bottlenecks. Even bigger learning curve!
   \end{enumerate}
 
-  This level of parallelism is \textbf{new ground for us}\footnote{This is a subject of a pending Computing LDRD proposal.}.
+  \vfill
+
+  This level of parallelism is \textbf{new ground for us}\footnote{This is a subject of a pending BNL/Computing LDRD proposal.}.
+
+  \vfill
 
   \textbf{Help wanted!}
 \end{frame}
@@ -1124,8 +1192,8 @@ $ ./wcb --prefix=/path/to/install configure build install
   \footnotesize
   \begin{itemize}
   \item The \textbf{Wire Cell working prototype LArTPC reconstruction} method and software has been developed.
-    \begin{itemize}
-    \item already producing some of the world's best results,
+    \begin{itemize}  \footnotesize
+    \item already producing some of the \textbf{world's best results},
     \item technical and performance improvements still needed.
     \end{itemize}
   \item The \textbf{Bee interactive 3D event visualization}
@@ -1138,10 +1206,11 @@ $ ./wcb --prefix=/path/to/install configure build install
   \item To be successful we are going into \textbf{new waters} (for
     us) of parallel processing, hardware acceleration, computing
     science and mathematics.
-    \begin{itemize}
-    \item[$\rightarrow$] \textbf{Expert input, help and collaboration is most welcome!}
-    \end{itemize}
   \end{itemize}
+
+  \begin{center}
+    $\rightarrow$ \textbf{Expert input, help and collaboration are most welcome!}
+  \end{center}
 \end{frame}
 
 \begin{frame}

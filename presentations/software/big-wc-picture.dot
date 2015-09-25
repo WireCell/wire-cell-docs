@@ -1,0 +1,8 @@
+digraph "BigPic" {
+	input[label="DAQ/SIM\ninput"];
+	image[label="Wire Cell\nIMAGING\n(core technique)"];
+	pattern[label="Pattern\nRecognition\n(applications)"];
+	physics[label="Physics/Analysis\nQuantities"];
+
+	input->image->pattern->physics;
+}
