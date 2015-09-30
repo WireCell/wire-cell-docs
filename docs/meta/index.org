@@ -1,0 +1,39 @@
+* About this site
+
+This site uses MkDocs and is served by GitHub.
+
+*** To edit
+
+#+BEGIN_SRC shell
+  $ git clone git@github.com:WireCell/wire-cell-docs.git
+  $ cd wire-cell-docs
+  $ emacs 
+  $ git commit -a -m "..."
+  $ git push
+#+END_SRC
+
+
+*** To preview
+
+#+BEGIN_SRC shell
+  $ mkdocs server
+  INFO    -  Building documentation... 
+  [I 150708 17:57:26 server:271] Serving on http://127.0.0.1:8000
+  [I 150708 17:57:26 handlers:58] Start watching changes
+  [I 150708 17:57:26 handlers:60] Start detecting changes
+#+END_SRC
+
+
+Click on the link to view the result in your browser.  As you continue
+to edit the server should notice the change, regenerate and trigger
+your browser to refresh.
+
+*** To deploy
+
+
+#+BEGIN_SRC shell
+  $ mkdocs gh-deploy --clean
+#+END_SRC
+
+
+After a brief moment [[http://bnlif.github.io/wire-cell-docs][the main docs site]] will be updated.

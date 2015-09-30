@@ -1,0 +1,21 @@
+* User Manual
+
+There are a number of ways to use Wire Cell in a non-programmatic way.
+Wire Cell provides a few built-in ways to directly make use of its
+functionality.  You may also use Wire Cell as part of some larger
+system or framework (see their own documentation for details).  This
+manual documents how to use the user interfaces provided directly by
+Wire Cell software.
+
+** Using Bee
+
+t.b.d.
+
+** Command line applications
+
+t.b.d.
+
+
+
+
+

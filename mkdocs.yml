@@ -6,21 +6,12 @@ site_url: https://wirecell.github.io/
 theme: readthedocs
 pages:
   - Overview: index.md
-  - Installation:
-    - Install Wire Cell: install/install.md
-    - Install Externals: install/external.md
-  - Developer:
-    - Overview: dev/overview.md
-    - Building: dev/dev.md
-    - Interfaces: dev/iface.md
-    - Persistency: dev/data.md
-    - Testing: dev/test.md
-  - Algorithms:
-    - Making Cells: alg/cell.md
-    - Blob Reconstruction: alg/blob.md
-  - Visualization:
-    - WebGL: viz/webgl.md
-  - Meta:
-    - About: meta/meta.md
+  - Researcher: researcher/index.md
+  - User: user/index.md
+  - Installer: installer/index.md
+  - Developer: developer/index.md
+  - Administrator: administrator/index.md
+  - Documenter: meta/index.md
+
 # theme_dir: custom_theme
 

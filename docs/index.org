@@ -1,0 +1,39 @@
+#+OPTIONS: toc:nil
+
+* Welcome Wire Cell
+
+[[./img/wirecell.png]]
+
+This manual is intended to help users and developers work with the
+Wire Cell softare for Liquid Argon Time Projection Champer (LArTPC)
+event reconstruction and visualization.
+
+** Wire Cell Components
+
+The Wire Cell software consists of two main parts.
+
+*** Bee
+
+Wire Cell's "Bee" is a web-browser based visualization system.  It allows users to explore LArTPC data and the results of various reconstruction methods including Wire Cell.  
+
+*** Toolkit
+
+The Wire Cell Reconstruction Toolkit is a suite of C++ shared libraries and header files that provide a system for creating reconstruction applications, services or modules in your own software system.
+
+*** Services
+
+The Wire Cell Services is a system that ties Bee and the Toolkit to provide human-directed automated reconstruction.
+
+** Using this manual
+
+The manual is separated into of parts addressing different audiences.
+
+- Researcher :: understand the concepts.
+- User :: non-programmer usage.
+- Installer :: how to install the Wire Cell software.
+- Developer :: how to contribute to Wire Cell.
+- Administrator :: how to set up and administer Wire Cell Services.
+- Documenter :: contributing to this document.
+
+See the sidebar for links into each section.
+

@@ -7,3 +7,5 @@ site/
 c4che
 config.log
 upload.sh
+index.md
+*.md
