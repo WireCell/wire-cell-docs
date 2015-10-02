@@ -1,5 +1,76 @@
 * Developing Wire Cell Software
 
-** Toolkit
+This manual provides guidance for people wishing to develop Wire Cell software.  It is organized by the type of developer.  The considered categories as follows:
 
-t.b.d.
+- core ::  develop the Wire Cell Toolkit itself.
+- application :: write a Wire Cell Toolkit application or to integrate Wire Cell Toolkit into a larger software system or framework.
+- web :: develop the Bee front end.
+- services :: development of the Wire Cell Services middleware connecting Bee to the toolkit.
+
+The following sections focus on each type of developer.  It is recommended to read the "core" section regardless of what type of development you wish to do. 
+
+* Core
+
+** Overview
+
+Before getting into details, a few high level things must be understood to develop the core WCT libraries.
+
+*** Dependencies
+
+The Wire Cell Toolkit (WCT) is designed to be integrated into other
+applications or software systems in a flexible and straight-forward
+manner.  To support that, certain "rules" must be followed when
+developing the core of WCT.  This includes developing code that will
+provide objects given to the WCT.
+
+WCT provides an API based on a collection of abstract interface
+classes.  In general no "bare" implementation classes may be exposed
+except as subclasses of these interface classes.  The classes can be
+partitioned into the following categories:
+
+- data :: interfaces to the information on which Wire Cell operates.
+
+- operators :: mostly functional objects that operate on data objects.
+
+- executors :: see next section
+
+One can think of the operators and data objects making up the "verbs"
+and "nouns", respectively, of a Wire Cell "language".  
+
+When doing "core" development on a WCT library or on an "external"
+library provides WCT interface implementations, one must also access
+WCT objects only through the API, with one exception.  A class in a
+WCT library my directly instantiate or otherwise use a concrete
+subclass that is defined in the same library.  No compile-time
+dependencies between WCT implementation libraries are allowed (only
+depend on WCT "iface" library and access required instances via the
+=NamedFactory= method).
+
+*** Execution model
+
+WCT /operators/ are defined in such a way to partition the problem
+space of Wire Cell at divisions and a granularity considered proper to
+allow for competing implementations to be developed and to provide
+beneficial parallel processing.
+
+The operator interfaces are designed to be called in the context of
+/Data Flow Programming/ (DFP) paradigm graph.  Following the DFP
+paradigm allows complex Wire Cell processing to be run in a highly
+parallel fashion by writing components that do not have to care much
+about the complexity of parallel processing.  Some freedom is allowed
+in defining the interfaces of core algorithms.  The limitation that is
+levied on the implementations is that they do not violate thread
+safety by accessing global state that is shared by other threads.
+Ultimately an /executor/ adapter to an abstract execution model is
+required.  This abstract execution model must then be implemented with
+code that is aware of a specific DFP engine (eg, [[https://www.threadingbuildingblocks.org/][TBB]] or
+[[https://github.com/erenon/pipeline][Boost.Pipeline]]) which takes care of scheduling and overall data flow
+control.
+
+
+* Application
+
+* Web 
+
+* Services
+
