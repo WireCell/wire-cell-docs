@@ -10,6 +10,9 @@
 \usepackage{siunitx}
 \usepackage{xmpmulti}
 \usepackage[export]{adjustbox}
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
 
 \usepackage[outline]{contour}
 \usepackage{tikz}
@@ -55,16 +58,42 @@
 \section{Prerequisites}
 
 \begin{frame}
-  \frametitle{Major Prerequisites}
+  \frametitle{Major External Dependencies}
 
-  Wire Cell is fairly trivial to install but it has a few ``heavy'' prerequisites. 
+  Wire Cell prototype and toolkit themselves are fairly easy to
+  build and install but rely on a few ``heavy'' prerequisites.
 
-  \begin{itemize}
-  \item C++11 compiler: GCC ($\ge 4.9$), Clang ($>=7$)
-  \item BOOST ($\ge 1.55$)
-  \item ROOT ($\ge 6.02$)
-  \end{itemize}
+  \begin{center}\footnotesize
+    \begin{tabular}[h]{|c|c|c|c|}
+      \hline
+      package & prototype & toolkit & notes \\
+      \hline
+      C++11 & required & required & GCC 4.9.2/Clang 7\\
+      compiler & & & \\
+      \hline
+      ROOT6 & required & \textbf{optional} & get latest \\
+            & (core) &  (tests + I/O pkgs) & \\
+      \hline
+      BOOST & required  & required & $\ge 1.55$\\
+      \hline
+      Python &  \multicolumn{2}{c|}{optional/required} & 2.7.x\\
+      & \multicolumn{2}{c|}{(dictionaries and PyROOT)} & need for \texttt{waf} \\
+      \hline
+      Eigen3 & required & soon & header-only pkg\\
+      \hline
+      JSONCPP & \xmark & required & \\
+      \hline
+      Intel TBB & \xmark & required & \\
+      \hline
+      FFT imp & ROOT/fftw3 & TBD & \\
+      \hline
+    \end{tabular}
+  \end{center}
+  Especially for ``core'' toolkit we try to limit external dependencies.
+
+  ROOT is a problem, BOOST may be a problem.
 \end{frame}
+
 
 \subsection{Automated builds of externals}
 \begin{frame}
@@ -83,6 +112,8 @@
 
   \begin{center}
       \url{https://github.com/BNLIF/wire-cell-externals}
+
+      \url{https://github.com/WireCell/wire-cell-externals}
   \end{center}
 \end{frame}
 
@@ -92,16 +123,13 @@
   \frametitle{Compiler}
   \begin{itemize}
   \item Wire Cell uses C++11 and maybe some C++14 sneaking in. 
-  \item Most decent OSes provide this but your Sci. Linux box may not.
+  \item It's up to you to provide a working compiler.
+  \item Most but not all recent OSes do:
     \begin{itemize}
     \item Debian world has had GCC 4.9.2+ for a while.
     \item Recent Mac has Clang 7.
-    \item RHEL 7 has GCC 4.8, native - untested.
-    \end{itemize}
-  \item It's up to you to provide a working compiler.
-    \begin{itemize}
-    \item Use system compiler if it's sufficient.
-    \item Build GCC from source.
+    \item RHEL (ie Sci. Linux) 7 has GCC 4.8, native - untested.
+    \item \texttt{fnal.gov} has GCC 4.9.2 as UPS product
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -111,20 +139,21 @@
   Configure for C++11, FFTW3, Minuit and Python.
 
 \scriptsize
-\begin{verbatim}
-  wget https://root.cern.ch/download/root_v6.05.02.source.tar.gz
-  tar -xvf root_v6.05.02.source.tar.gz
-  mkdir root-build
-  cd root-build/
-  cmake -DCMAKE_INSTALL_PREFIX={install_dir} \
+\begin{lstlisting}[language=sh]
+$ wget https://root.cern.ch/download/root_v6.05.02.source.tar.gz
+$ tar -xvf root_v6.05.02.source.tar.gz
+$ mkdir root-build
+$ cd root-build/
+$ cmake -DCMAKE_INSTALL_PREFIX={install_dir} \
 	-Dbuiltin_xrootd=ON -Dcxx11=ON -Dpythia6=OFF -Dminuit2=ON \
 	-Dpython=ON \
 	-DFFTW_INCLUDE_DIR=/usr/include \
 	-DFFTW_LIBRARY=/usr/lib/x86_64-linux-gnu/libfftw3.so \
 	../root/
-  make
-  make install
-\end{verbatim}
+$ make
+$ make install
+\end{lstlisting}
+%$
 
 \small
 For this manual installation, activate ROOT environment using the (ROOT) standard:
@@ -141,27 +170,30 @@ $ source /path/to/install/bin/thisroot.sh
   \frametitle{Debian and co.}
 
   Recent Debian (Ubuntu, etc) can provide everything except ROOT6:
-\begin{verbatim}
-sudo apt-get install git build-essential gcc g++ make cmake \
+\begin{lstlisting}[language=sh]
+$ sudo apt-get install \
+    git build-essential gcc g++ make cmake \
     python-dev libboost-all-dev \
-    libsqlite3-dev tcl8.5-dev libxpm-dev libxft-dev libXext-dev \
+    libsqlite3-dev tcl8.5-dev \
+    libxpm-dev libxft-dev libXext-dev \
     libeigen3-dev
-\end{verbatim}
+\end{lstlisting}
+%$
   Maybe others are needed...
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Mac OS X + Homebrew}
   On Mac (tested on 10.10.5, ``Yosemite'') you get everything for cheap with \href{http://brew.sh/}{homebrew}!
-\begin{verbatim}
-brew install python
-brew install boost --with-python
-brew install homebrew/science/root6
-\end{verbatim}
-
+\begin{lstlisting}[language=sh]
+$ brew install python
+$ brew install boost --with-python
+$ brew install homebrew/science/root6
+\end{lstlisting}
+%$
   If you are new to homebrew see \url{http://brew.sh/}.
 
-  The native Mac compiler is now Clang but with the command confusingly still named ``\texttt{g++}''.
+  The native Mac compiler is now Clang but with the command confusingly still accessible as ``\texttt{g++}''.
 
 
 \end{frame}
@@ -171,11 +203,14 @@ brew install homebrew/science/root6
 \begin{frame}[fragile]
   \frametitle{Fermilab UPS}
   This worked at one time to provide ROOT and BOOST:
-\begin{verbatim}
+\begin{lstlisting}[language=sh]
 $ source /grid/fermiapp/products/larsoft/setups
 $ setup root v6_04_02 -q e7:prof
 $ setup boost v1_57_0 -q e7:prof
-\end{verbatim}
+\end{lstlisting}
+%$
+
+  This also puts a suitable \texttt{g++} in your \texttt{\$PATH}.
 
 \end{frame}
 
@@ -183,22 +218,23 @@ $ setup boost v1_57_0 -q e7:prof
   \frametitle{BNL RACF}
   A build of ROOT 6 is available on RACF:
 
-\begin{verbatim}
+\begin{lstlisting}[language=sh]
 $ source /gpfs01/lbne/users/sw/wc/bin/thisroot.sh
-\end{verbatim}
+\end{lstlisting}
+%$
 
 This will also set up to use \texttt{g++} 4.9.2.
 
 \end{frame}
 
-\section{Wire Cell Prototype Software}
+\section{Wire Cell Prototype}
 
 \subsection{Repositories}
 
 \begin{frame}
   \frametitle{Prototype Software Repositories}
 
-  All wire cell \textbf{prototype} source is in the ``BNLIF'' GitHub organization:
+  All wire cell \textbf{prototype} source is in the ``\textbf{BNLIF}'' GitHub organization:
 
   \begin{center}
     \url{https://github.com/BNLIF/}
@@ -217,24 +253,25 @@ This will also set up to use \texttt{g++} 4.9.2.
 \begin{frame}[fragile]
   \frametitle{Cloning the source}
   Developers do:
-\begin{verbatim}
+\begin{lstlisting}[language=sh]
 $ git clone git@github.com:BNLIF/wire-cell.git
 $ cd wire-cell/
-\end{verbatim}
+\end{lstlisting}
 
-  Others may do:
-\begin{verbatim}
+  Others may anonymously do:
+\begin{lstlisting}[language=sh]
 $ git clone https://github.com/BNLIF/wire-cell.git
 $ cd wire-cell/
 $ ./switch-git-urls
-\end{verbatim}
+\end{lstlisting}
+%$
 
   Everyone does:
 
-\begin{verbatim}
+\begin{lstlisting}[language=sh]
 $ git submodule init
 $ git submodule update
-\end{verbatim}
+\end{lstlisting}
 
 \end{frame}
 
@@ -243,18 +280,39 @@ $ git submodule update
 \begin{frame}[fragile]
   \frametitle{Building Wire Cell Prototype software}
   
-  Wire Cell Prototype software is built with \textbf{waf} using the
+  Wire Cell Prototype software is built with \textbf{plain waf} using the
   provided \texttt{waf-tools} package:
 
-\begin{verbatim}
+\begin{lstlisting}[language=sh]
 $ alias waf=`pwd`/waf-tools/waf
-$ waf --prefix=/path/to/install \
-        configure build install
-\end{verbatim}
+$ waf --prefix=/path/to/install configure build install
+\end{lstlisting}
 
 
 \vspace{5mm}
 That's it.
+
+\end{frame}
+
+\begin{frame}[fragile,fragile,fragile]
+  \frametitle{Build options}
+  See available options
+\begin{lstlisting}[language=sh]
+$ waf --help
+\end{lstlisting}
+%$
+
+  Configure to build with debug symbols:
+\begin{lstlisting}[language=sh]
+$ waf --build-debug=-ggdb3 [...others...] configure
+$ waf clean build install
+\end{lstlisting}
+
+  Build Doxygen docs:
+\begin{lstlisting}[language=sh]
+$ waf --doxygen-tarball=doxy.tar
+\end{lstlisting}
+%$
 
 \end{frame}
 
@@ -270,46 +328,48 @@ That's it.
   \begin{itemize}
   \item \verb|PATH|
   \item \verb|LD_LIBRARY_PATH|
-  \item \verb|PYTHONPATH|
   \end{itemize}
 
   to point to appropriate directories under \verb|/path/to/install|.
 
 \end{frame}
 
-\section{Wire Cell Toolkit Software}
+\begin{frame}[fragile]
+  \frametitle{Example Job (prototype)}
+\begin{lstlisting}[language=sh]
+$ wire-cell-improve \
+   ChannelWireGeometry_v2.txt celltree-pi0-new.root  0
+$ wire-cell-mc-ns1 \
+   ChannelWireGeometry_v2.txt shower3D_cluster_0.root 0
+$ cd bee/  # for now must be in wire-cell/bee/ source dir
+$ python dump_json.py ../shower3D_cluster_0.root simple charge truth
+$ ./upload-to-bee.sh to_upload.zip 
+\end{lstlisting}
+%$
+
+Or manually (click-drag) upload \texttt{to\_upload.zip} file to \url{http://www.phy.bnl.gov/wire-cell/bee/}.
+
+  File links:
+  \begin{itemize}
+  \item \href{https://raw.githubusercontent.com/BNLIF/wire-cell-celltree/master/geometry/ChannelWireGeometry_v2.txt}{ChannelWireGeometry\_v2.txt}
+  \item \href{http://lycastus.phy.bnl.gov/~wire-cell/examples/celltree/3.0/celltree-pi0-new.root}{celltree-pi0-new.root}
+  \item \href{http://lycastus.phy.bnl.gov/~wire-cell/examples/celltree/}{more celltree files}
+  \end{itemize}
+  Note: can give URL instead of local ROOT file.
+
+  \begin{lstlisting}[language=sh,basicstyle=\tiny]
+$ wire-cell-improve ChannelWireGeometry_v2.txt \
+ http://lycastus.phy.bnl.gov/~wire-cell/examples/celltree/3.0/celltree-pi0-new.root 0
+  \end{lstlisting}
+%$
+\end{frame}
+
+\section{Wire Cell Toolkit}
 
 \begin{frame}
   \tableofcontents[currentsection,hideothersubsections]
 \end{frame}
 
-\subsection{Externals}
-
-\begin{frame}
-  \frametitle{Externals for Wire Cell Toolkit}
-
-  The Wire Cell Toolkit requires both fewer and more externals than the prototype:
-
-  \begin{itemize}
-  \item C++11 compiler: GCC ($\ge 4.9$), Clang ($>=7$)
-  \item BOOST ($\ge 1.55$)
-  \end{itemize}
-
-  For parallel functionality:
-
-  \begin{itemize}
-  \item Intel TBB ($\ge 4.3$)
-  \end{itemize}
-
-  Some tests, I/O and visualization packages require:
-
-  \begin{itemize}
-  \item ROOT ($\ge 6.02$)
-  \end{itemize}
-
-  Same guidance for providing externals for the WC-Prototype applies to the WC-Toolkit.
-
-\end{frame}
 
 
 \subsection{Repositories}
@@ -317,7 +377,7 @@ That's it.
 \begin{frame}[fragile]
   \frametitle{Wire Cell Toolkit Repositories}
 
-  All wire cell \textbf{toolkit} source is in the ``WireCell'' GitHub organization:
+  All wire cell \textbf{toolkit} source is in the ``\textbf{WireCell}'' GitHub organization:
 
   \begin{center}
     \url{https://github.com/WireCell/}
@@ -329,16 +389,16 @@ That's it.
     \url{https://github.com/WireCell/wire-cell-build}
   \end{center}
 
-  Same guidance for getting the WC-Prototype source applies to the WC-Toolkit.
+  Same guidance as for prototype:
 
-\footnotesize
-\begin{verbatim}
+\begin{lstlisting}[language=sh]
 $ git clone git@github.com:WireCell/wire-cell-build.git
 $ cd wire-cell-build/
 $ ./switch-git-urls  # <-- if not a developer
 $ git submodule init
 $ git submodule update
-\end{verbatim}
+\end{lstlisting}
+%$
 
 \end{frame}
 
@@ -348,22 +408,22 @@ $ git submodule update
   \frametitle{Building Wire Cell Toolkit software}
   
   Wire Cell Toolkit software is built with \textbf{waf} using the
-  provided waf-bundled command \textbf{wcb}.
+  provided \textbf{waf-bundled} command \texttt{wcb} (no \texttt{waf-tools} package needed).
 
-\begin{verbatim}
-$ ./wcb --prefix=/path/to/install \
-        configure build install
-\end{verbatim}
+\begin{lstlisting}[language=sh]
+$ ./wcb --prefix=/path/to/install configure build install
+\end{lstlisting}
+%$
 
 If your dependencies are not found by \texttt{wcb} then:
 
-\begin{verbatim}
+\begin{lstlisting}[language=sh]
 $ ./wcb --help
 $ ./wcb --boost-libs=... --boost-includes=... \
         --with-root=... configure
-$ ./wcb
+$ ./wcb  # <-- default command is "build"
 $ ./wcb install
-\end{verbatim}
+\end{lstlisting}
 
 \end{frame}
 
@@ -379,12 +439,70 @@ $ ./wcb install
   \begin{itemize}
   \item \verb|PATH|
   \item \verb|LD_LIBRARY_PATH|
-  \item \verb|PYTHONPATH|
   \end{itemize}
 
   to point to appropriate directories under \verb|/path/to/install|.
 
 \end{frame}
+
+\begin{frame}[fragile,fragile,fragile]
+  \frametitle{Example jobs (toolkit)}
+  All unit tests are run during build (check terminal output) and can be run explicitly by hand.
+
+\begin{lstlisting}[language=sh]
+$ ls build/*/test_*
+\end{lstlisting}
+%$
+
+  Some tests generate PDF files and some will alternatively give a
+  live \texttt{TCanvas} if a command line argument is passed.  Eg:
+
+\begin{lstlisting}[language=sh]
+$ ./build/gen/test_wireparams foo
+$ ./build/gen/test_drifter foo
+$ ./build/gen/test_boundcells
+$ ./build/gen/test_boundcells_dune 
+$ ./build/gen/test_diffuser
+$ ./build/alg/test_depodriftcell_sync 
+\end{lstlisting}
+
+\textbf{Eventually}:
+\begin{lstlisting}[language=sh]
+$ wire-cell -c myjob.cfg -p myplugin.so -o myoutput.root myinput.root
+\end{lstlisting}
+%$
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Current full-chain test}
+
+  Toolkit full-chain using TBB \texttt{data\_flow}.  Default concurrency number equals \#CPUs.
+\begin{lstlisting}[language=sh]
+$ ./build/tbb/test_tbb_dfp [concurrency]
+...
+DepoSource: 0/660
+Drifter U:660/660 V:660/660 W:660/660
+Diffuser U:660/660 V:660/660 W:660/660
+Ductor U:660/83 V:660/82 W:660/83
+Merger:246/82
+Digitizer:82/82
+CellSelector:82/82
+\end{lstlisting}
+%$
+
+Shown: counts of input/output objects to some of the DFP nodes.
+
+Can you spot the bug?
+  
+\end{frame}
+\section{}
+
+\begin{frame}
+  \begin{center}
+    Start hacking!
+  \end{center}
+\end{frame}
+
 
 \end{document}
 
