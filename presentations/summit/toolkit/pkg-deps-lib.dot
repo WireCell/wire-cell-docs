@@ -1,0 +1,13 @@
+digraph "Deps" {
+	label="example of allowed library dependencies";
+	node[shape=tab];
+	util->iface[dir=back];
+	util->gen[dir=back];
+	iface->gen[dir=back];
+	iface->alg[dir=back];
+	util->alg[dir=back];
+	iface->sst[dir=back];
+	iface->bio[dir=back];
+	iface->apps[dir=back];
+	util->apps[dir=back];
+}	

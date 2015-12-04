@@ -1,0 +1,15 @@
+digraph "G" {
+	daq[label="DAQ/MC input\nconc = 1"];
+	alg0[label="slice cells\nconc = N"];
+	alg1[label="solve slices\nconc = N"];
+	solv[label="stack slices\nconc = 1"];
+	alg2[label="make clusters\nconc = N"];
+	alg3[label="pattern recognition\nconc = N"];
+
+	daq->alg0[label=" raw waveforms"];
+	alg0->alg1[label=" hit cells"];
+	alg1->solv[label=" blobs in slice"];
+	solv->alg2[label=" 3D image"];
+	alg2->alg3[label=" clusters"];
+	
+}

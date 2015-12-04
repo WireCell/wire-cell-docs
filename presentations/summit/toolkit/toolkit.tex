@@ -1,0 +1,574 @@
+% TEXINPUTS=.:$HOME/git/bvtex: latexmk  -pdf <main>.tex
+\documentclass[xcolor=dvipsnames]{beamer}
+
+\input{defaults}
+\input{beamer/preamble}
+
+\setbeamertemplate{navigation symbols}{}
+% \setbeamertemplate{background}[grid][step=1cm]
+
+\usepackage{siunitx}
+\usepackage{xmpmulti}
+\usepackage[export]{adjustbox}
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+
+\usepackage[outline]{contour}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\usetikzlibrary{positioning}
+
+\definecolor{bvtitlecolor}{rgb}{0.98, 0.92, 0.84}
+\definecolor{bvoutline}{rgb}{0.1, 0.1, 0.1}
+
+\renewcommand{\bvtitleauthor}{Brett Viren}
+\renewcommand{\bvtit}{Wire Cell Toolkit}
+\renewcommand{\bvtitle}{\LARGE Wire Cell Toolkit\\Architecture and Development Status}
+\renewcommand{\bvevent}{Wire Cell Summit 7-9 Dec 2015}
+\renewcommand{\bvbeamerbackground}{}
+
+% http://tex.stackexchange.com/a/23550
+\makeatletter
+\providecommand{\beamer@slideinframe}{0}%
+\tikzset{highlight/.code={\ifnum#1=\beamer@slideinframe \tikzset{draw=red,text=red}\fi},highlight/.value required}
+\makeatother
+
+\setbeamertemplate{headline}{%
+\leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=2.5ex,dp=1.125ex]{palette quaternary}%
+    \insertsectionnavigationhorizontal{\paperwidth}{}{\hskip0pt plus1filll}
+    \end{beamercolorbox}%
+  }
+}
+\begin{document}
+\input{beamer/title.tex}
+\input{beamer/toc.tex}
+
+\lstset{%
+  language=C++,
+                basicstyle=\scriptsize\ttfamily,
+                keywordstyle=\color{blue}\ttfamily,
+                stringstyle=\color{red}\ttfamily,
+                commentstyle=\color{gray}\ttfamily,
+                morecomment=[l][\color{magenta}]{\#}
+}
+
+\section{Prototype vs. Toolkit}
+
+\begin{frame}[fragile]
+  \frametitle{WC Prototype vs. WC Toolkit}
+  \begin{center}
+    \begin{tabular}[h]{rcl}
+      make it work & $\rightarrow$ & make it fast \\
+      initial development & $\rightarrow$ & long-term improvements \\
+      one developer & $\rightarrow$ & many developers \\
+    \end{tabular}
+  \end{center}
+
+  Some commonalities and differences:
+  \begin{itemize}
+  \item C++11, explicit data models, various I/O
+  \item portable, waf-based build, lives in GitHub.
+  \end{itemize}
+
+  \scriptsize
+  \begin{center}
+    \begin{tabular}[h]{|r|c|c|}
+      \hline
+      & Prototype & Toolkit \\
+      \hline
+      internal deps & tightly coupled & pervasive use of abstract interfaces \\
+      ROOT & intimate &  independent (only tests + I/O libraries)\\
+      \hline
+      interface & many \texttt{main()}'s & API, single, general-purpose CLI \\
+      execution & single threaded & abstract ``data flow programming'' engine \\
+      configuration & hard coded & ``configurable'' interface, JSON files \\
+      app construction & hard coded & DFP graph, dynamic plugin system \\
+      \hline
+      maintenance & Xin hacking! & long-term, multi-developer \\
+      unit tests & some & many \\
+      \hline
+      \hline
+      algorithms & state of the art & playing catch-up \\
+      \hline
+    \end{tabular}
+  \end{center}
+
+\end{frame}
+
+\section{Design Goals}
+
+\begin{frame}
+  \tableofcontents[currentsection,hideothersubsections]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Toolkit Design Goals}
+
+  Want the toolkit to:
+  \begin{itemize}
+  \item be portable to multiple ('nix) architectures: laptop/workstation, Grid, HPC, including GPU.
+  \item support multiprocessing with (more or less) thread-unaware algorithms.
+  \item dictate interface but not implementation.
+  \item support multiple independent algorithm developers.
+  \item encourage fine-grained unit testing.
+  \item Provide cheap package creation and aggregation.
+  \end{itemize}
+
+\end{frame}
+
+
+\section{Architecture}
+
+\begin{frame}
+  \tableofcontents[currentsection,hideothersubsections]
+\end{frame}
+
+\subsection{Concepts}
+
+\begin{frame}
+  \frametitle{Toolkit vs. Framework}
+  \begin{center}
+    \begin{tabular}[h]{|r|c|c|}
+      \hline
+      & Toolkit & Framework \\
+      \hline
+      \texttt{main()} & \xmark & \cmark \\
+      \hline
+    \end{tabular}
+  \end{center}
+
+  \vspace{3mm}
+
+  Wire Cell Toolkit does:
+  \begin{itemize}
+  \item dictate transient data model and active class interfaces.
+  \item provide a structure in which to implement functionality.
+  \end{itemize}
+
+  \vspace{3mm}
+
+  Wire Cell Toolkit does not:
+  \begin{itemize}
+  \item determine user interface, 
+  \item enforce an execution model,
+  \item nor enforce file formats.
+  \end{itemize}
+  But it does provide some ``batteries included'' for all of these.
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{High-level Wire Cell Toolkit Design Concepts}
+  \begin{description}
+  \item[interfaces] all toolkit components implement and communicate through abstract base classes.
+  \item[data model] instances are accessed via const shared pointers to their interface class for safe memory management.
+  \item[compute model] units (``nodes'') defined as interfaces consuming and producing data model interfaces.
+  \item[factory] concrete interface instance construction via named lookup, supports dynamic plugins.
+  \item[configurable] components may accept parameters from a unified configuration system.
+  \item[application] component aggregation left to developer/user discretion or through toolkit facilities.
+  \end{description}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Interfaces}
+  Interfaces define the \textit{verbs} and \textit{nouns} of the Wire Cell language.
+
+  \vfill
+
+  Data model examples:
+  \begin{itemize}
+  \item \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/IData.h}{IData} transient data base class.
+  \item \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/IWire.h}{IWire},
+    \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/ICell.h}{ICell} defines wire/cell geometry
+  \item \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/IDepo.h}{IDepo}, 
+    \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/IDiffusion.h}{IDiffusion} simulation intermediates.
+  \item \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/IFrame.h}{IFrame}, 
+    \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/ITrace.h}{ITrace} defines waveform data
+  \end{itemize}
+
+  Compute unit examples:
+  \begin{itemize}
+  \item 
+    \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/ICellMaker.h}{ICellMaker},
+    \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/IDrifter.h}{IDrifter}, 
+    \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/IFramer.h}{IFramer}, 
+    \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/IChannelCellSelector.h}{ICellSelector} 
+    are examples of transformative nodes 
+    (eg, \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/IBufferNode.h}{IBufferNode},
+    \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/IFunctionNode.h}{IFunctionNode}).
+  \item 
+    \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/IWireSource.h}{IWireSource},
+    \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/IFrameSource.h}{IFrameSource} are 
+    \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/ISourceNode.h}{source nodes}.
+    and \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/ICellSliceSink.h}{ICellSliceSink}
+    \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/ISinkNode.h}{sink nodes}.
+  \end{itemize}
+
+  More interfaces exist and more to be added as we progress.
+
+  \vfill
+  
+  All interface classes go in the package \href{https://github.com/WireCell/wire-cell-iface}{wire-cell-iface}.
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Named Factory Method and Plugins - using}
+
+  NamedFactory provides string-to-object lookup supporting
+  configuration and application levels.
+
+  \begin{lstlisting}[language=C++]
+string cname = "MyClass";
+string iname = "my happy instance";
+IMyInterface* obj = factory::lookup<IMyInterface>(cname, iname);
+  \end{lstlisting}
+  \begin{itemize}
+  \item Find an instance implementing an interface by its concrete class \textbf{name} and an optional instance name.
+  \item Behind the scenes, may use optional plugin system to check shared libraries for \texttt{MyClass}.
+  \item Identical lookups return same instance, default-construct if not yet seen.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Named Factory Method and Plugins - Back end}
+  \begin{lstlisting}[language=C++]
+WIRECELL_NAMEDFACTORY_BEGIN(BoundCells)
+WIRECELL_NAMEDFACTORY_INTERFACE(BoundCells, ICellMaker);
+WIRECELL_NAMEDFACTORY_END(BoundCells)
+  \end{lstlisting}
+
+  \begin{itemize}
+  \item Interface implementation must register with (singleton)
+    factory at file scope to bind concrete class name to the interface
+    it implements.
+  \end{itemize}
+
+  \vfill
+
+  \begin{lstlisting}[language=C++]
+PluginManager& pm = PluginManager::instance();
+pm.add("WireCellGen");
+  \end{lstlisting}
+
+  \begin{itemize}
+  \item Application or configuration layer must register shared
+    libraries holding components with a (singleton) plugin manager.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Configuration}
+
+  This is still being developed so still partly conceptual:
+
+  \begin{itemize}
+  \item Configurable classes implement \texttt{IConfigurable} and register with \texttt{NamedFactory}.
+  \item User supplies a JSON file containing a dictionary.
+    \begin{itemize}
+    \item[$\rightarrow$] keys map to concrete class/instance names.
+    \item[$\rightarrow$] values follow target-specific schema.
+    \end{itemize}
+  \item Parsed and interpreted by a configuration manager.
+  \item Data driven interpretation but some special cases:
+    \begin{itemize}
+    \item plugin manager must be configured early
+    \item execution manager must be instantiated and configured
+    \item execution manager configuration drives the rest.
+    \end{itemize}
+  \end{itemize}
+
+  This dance must be done at application level but will be presented
+  as a few high-level calls.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Application}
+
+  It is up to the application developer to determine the scope and
+  structure of how Wire Cell Toolkit components are called.
+
+  \vfill
+
+  Many Wire Cell Toolkit applications possible:
+
+  \begin{itemize}
+  \item A general-purpose \texttt{wire-cell} command line program is
+    being developed and included with the toolkit.
+  \item External framework modules may be created.
+  \item A backend service is being considered in support of Bee 2.0.
+  \end{itemize}
+
+\end{frame}
+
+\subsection{Data Flow Programming}
+
+\begin{frame}
+  \frametitle{Data Flow Programming}
+  \footnotesize
+  DFP structures the program as a graph.
+  \vspace{-4mm}
+  \begin{columns}
+    \begin{column}{0.8\textwidth}
+      \begin{description}
+      \item[vertices] compute units (``nodes'')
+      \item[edges] data queues
+      \end{description}
+
+      \begin{itemize}
+      \item Thread safe queues + stateless nodes = ``easy'' parallel processing.
+      \item Statefull still possible with concurrency=1 nodes.
+      \item Nodes can be developed and tested in isolation.
+      \item App-level programming by ``drawing'' the graph.
+      \item Streamed processing can minimize RAM usage.
+      \item Feedback loops may implement iterative flows.
+      \item May instrument graph to collect performance data.
+      \end{itemize}
+      \flushright One possible example $\rightarrow$
+    \end{column}
+
+    \begin{column}{0.25\textwidth}
+      \includegraphics[width=\textwidth]{dfp-exp.pdf}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Abstract Execution Model}
+  Wire Cell Toolkit defines abstract nodes and connection method:
+  \begin{itemize}
+  \item A node has zero or more input/output ``ports''.
+  \item A port carries data of a specific (data model) type.
+  \item A node declares its maximum concurrency.
+  \item \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/INode.h}{Node} and 
+    \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/IPort.h}{port} interface classes.
+  \item ``Well known'' node types defined as mid-level interface classes. 
+  \item
+    \href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/IDataFlowGraph.h}{IDataFlowGraph}
+    implements connection and graph execution methods.
+  \item Battery included: \href{https://github.com/WireCell/wire-cell-tbb}{Intel TBB-based implementation}.
+  \end{itemize}
+  This works now but needs some final design polish.
+\end{frame}
+
+\section{Packages}
+
+\begin{frame}
+  \frametitle{Current package set}
+  \footnotesize
+  \texttt{wire-cell-}
+  \begin{description}
+  \item[\href{https://github.com/WireCell/wire-cell-build}{\texttt{build}}] 
+    default source code aggregation and suite-wide build context.
+  \item[\href{https://github.com/WireCell/wire-cell-util}{\texttt{util}}]
+    NamedFactory, PluginManager, ConfigMangaer, Units, 3D~vector, special containers.
+  \item[\href{https://github.com/WireCell/wire-cell-iface}{\texttt{iface}}] 
+    data model and node interface classes.
+  \item[\href{https://github.com/WireCell/wire-cell-gen}{\texttt{gen}}]
+    simulation of 4/6 ``D''s: Deposit/Drift/Diffuse/Digitize \\
+    (Detector response and Deconvolution still in development)
+  \item[\href{https://github.com/WireCell/wire-cell-alg}{\texttt{alg}}]
+    reference Wire Cell algorithms ported from prototype.
+  \item[\href{https://github.com/WireCell/wire-cell-tbb}{\texttt{tbb}}]
+    Intel TBB based DFP execution model implementation.
+  \item[\href{https://github.com/WireCell/wire-cell-apps}{\texttt{apps}}]
+    Provided end-user applications.
+  \item[\href{https://github.com/WireCell/wire-cell-docs}{\texttt{docs}}]
+    User/developer/installer manual.
+  \item[\href{https://github.com/WireCell/wire-cell-sst}{\texttt{sst}}]
+    Celltree file reading/writing.
+  \item[\href{https://github.com/WireCell/wire-cell-bio}{\texttt{bio}}]
+    Bee JSON file production.
+  \item[\href{https://github.com/WireCell/wire-cell-rio}{\texttt{rio}}]
+    Toolkit ROOT-based I/O.
+  \item[\href{https://github.com/WireCell/wire-cell-rio}{\texttt{rootvis}}]
+    ROOT-based visualization.
+  \end{description}
+  All are working at some level but are still in development.
+\end{frame}
+
+\begin{frame}
+  \frametitle{A Wire Cell Toolkit Package}
+
+  Three possible products from building a toolkit package:
+
+  \footnotesize
+
+  \begin{description}
+  \item[lib] \texttt{inc/PackageName/*.h} and \texttt{src/*.cxx}
+    turned into \\
+    shared library+headers.
+  \item[app] \texttt{apps/main-app.cxx} each source file made into an \\
+    executable file ``\texttt{main-app}''.
+  \item[test] \texttt{test/test\_*.cxx} each source file built to a
+    test executable file and run as part of build each time code changes require it.
+  \end{description}
+
+  \begin{itemize}
+  \item Each product type has own dependency tree (see next).
+
+  \item There is a very low effort barrier to create new packages.
+
+  \item Consider making a new package before adding to an existing one.
+
+  \item Also can make new/personal build-aggregation packages to
+    exercise narrower build contexts.
+
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Package dependencies}
+  \begin{columns}
+    \begin{column}{0.4\paperwidth}
+      \includegraphics[width=\textwidth]{pkg-deps-lib.pdf}
+    \end{column}
+    \begin{column}{0.2\paperwidth}
+      \includegraphics[width=\textwidth]{pkg-deps-test.pdf}
+    \end{column}
+  \end{columns}
+
+  \footnotesize
+  \begin{itemize}
+  \item No direct coupling among implementation libraries allowed, only loose via \texttt{iface}.
+  \item \texttt{iface} provides ``simple'' data model implementation.
+  \item Other packages provide data model imp to optimize memory/CPU (eg, lazy instantiating).
+  \item Library and app dependencies strictly controlled, tests may violate.
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Hack on your own Wire Cell packages!}
+
+  \begin{enumerate}
+  \item Make a git repository in GitHub (or wherever you prefer).
+  \item \texttt{mkdir -p inc/MyPackageName src test} and make a
+    \texttt{wscript\_build} file based on
+    \href{https://github.com/WireCell/wire-cell-alg/blob/master/wscript_build}{existing
+      ones}.
+  \item Fork
+    \href{https://github.com/WireCell/wire-cell-build}{wire-cell-build}
+    to add your package, or make a personal/reduced equivalent.
+  \item Implement some existing DFP node interface class or work with
+    me to develop new ones.
+  \item If your node makes data, use existing ``simple data''
+    (\href{https://github.com/WireCell/wire-cell-iface/blob/master/inc/WireCellIface/SimpleFrame.h}{eg})
+    data model classes, subclass data model interfaces to implement
+    your own or work with me to extend current data model.
+  \item Write unit tests as you develop.
+  \item Run a full-chain application with the \texttt{wire-cell}
+    command line program (still in development).
+  \end{enumerate}
+\end{frame}
+
+\section{Status and Summary}
+
+\begin{frame}
+  \tableofcontents[currentsection,hideothersubsections]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Current Full Chain}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \footnotesize
+      \begin{itemize}
+      \item Kinematics are just trivial straight-line ``tracks''.
+      \item So far, focused mainly on simulation nodes.
+        \begin{itemize}\scriptsize
+        \item Still exercises all needed DFP features (sources, sinks, buffering and parallel)
+        \item But with faster/simpler algorithms.
+        \item Also for now, short-circuit \textit{detector response} + \textit{deconvolution} steps.
+        \end{itemize}
+      \item The only Wire Cell imaging algorithm so far is selecting potentially hit cells.
+      \item \href{http://www.phy.bnl.gov/wire-cell/bee/set/18872eff-92ec-4e18-a8d0-645b9fc1e5aa/event/0/}{Sink node dumps a Bee file}.
+      \item \href{https://github.com/WireCell/wire-cell-tbb/blob/master/test/test\_tbb\_dfp.cxx}{wire-cell-tbb/test/test\_tbb\_dfp.cxx}
+
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \vspace{-10mm}
+      \includegraphics[width=\textwidth]{current-full-chain.pdf}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Status}
+  \footnotesize
+  \begin{description}
+  \item[\cmark\cmark\cmark] repos, build, packaging, dependencies all ``done'' \\
+(will evolve as we port the prototype).
+  \item[\cmark\cmark\xmark] initial data model established,\\
+    needs to grow as more algorithms are ported.
+  \item[\cmark\xmark\xmark] only the tiniest, first Wire Cell algorithm ported.  \\
+    \textbf{Lots of work needed here, expect to do tuning/refactoring.}
+
+  \item[\cmark\cmark\xmark] simulation needs 2 more ``D''s: detector response and deconvolution.
+  \item[\cmark\cmark\xmark] parallel DFP working, but needs some small design tweaks.
+  \item[\cmark\xmark\xmark] initial end-user configuration, straightforward to flesh out.
+  \item[\cmark\xmark\xmark] celltree, Bee, native I/O needs fleshing out.
+
+  \item[\cmark\xmark\xmark] general command line app started.\\
+    Waiting on other progress (mostly dfp + cfg).
+
+  \end{description}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Contributing to the Toolkit}
+  Tookit development:
+  \begin{itemize}\footnotesize
+  \item Requires significant learning of current structure, good grasp
+    of OO patterns, understanding OO vs GP paradigms, threading
+    issues.  
+  \item Possible overlap with active R\&D in the Gaudi world.
+  \item I'd love some help/input here!
+  \end{itemize}
+  Implementing various needed DFP nodes:
+  \begin{itemize}\footnotesize
+  \item A basic understanding of the toolkit structure required.
+  \item Porting algorithms from the prototype requires reading and
+    understanding Xin's code (nontrivial but not impossible), looking
+    for ways to factor it into well defined DFP nodes joined by well
+    defined data.
+  \item I/O modules need fleshing.  They just provide DFP nodes,
+    mostly just a matter of typing in code.
+  \end{itemize}
+  Hacking your own ideas:
+  \begin{itemize}\footnotesize
+  \item Build the toolkit, start a package or two.
+  \item Test out own interfaces for data and nodes.
+  \item Work with me to incorporate changes.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Summary}
+  \begin{itemize}
+  \item Wire Cell is transitioning from the \textbf{very successful working
+    prototype} to a carefully designed toolkit to support long-term
+    contributions from many developers, parallel processing and flexible
+    integration with other systems.
+  \item The toolkit supports the data-flow programming paradigm.
+  \item An initial ``full chain'' (test) application exercises major toolkit functionality.
+  \item Some structural work on the tookit itself is still needed so
+    API is not yet fully stable, many fine-grained tests are developed.
+  \item Much effort is needed to ``port'' prototype algorithms.
+    \begin{itemize}
+    \item[$\rightarrow$] contributions from others welcome and needed!
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\end{document}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

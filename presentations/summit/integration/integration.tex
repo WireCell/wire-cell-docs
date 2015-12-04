@@ -1,0 +1,355 @@
+% TEXINPUTS=.:$HOME/git/bvtex: latexmk  -pdf <main>.tex
+\documentclass[xcolor=dvipsnames]{beamer}
+
+\input{defaults}
+\input{beamer/preamble}
+
+\setbeamertemplate{navigation symbols}{}
+% \setbeamertemplate{background}[grid][step=1cm]
+
+\usepackage{siunitx}
+\usepackage{xmpmulti}
+\usepackage[export]{adjustbox}
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+
+\usepackage[outline]{contour}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\usetikzlibrary{positioning}
+
+\definecolor{bvtitlecolor}{rgb}{0.98, 0.92, 0.84}
+\definecolor{bvoutline}{rgb}{0.1, 0.1, 0.1}
+
+\renewcommand{\bvtitleauthor}{Brett Viren}
+\renewcommand{\bvtit}{Wire Cell / LArSoft Integration}
+\renewcommand{\bvtitle}{\LARGE Wire Cell / LArSoft Integration}
+\renewcommand{\bvevent}{Wire Cell Summit 7-9 Dec 2015}
+\renewcommand{\bvbeamerbackground}{}
+
+% http://tex.stackexchange.com/a/23550
+\makeatletter
+\providecommand{\beamer@slideinframe}{0}%
+\tikzset{highlight/.code={\ifnum#1=\beamer@slideinframe \tikzset{draw=red,text=red}\fi},highlight/.value required}
+\makeatother
+
+\setbeamertemplate{headline}{%
+\leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=2.5ex,dp=1.125ex]{palette quaternary}%
+    \insertsectionnavigationhorizontal{\paperwidth}{}{\hskip0pt plus1filll}
+    \end{beamercolorbox}%
+  }
+}
+\begin{document}
+\input{beamer/title.tex}
+\input{beamer/toc.tex}
+
+\lstset{%
+  language=C++,
+                basicstyle=\scriptsize\ttfamily,
+                keywordstyle=\color{blue}\ttfamily,
+                stringstyle=\color{red}\ttfamily,
+                commentstyle=\color{gray}\ttfamily,
+                morecomment=[l][\color{magenta}]{\#}
+}
+
+\section{Overlap and Synergy}
+
+\begin{frame}
+  \frametitle{LArSoft and Wire Cell Characteristics Compared}
+
+  \begin{center}
+    \begin{tabular}[h]{|r|c|c|}
+      \hline
+      & LArSoft/Art & Wire Cell \\
+      \hline
+      arch & framework & toolkit \\
+      exec & serial & parallel DFP (or DIY) \\
+      sim & Geant4 + the 5 ``D''s &  just the 5 ``D''s\footnote{Deposit, Drift, Diffuse, Detector response, Digitize.} \\
+      reco & mostly 2D then merge & 3D image + pat.rec. \\
+      algs & alt/competing algs & one alg/step (no alt) \\
+      chain & full MC + data & drift sim + data \\
+      perf & fast and good & very slow but better \\
+      build & fnal.gov  & portable \\
+      support & SCD & shoestring \\
+      maturity & adult & teenager \\
+      \hline
+    \end{tabular}
+  \end{center}
+
+\end{frame}
+
+ %  graph of data exchange
+
+\begin{frame}
+  \frametitle{Opportunities for Data Exchange}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \footnotesize
+      \begin{itemize}
+      \item In principle, can exchange data between many steps in a
+        fine-grained manner.
+      \item Not all exchanges are profitable, eg, WC trajectories are
+        trivial, LS 3$\times$2D imaging may not work with WC clustering.
+      \item Solid \textcolor{red}{red}/\textcolor{blue}{blue} lines show likely fruitful exchange.
+      \item Every line implies real effort:
+        \begin{itemize}\scriptsize
+        \item Data model matching.
+        \item Converters.
+        \item Exchange channel.
+        \end{itemize}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\textwidth]{lswc-data-exchange.pdf}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{The Integration Challenge}
+
+\begin{frame}
+  \tableofcontents[currentsection,hideothersubsections]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Integration Challenges}
+  The good:
+  \begin{itemize}
+  \item A file exchange method already in use (celltree).
+  \item Wire Cell (toolkit) is explicitly designed for easy integration a the code level (compiling/linking)
+  \end{itemize}
+  Main challenges:
+  \begin{description}
+  \item[Memory] each of LS and WC alone require $\sim$2GB
+    (individual memory usage is largely \textbf{not} redundant)
+    \begin{itemize}\footnotesize
+    \item Fermigrid limits to 2GB/job by default, other clusters similar.
+    \item Massively parallel systems even more limited in RAM/core (thus shared-memory, multi-threaded WC developed).
+    \end{itemize}
+  \item[Portability] ROOT broken on HPC (at least on ANL Mira),
+    general LArSoft/Art portability issues are known.
+  \item[Expertise] need to understand different code bases, designs, data and execution models.
+  \end{description}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Some Integration Considerations} 
+
+  Challenges aside, we need \textit{some} form of LS/WC integration.  
+
+  \vspace{3mm}
+
+  My most important considerations:
+
+  \begin{itemize}
+  \item We must not impede ongoing development of LS nor WC.
+    \begin{itemize}
+    \item Each are separate projects with own development cultures.
+    \end{itemize}
+  \item Confront the realities of hardware architecture limitations
+    particularly those needed for production processing.
+    \begin{itemize}
+    \item These are not just LS/WC or even WC-only challenges.
+    \end{itemize}
+  \item Facilitate comparison studies between all viable LArTPC reco
+    methods.
+    \begin{itemize}
+    \item Integration for studies is likely very different than integration for production processing.
+    \end{itemize}
+  \end{itemize}
+
+
+\end{frame}
+
+\section{Some Integration Methods}
+
+\begin{frame}
+  \tableofcontents[currentsection,hideothersubsections]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Exchange Files}
+
+  \begin{itemize}
+  \item Run LArSoft and Wire Cell as separate executables.
+  \item Pass data between the two via files in batch/serial manner.
+  \item Incrementally adds to file bookkeeping overhead.
+  \item Care in avoiding I/O bottlenecks, esp. in prod. proc.
+  \item Effort to code converters, define file formats.
+  \item Already have a good start with ``\textbf{celltree}'' files.
+    \begin{itemize}\footnotesize
+    \item Can hold: MC particle truth, energy dep. digitized waveforms, WC image (space/charge points) and....
+    \item Supporting modules in both LS and WC (prototype and toolkit) 
+    \end{itemize}
+  \end{itemize}
+
+  Notes:
+  \begin{itemize}
+  \item \textbf{celltree} file do not depend on neither WC nor LS
+    code.  They hold POD + TClonesArray of TH1F.
+  \item Can someone investigate use of \textbf{LArLite} files?
+  \end{itemize}
+
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Wire Cell in Single LArSoft Module}
+  \begin{itemize}
+  \item Write a WC ``application'' which is a LS module/algorithm.
+  \item LS compiled/linked against WC libs, can still make use of WC configuration, plugin, execution managers.
+  \item In principle, threading should be okay:
+    \begin{itemize}\footnotesize
+    \item LS thinks WC is just a function call.
+    \item LS single threaded, gives control to WC. 
+    \item WC threads do not run LS code (nor ROOT).
+    \end{itemize}
+  \item Single image may hit memory pressures on Grid/HPC.
+  \item On HPC, hits ROOT  support problem and general LArSoft/Art portability problems.
+  \item Maybe okay for doing comparison studies on high-memory,
+    high-core workstations running Sci. Linux.
+  \item Development of such a module requires all of FNAL software
+    infrastructure support. (Not it!)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Variation: Wire Cell in Many LArSoft Modules}
+  A dubious idea:
+  \begin{itemize}\footnotesize
+  \item A WC DFP can be any size, even one node, or even call to a bare node.
+  \item Can, in principle, distribute WC nodes across many LS modules.
+  \item Won't help with memory pressures and reduces parallelism.
+  \item Puts all intermediates into LS data store, but requires
+    fine-grained data model development and converter coding.
+  \end{itemize}
+  It is a lot of work with no obvious benefit right now, but it is an option.
+\end{frame}
+
+\begin{frame}
+  \frametitle{LArSoft client and Wire Cell Distributed Service}
+
+  \begin{itemize}
+  \item Write a LS module to make network request to a WC server.
+  \item WC server is distributed on local cores/Cluster/Grid/HPC.
+  \item The request transfers LS data to process.
+  \item The response returns WC results.
+  \item Synergy: need some a WC service to support Bee 2.0.
+  \item For HPC: LS lives on high-memory/high-CPU but otherwise
+    conventional ``edge'' computer.  This pattern is followed by other
+    HPC uses (eg, ATLAS Event Service).
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Method Recommendations}
+  My personal opinion of the ``right'' optima:
+  \begin{center}
+    \begin{tabular}[h]{|r|c|c|c|}
+      \hline
+      & files & module & client/server \\
+      \hline
+      reco dev & \cmark & & \\
+      HPC dev & \cmark & & \cmark \\
+      HPC prod &  & & \cmark \\
+      Grid prod & \cmark & & \cmark \\
+      compare & \cmark & & \\
+      detailed & \cmark & \cmark & \\
+      \hline
+      Bee 2.0 &  & & \cmark \\
+      \hline
+    \end{tabular}
+  \end{center}
+
+  Notes:\scriptsize
+  \begin{itemize}
+  \item \textbf{Maybe} only detailed comparisons need to run WC as a LS module.
+  \item Production processing memory pressure rules out WC as a LS module.
+  \item I think HPC production ultimately requires client/server architecture.
+  \item The backend service of Bee 2.0 likely to share many common
+    components with what is used to support distributed production
+    processing.
+  \end{itemize}
+\end{frame}
+
+\section{FNAL Software Infrastracture}
+
+\begin{frame}
+  \tableofcontents[currentsection,hideothersubsections]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Integration into \texttt{fnal.gov}}
+  Wire Cell prototype has been built at \texttt{fnal.gov}.
+  \begin{itemize}\footnotesize
+  \item half a day to locate and understand how to set up FNAL's ROOT6
+    installation (mostly due to my ignorance and just passive time
+    waiting for the right answer from experts on a mailing list).
+  \item 10 minutes to download Wire Cell source, build and run its tests.
+  \item Went according to instructions.  No expert tweaks needed despite Sci.~Linux not being the dev platform.
+  \end{itemize}
+
+  Microboone (Jyoti Joshi) is running Wire Cell prototype built in this manner on Fermi Grid nodes.
+\end{frame}
+
+\begin{frame}
+  \frametitle{UPS'ify}
+  Do we need UPS ``products'' made from Wire Cell prototype and/or toolkit?
+
+  \vspace{3mm}
+
+  Right now, I think ``no''.  Why?
+
+  \begin{itemize}
+  \item No formal Wire Cell releases yet (prototype nor toolkit).
+  \item Would not be useful to WC developers
+  \item Pure end-users are still almost nonexistent and they can build
+    from source no prob.
+  \item Long established, \texttt{fnal.gov}-based DUNE projects seem
+    okay without UPS'ed experiment code (beam MC, Fast MC,
+    mgt/globes).
+  \end{itemize}
+
+  So, it seems there is no rush.
+
+  \vspace{3mm}
+
+  If anyone wants to do it, go for it, but I think it is still too early to be useful.
+
+\end{frame}
+
+
+\section{Summary}
+
+\begin{frame}
+  \tableofcontents[currentsection,hideothersubsections]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Summary}
+  \begin{itemize}
+  \item Many options: lots of potential points and methods for integrating LArSoft and Wire Cell.
+  \item Constraints: Integration strategy needs effort, needs
+    to impede neither project, and is best directed toward most likely uses.
+  \item Files: integration based on exchange files most needed now (and largely in place).
+  \item Service: WC-as-a-service seems best for production running
+    \begin{itemize}
+    \item Needed for Bee 2.0 anyways, likely lots of overlap.
+    \item Need a LS client module.
+    \item \textbf{Any volunteers to work on either?}
+    \end{itemize}
+  \item UPS packaging of Wire Cell not expected to be needed right now.
+  \end{itemize}
+\end{frame}
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

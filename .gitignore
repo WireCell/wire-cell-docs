@@ -9,3 +9,14 @@ config.log
 upload.sh
 index.md
 *.md
+auto
+*.aux
+*.fdb_latexmk
+.fls
+*.fls
+*.log
+*.out
+*.snm
+*.toc
+*.vrb
+*.nav

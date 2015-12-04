@@ -1,0 +1,22 @@
+digraph "FullChain" {
+	label="Current Wire Cell Toolkit Full Chain";
+	ds[label="Source of energy\ndepositions"];
+	dru[label="Drift to\nU plane"];
+	drv[label="Drift to\nV plane"];
+	drw[label="Drift to\nW plane"];
+	diu[label="Diffusion at\nU plane"];
+	div[label="Diffusion at\nV plane"];
+	diw[label="Diffusion at\nW plane"];
+	duu[label="Waveform at\nU plane"];
+	duv[label="Waveform at\nV plane"];
+	duw[label="Waveform at\nW plane"];
+	merge[label="Merge planes"];
+	digi[label="Digitize to\ntime slices"];
+	ccs[label="Select potentially\nhit cells"];
+	csink[label="Sink cells"];	
+
+	ds->dru->diu->duu->merge;
+	ds->drv->div->duv->merge;
+	ds->drw->diw->duw->merge;
+	merge->digi->ccs->csink;
+}

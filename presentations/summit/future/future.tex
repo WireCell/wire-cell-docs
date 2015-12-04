@@ -1,0 +1,254 @@
+
+
+% TEXINPUTS=.:$HOME/git/bvtex: latexmk  -pdf <main>.tex
+\documentclass[xcolor=dvipsnames]{beamer}
+
+\input{defaults}
+\input{beamer/preamble}
+
+\setbeamertemplate{navigation symbols}{}
+% \setbeamertemplate{background}[grid][step=1cm]
+
+\usepackage{siunitx}
+\usepackage{xmpmulti}
+\usepackage[export]{adjustbox}
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+
+\usepackage[outline]{contour}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\usetikzlibrary{positioning}
+
+\definecolor{bvtitlecolor}{rgb}{0.98, 0.92, 0.84}
+\definecolor{bvoutline}{rgb}{0.1, 0.1, 0.1}
+
+\renewcommand{\bvtitleauthor}{Brett Viren}
+\renewcommand{\bvtit}{Wire Cell Toolkit \\ Future Plans}
+\renewcommand{\bvtitle}{\LARGE Wire Cell Toolkit / Future Plans}
+\renewcommand{\bvevent}{Wire Cell Summit 7-9 Dec 2015}
+\renewcommand{\bvbeamerbackground}{}
+
+% http://tex.stackexchange.com/a/23550
+\makeatletter
+\providecommand{\beamer@slideinframe}{0}%
+\tikzset{highlight/.code={\ifnum#1=\beamer@slideinframe \tikzset{draw=red,text=red}\fi},highlight/.value required}
+\makeatother
+
+\setbeamertemplate{headline}{%
+\leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=2.5ex,dp=1.125ex]{palette quaternary}%
+    \insertsectionnavigationhorizontal{\paperwidth}{}{\hskip0pt plus1filll}
+    \end{beamercolorbox}%
+  }
+}
+\begin{document}
+\input{beamer/title.tex}
+\input{beamer/toc.tex}
+
+\lstset{%
+  language=C++,
+                basicstyle=\scriptsize\ttfamily,
+                keywordstyle=\color{blue}\ttfamily,
+                stringstyle=\color{red}\ttfamily,
+                commentstyle=\color{gray}\ttfamily,
+                morecomment=[l][\color{magenta}]{\#}
+}
+
+\section{Roadmap}
+
+\begin{frame}
+  \frametitle{General Wire Cell Toolkit Roadmap}
+
+  \begin{enumerate}\small
+  \item Complete design and initial implementation for Data Flow
+    Programming (DFP) execution model based on Intel TBB.
+  \item Port prototype algorithms into toolkit.
+  \item Evaluate performance on single-machine, multi-thread.
+  \item Investigate GPU-accelerated DFP nodes for bottlenecks.
+  \item Develop a Wire Cell service application.
+  \item Implement distributed DFP (edges with MPI or ZeroMQ or ???).
+  \item Port toolkit to run on HPC (ANL Mira)
+  \end{enumerate}
+
+  Once \#1 is done the rest can proceed in parallel.
+
+  \textbf{Any volunteers?}
+
+  \begin{center}
+      In general:   \textbf{hack new ideas and do studies!}
+  \end{center}
+
+
+\end{frame}
+
+\section{Tasks}
+
+\begin{frame}
+  \tableofcontents[currentsection,hideothersubsections]
+  I'll go through what each task needs $\longrightarrow$
+\end{frame}
+
+\begin{frame}
+  \frametitle{Finish DFP}
+  \begin{itemize}
+  \item There is a clash between OO and GP to contend with.
+  \item Dynamic plugins, NamedFactory, Interfaces are all OO.
+  \item TBB is GP (so are others like Boost.Pipeline).
+  \item To marry these two paradigms requires a lot of scaffolding (or a better brain than I have).
+  \item Expert input on this very technical detail would be most welcome.
+  \item[$\rightarrow$] if you have experience/input, let's talk offline!
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Port prototype algorithms}
+
+  \begin{itemize}\small
+  \item Xin has produced a huge body of intellectual work in the prototype.
+  \item Focus was on results, not maintenance or software design.
+  \item Structure supporting the prototype is now different in the toolkit.
+  \item Effort is needed to understand each algorithm and refactor its code into Toolkit concepts.
+  \item Porters will contend with:
+    \begin{itemize}
+    \item Extracting hard-coded configuration parameters.
+    \item Monolithic code blocks need to be split.
+    \item Adapting to data model changes.
+    \item Conversion of statefull classes to functional ones.
+    \item Go from ``services'' to dependency injection.
+    \end{itemize}
+  \item Xin has done some optimization, but I expect more can be had
+    along the way.  Porters should be/get familiar with profiling
+    tools.
+  \item Suggest to focus on reproduce prototype results before making your own improvements.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Performance Evaluation and Improvements}
+
+  \begin{itemize}
+  \item Will be done, in part, during the porting exercise.
+  \item But, want a \textbf{systematic performance audit} of full chain.
+  \item Understand performance as a function of thread count.
+  \item \textbf{Kill any easy bottlenecks}.
+  \item Document before/after performance and what the fixes were.
+  \end{itemize}
+
+  Maybe not a lot of fun, but the results will make you a hero.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{GPU Acceleration}
+  \begin{itemize}
+  \item Best done after CPU-level optimization is exhausted.
+  \item Understand remaining bottlenecks.
+  \item Determine if they can be accelerated with GPU.
+  \item Develop drop-in replacements for DFP nodes which are
+    bottlenecks and which run the algorithm on a GPU.
+  \end{itemize}
+
+  This work should be done with awareness of existing and emerging GPU
+  use on HPC (eg, the new BNL HPC).
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Wire Cell Service}
+
+  Two driving applications:
+  \begin{description}
+  \item[Bee 2.0] need prompt processing backend services which driven
+    by queries from user on a web browser
+  \item[HPC] (or even Grid/batch) backend driven by queries from a
+    LArSoft client module with Wire Cell processes running on low
+    RAM/core but multi/massive-threaded servers.
+  \end{description}
+
+  \begin{itemize}
+  \item Want reusable components for both applications.
+  \item Tie-ins with next task.
+  \item Best to have prior experience in developing network servers.
+  \item Need to pick a suitable client/server protocol that can be
+    implemented on HPC and can mesh well with C++ and JavaScript
+    clients.
+  \end{itemize}
+
+  If this is interesting to you, talk with Chao and me.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Distributed Wire Cell}
+
+  \begin{itemize}
+  \item Based on Performance Evaluation task, determine if
+    multi-machine parallelism is even required.
+  \item Implement by extending the DFP functionality to support
+    DFP-node connections across the network.
+  \item Need to select one (or better yet allow multiple) network
+    communication methods (MPI, ZeroMQ, WAMP or ???).
+  \item Should work in conjunction with Wire Cell Service work.
+  \end{itemize}
+
+  As noted, this task is speculative.  We may not need it.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Wire Cell on HPC}
+  \small
+  \begin{itemize}
+  \item Based on Performance Evaluation task, determine if HPC is
+    required or if Wire Cell can keep up on Grid resources alone.
+  \item Porting to HPC requires understanding limitations specific
+    to each target HPC:
+    \begin{description}\footnotesize
+    \item [Architectural] eg, ROOT doesn't work, dynamic linking
+      considered harmful.
+    \item [Environmental] eg, special ``edge'' computing to run LArSoft.
+    \item [Security] HPCs less accessible than Grid
+      nodes.  How to get \textbf{high data rate} in and results out?  
+    \item [Other] HPC is largely new to neutrino physicists, expect interesting challenges.
+    \end{description}
+  \end{itemize}
+
+  Initial efforts:
+  \begin{itemize}\footnotesize
+  \item Already collaborating with BNL ``HPC Code Center''.
+  \item BNL has a small, 8 node HPC with GPU for testing now and is
+    building a larger, modern HPC in the coming year.
+  \item Started very useful discussions with ANL to use Mira.
+  \end{itemize}
+
+\end{frame}
+
+\section{Summary}
+
+\begin{frame}
+  \tableofcontents[currentsection,hideothersubsections]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Summary}
+  \begin{itemize}
+  \item Once some technical coding/design issues are finished, the toolkit is ready for outside contributions.
+  \item A number of known tasks are identified and which can largely be worked on in parallel.
+  \item \textbf{Volunteers are most welcome!}
+    \begin{itemize}
+    \item[$\rightarrow$] if interested, let's discuss!
+    \end{itemize}
+  \item In general, Wire Cell Toolkit can soon serve as a vehicle to
+    \textbf{advance new reconstruction ideas} and apply toward \textbf{detector optimization studies}.
+  \end{itemize}
+\end{frame}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

@@ -1,0 +1,75 @@
+digraph "lswcdata" {
+	rank=same
+	rankdir=LR
+	subgraph LS {
+		
+		lslabel[shape=box,label="LArSoft Chain"];
+
+		lstrack[label="MC particle truth"];
+		lsdepo[label="True depositions"]
+		lshits[label="Wire hits (Gaussian)"];
+		lsdetres[label="True wire signal"];
+		lsdigi[label="Digitized Waveform"];
+		lsdeco[label="Deconvolution"];
+		ls2d[label="3x2D wire vs time image"];
+		lsclus[label="clustering"];
+		lspatrec[label="track/shower pat. recog."];
+		lspid[label="kinematics/PID"];
+	}
+	subgraph mid {
+		midlabel[shape=box,label="Possible data\nexchange"];
+	}
+	subgraph WC {
+		wclabel[shape=box,label="Wire Cell Chain"];
+
+		wctrack[label="Trivial trajectories"];
+		wcdepo[label="True depositions"]
+		wchits[label="True drift signal"];
+		wcdetres[label="True wire signal"];
+		wcdigi[label="Digitized Waveform"];
+		wcdeco[label="Deconvolution"];
+		wc3d[label="3D cells vs time slice image"];
+		wcclus[label="clusters"];
+		wcpatrec[label="track/shower pat. recog."];
+		wcpid[label="kinematics/PID"];
+	}
+
+	edge[style=invis,weight=5]
+	lslabel->midlabel->wclabel;
+	edge[style=invis]
+	lslabel->lstrack;
+	wclabel->wctrack;
+	
+	edge[style="",weight=2]	
+	lstrack->lsdepo->lshits->lsdetres->lsdigi->lsdeco->ls2d->lsclus->lspatrec->lspid;
+	wctrack->wcdepo->wchits->wcdetres->wcdigi->wcdeco->wc3d->wcclus->wcpatrec->wcpid;
+
+	edge[style=dotted,weight=3,color=red];
+	lshits->wcdetres;
+	lsdetres->wcdigi;
+	lsdigi->wcdeco;
+	ls2d->wcclus;
+		
+	edge[style=dotted,weight=3,color=blue];
+	wctrack->lsdepo;
+	wcdepo->lshits;
+	wchits->lsdetres;
+	wcdetres->lsdigi;
+	wcdigi->lsdeco;
+
+
+	edge[style="bold",weight=4,color=red];
+
+	lstrack->wcdepo;
+	lsdepo->wchits;
+
+	lsdeco->wc3d;
+	lsclus->wcpatrec;
+
+	edge[style="bold",weight=4,color=blue];
+	wcdeco->ls2d;
+	wc3d->lsclus;
+	wcclus->lspatrec;
+	wcpatrec->lspid;
+	
+}

@@ -1,0 +1,395 @@
+% TEXINPUTS=.:$HOME/git/bvtex: latexmk  -pdf <main>.tex
+\documentclass[xcolor=dvipsnames]{beamer}
+
+\input{defaults}
+\input{beamer/preamble}
+
+\setbeamertemplate{navigation symbols}{}
+% \setbeamertemplate{background}[grid][step=1cm]
+
+\usepackage{siunitx}
+\usepackage{xmpmulti}
+\usepackage[export]{adjustbox}
+
+\usepackage[outline]{contour}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\usetikzlibrary{positioning}
+
+\definecolor{bvtitlecolor}{rgb}{0.98, 0.92, 0.84}
+\definecolor{bvoutline}{rgb}{0.1, 0.1, 0.1}
+
+\renewcommand{\bvtitleauthor}{Brett Viren}
+\renewcommand{\bvtit}{Building Wire Cell Software}
+\renewcommand{\bvtitle}{\LARGE Building Wire Cell Software\\(prototype and toolkit)}
+\renewcommand{\bvevent}{Wire Cell Seminar 2015 Dec 7-9}
+\renewcommand{\bvbeamerbackground}{}
+
+% http://tex.stackexchange.com/a/23550
+\makeatletter
+\providecommand{\beamer@slideinframe}{0}%
+\tikzset{highlight/.code={\ifnum#1=\beamer@slideinframe \tikzset{draw=red,text=red}\fi},highlight/.value required}
+\makeatother
+
+\setbeamertemplate{headline}{%
+\leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=\paperwidth,ht=2.5ex,dp=1.125ex]{palette quaternary}%
+    \insertsectionnavigationhorizontal{\paperwidth}{}{\hskip0pt plus1filll}
+    \end{beamercolorbox}%
+  }
+}
+\begin{document}
+\input{beamer/title.tex}
+\input{beamer/toc.tex}
+
+\lstset{%
+  language=C++,
+                basicstyle=\scriptsize\ttfamily,
+                keywordstyle=\color{blue}\ttfamily,
+                stringstyle=\color{red}\ttfamily,
+                commentstyle=\color{gray}\ttfamily,
+                morecomment=[l][\color{magenta}]{\#}
+}
+
+\section{Prerequisites}
+
+\begin{frame}
+  \frametitle{Major Prerequisites}
+
+  Wire Cell is fairly trivial to install but it has a few ``heavy'' prerequisites. 
+
+  \begin{itemize}
+  \item C++11 compiler: GCC ($\ge 4.9$), Clang ($>=7$)
+  \item BOOST ($\ge 1.55$)
+  \item ROOT ($\ge 6.02$)
+  \end{itemize}
+\end{frame}
+
+\subsection{Automated builds of externals}
+\begin{frame}
+  \frametitle{Automated Build of Externals}
+
+  Wire Cell Prototype provides
+  \href{https://github.com/brettviren/worch}{Worch}-based build
+  automation for the externals.  
+
+  \begin{itemize}
+  \item Maybe hasn't kept up.
+  \item There are so few external packages that it may be more hassle than it's worth.
+  \end{itemize}
+
+  For details, see:
+
+  \begin{center}
+      \url{https://github.com/BNLIF/wire-cell-externals}
+  \end{center}
+\end{frame}
+
+\subsection{Guidance for manual builds of externals}
+
+\begin{frame}
+  \frametitle{Compiler}
+  \begin{itemize}
+  \item Wire Cell uses C++11 and maybe some C++14 sneaking in. 
+  \item Most decent OSes provide this but your Sci. Linux box may not.
+    \begin{itemize}
+    \item Debian world has had GCC 4.9.2+ for a while.
+    \item Recent Mac has Clang 7.
+    \item RHEL 7 has GCC 4.8, native - untested.
+    \end{itemize}
+  \item It's up to you to provide a working compiler.
+    \begin{itemize}
+    \item Use system compiler if it's sufficient.
+    \item Build GCC from source.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{ROOT6 - from source}
+  Configure for C++11, FFTW3, Minuit and Python.
+
+\scriptsize
+\begin{verbatim}
+  wget https://root.cern.ch/download/root_v6.05.02.source.tar.gz
+  tar -xvf root_v6.05.02.source.tar.gz
+  mkdir root-build
+  cd root-build/
+  cmake -DCMAKE_INSTALL_PREFIX={install_dir} \
+	-Dbuiltin_xrootd=ON -Dcxx11=ON -Dpythia6=OFF -Dminuit2=ON \
+	-Dpython=ON \
+	-DFFTW_INCLUDE_DIR=/usr/include \
+	-DFFTW_LIBRARY=/usr/lib/x86_64-linux-gnu/libfftw3.so \
+	../root/
+  make
+  make install
+\end{verbatim}
+
+\small
+For this manual installation, activate ROOT environment using the (ROOT) standard:
+
+\begin{verbatim}
+$ source /path/to/install/bin/thisroot.sh
+\end{verbatim}
+
+\end{frame}
+
+\subsection{Leveraging your OS packaging}
+
+\begin{frame}[fragile]
+  \frametitle{Debian and co.}
+
+  Recent Debian (Ubuntu, etc) can provide everything except ROOT6:
+\begin{verbatim}
+sudo apt-get install git build-essential gcc g++ make cmake \
+    python-dev libboost-all-dev \
+    libsqlite3-dev tcl8.5-dev libxpm-dev libxft-dev libXext-dev \
+    libeigen3-dev
+\end{verbatim}
+  Maybe others are needed...
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Mac OS X + Homebrew}
+  On Mac (tested on 10.10.5, ``Yosemite'') you get everything for cheap with \href{http://brew.sh/}{homebrew}!
+\begin{verbatim}
+brew install python
+brew install boost --with-python
+brew install homebrew/science/root6
+\end{verbatim}
+
+  If you are new to homebrew see \url{http://brew.sh/}.
+
+  The native Mac compiler is now Clang but with the command confusingly still named ``\texttt{g++}''.
+
+
+\end{frame}
+
+\subsection{Site-specific}
+
+\begin{frame}[fragile]
+  \frametitle{Fermilab UPS}
+  This worked at one time to provide ROOT and BOOST:
+\begin{verbatim}
+$ source /grid/fermiapp/products/larsoft/setups
+$ setup root v6_04_02 -q e7:prof
+$ setup boost v1_57_0 -q e7:prof
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{BNL RACF}
+  A build of ROOT 6 is available on RACF:
+
+\begin{verbatim}
+$ source /gpfs01/lbne/users/sw/wc/bin/thisroot.sh
+\end{verbatim}
+
+This will also set up to use \texttt{g++} 4.9.2.
+
+\end{frame}
+
+\section{Wire Cell Prototype Software}
+
+\subsection{Repositories}
+
+\begin{frame}
+  \frametitle{Prototype Software Repositories}
+
+  All wire cell \textbf{prototype} source is in the ``BNLIF'' GitHub organization:
+
+  \begin{center}
+    \url{https://github.com/BNLIF/}
+  \end{center}
+
+  Git submodules are used to aggregate each package from this top level one:
+
+  \begin{center}
+    \url{https://github.com/BNLIF/wire-cell}
+  \end{center}
+
+  By default, git submodules are hooked in assuming SSH access (not HTTPS).
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Cloning the source}
+  Developers do:
+\begin{verbatim}
+$ git clone git@github.com:BNLIF/wire-cell.git
+$ cd wire-cell/
+\end{verbatim}
+
+  Others may do:
+\begin{verbatim}
+$ git clone https://github.com/BNLIF/wire-cell.git
+$ cd wire-cell/
+$ ./switch-git-urls
+\end{verbatim}
+
+  Everyone does:
+
+\begin{verbatim}
+$ git submodule init
+$ git submodule update
+\end{verbatim}
+
+\end{frame}
+
+\subsection{Building}
+
+\begin{frame}[fragile]
+  \frametitle{Building Wire Cell Prototype software}
+  
+  Wire Cell Prototype software is built with \textbf{waf} using the
+  provided \texttt{waf-tools} package:
+
+\begin{verbatim}
+$ alias waf=`pwd`/waf-tools/waf
+$ waf --prefix=/path/to/install \
+        configure build install
+\end{verbatim}
+
+
+\vspace{5mm}
+That's it.
+
+\end{frame}
+
+\subsection{Run-time Environment}
+
+\begin{frame}[fragile]
+  \frametitle{Run-time Environment}
+
+  Externals must be setup in whatever manner is associated with how they were built.
+
+  For Wire Cell itself one needs to set the usual:
+
+  \begin{itemize}
+  \item \verb|PATH|
+  \item \verb|LD_LIBRARY_PATH|
+  \item \verb|PYTHONPATH|
+  \end{itemize}
+
+  to point to appropriate directories under \verb|/path/to/install|.
+
+\end{frame}
+
+\section{Wire Cell Toolkit Software}
+
+\begin{frame}
+  \tableofcontents[currentsection,hideothersubsections]
+\end{frame}
+
+\subsection{Externals}
+
+\begin{frame}
+  \frametitle{Externals for Wire Cell Toolkit}
+
+  The Wire Cell Toolkit requires both fewer and more externals than the prototype:
+
+  \begin{itemize}
+  \item C++11 compiler: GCC ($\ge 4.9$), Clang ($>=7$)
+  \item BOOST ($\ge 1.55$)
+  \end{itemize}
+
+  For parallel functionality:
+
+  \begin{itemize}
+  \item Intel TBB ($\ge 4.3$)
+  \end{itemize}
+
+  Some tests, I/O and visualization packages require:
+
+  \begin{itemize}
+  \item ROOT ($\ge 6.02$)
+  \end{itemize}
+
+  Same guidance for providing externals for the WC-Prototype applies to the WC-Toolkit.
+
+\end{frame}
+
+
+\subsection{Repositories}
+
+\begin{frame}[fragile]
+  \frametitle{Wire Cell Toolkit Repositories}
+
+  All wire cell \textbf{toolkit} source is in the ``WireCell'' GitHub organization:
+
+  \begin{center}
+    \url{https://github.com/WireCell/}
+  \end{center}
+
+  Git submodules are used to aggregate each package from this top level one:
+
+  \begin{center}
+    \url{https://github.com/WireCell/wire-cell-build}
+  \end{center}
+
+  Same guidance for getting the WC-Prototype source applies to the WC-Toolkit.
+
+\footnotesize
+\begin{verbatim}
+$ git clone git@github.com:WireCell/wire-cell-build.git
+$ cd wire-cell-build/
+$ ./switch-git-urls  # <-- if not a developer
+$ git submodule init
+$ git submodule update
+\end{verbatim}
+
+\end{frame}
+
+\subsection{Building}
+
+\begin{frame}[fragile]
+  \frametitle{Building Wire Cell Toolkit software}
+  
+  Wire Cell Toolkit software is built with \textbf{waf} using the
+  provided waf-bundled command \textbf{wcb}.
+
+\begin{verbatim}
+$ ./wcb --prefix=/path/to/install \
+        configure build install
+\end{verbatim}
+
+If your dependencies are not found by \texttt{wcb} then:
+
+\begin{verbatim}
+$ ./wcb --help
+$ ./wcb --boost-libs=... --boost-includes=... \
+        --with-root=... configure
+$ ./wcb
+$ ./wcb install
+\end{verbatim}
+
+\end{frame}
+
+\subsection{Run-time Environment}
+
+\begin{frame}[fragile]
+  \frametitle{Run-time Environment}
+
+  Externals must be setup in whatever manner is associated with how they were built.
+
+  For Wire Cell itself one needs to set the usual:
+
+  \begin{itemize}
+  \item \verb|PATH|
+  \item \verb|LD_LIBRARY_PATH|
+  \item \verb|PYTHONPATH|
+  \end{itemize}
+
+  to point to appropriate directories under \verb|/path/to/install|.
+
+\end{frame}
+
+\end{document}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

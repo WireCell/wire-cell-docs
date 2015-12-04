@@ -1,0 +1,10 @@
+digraph "Deps" {
+	label="example of allowed\ntest dependencies";
+	node[shape=tab];
+	util->iface[dir=back];
+	util->gen[dir=back];
+	iface->gen[dir=back];
+	iface->alg[dir=back];
+	util->alg[dir=back];
+	gen->alg[dir=back];
+}	
