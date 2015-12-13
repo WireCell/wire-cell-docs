@@ -68,6 +68,62 @@ code that is aware of a specific DFP engine (eg, [[https://www.threadingbuilding
 control.
 
 
+** Compute nodes
+
+DFP nodes are units of computation.  They are similar to subroutines, functions or classes (in fact they are classes).  Unlike these general programming structures node implementations are intentionally limited in scope in order to support the parallel, asynchronous data flow programming paradigm.  Nodes must:
+
+- not access global, mutable state (const state is okay).
+- not access local, mutable state if they run conncurrent instances.
+- implement specific abstract base classes (interfaces).
+- obey the Wire Cell end-of-stream (EOS) protocol.
+
+*** Node Ports
+
+Nodes receive input data and produce output data through something named a /port/.  A port passes data of a specific type, in exactly one direction (input to or output from the node) and via a particular mechanism.  These three characteristics: /data type/, /direction/ and /mechanism/ are tightly coupled.  In general, a port is conceptual and as it is realized in a few different ways depending on these characteristics.  Ports are made concrete in the node interface base class.
+
+At the most fine-grained, data passes through ports as a /pointer/ (specifically a =std::shared_ptr<const IDataType>= where =IDataType= is a data model interface base class).  It needs stressing that the pointer is to constant, immutable data and this data is shared.  Its allocated memory will live on as long as it is held by at least one =shared_ptr<>=.  Node implementations must not violate this (must not bust out and don't hold the underlying raw pointer and must not use =const_cast<>=).
+
+There are three mechanisms by which pointers, as described above, are passed through ports.  These mechanisms may work independently from each of the node's ports or may work in concert with a subset.  
+
+The simplest mechanism is that a single pointer is passed through a node's interface.  If input, the node may immediately may access the data pointed to.  For output, the node creates a new, concrete data model object, wraps it into an appropriate =shared_ptr<>= and returns it to the caller.  
+
+In order to implement /joining/ or /splitting/ of synchronous streams into compound parts, a fixed number of ports may be ganged together such that data is passed as a tuple of pointers (potentially with elements of differing types).  
+
+The process of joining and splitting may need to be asynchronous.  This means a node may require any and differing numbers of data objects from multiple input ports or likewise for output.  Insertion of data to and extraction of data from a node is both asynchronous.  Depending on the nature of the nodes algorithm, typically such operations must maintain local state and thus may not safely run concurrently.  Often, such nodes may be factored out into multiple, simpler nodes.  In any case, data is passed through asynchronous by passing queues to the node for filling.
+
+*** Node categories
+
+Given just the preceding description an overly rich zoo of nodes could be invented.  In order to reduce complexity a subset of possible node patterns are defined.  A Wire Cell node must implement one.  The allowed categories are illustrated in the following diagram.
+
+[[./node-categories.png]]
+
+Each category is given a name shown in the box and a default maximum concurrency value, "c" is given.  The default value is chosen based on assumptions on the concrete implementations.  Nodes which likely must maintain mutable state are given a maximum concurrency of "1".  If implementation is likely to be stateless then a value of "N", indicating unbound concurrency, is given.  Developers of concrete node classes may change this value.  
+
+A summary of the node categories is given in the following table.
+
++----------+-------------+------------+------+
+|          |     in      | out        |      |
++----------+-----+-------+-----+------+------+
+| Name     |  #  | type  |  #  | type | conc |
++----------+-----+-------+-----+------+------+
+| source   |   0 | n/a   |    1| ptr  |    1 |
++----------+-----+-------+-----+------+------+
+| sink     |   1 | ptr   |    0| n/a  |    1 |
++----------+-----+-------+-----+------+------+
+| function |   1 | ptr   |    1| ptr  |    N |
++----------+-----+-------+-----+------+------+
+| multiout |   1 | ptr   |    N| ptr  |    1 |
++----------+-----+-------+-----+------+------+
+| join     |   1 | tuple |    1| ptr  |    N |
++----------+-----+-------+-----+------+------+
+| split    |   1 | ptr   |    1| tuple|    N |
++----------+-----+-------+-----+------+------+
+| hydra    |   N | ptr   |    N| ptr  |    1 |
++----------+-----+-------+-----+------+------+
+#+TBLFM: 
+
+
+
 * Application
 
 * Web 

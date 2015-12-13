@@ -1,5 +1,3 @@
-
-
 % TEXINPUTS=.:$HOME/git/bvtex: latexmk  -pdf <main>.tex
 \documentclass[xcolor=dvipsnames]{beamer}
 
@@ -25,8 +23,8 @@
 \definecolor{bvoutline}{rgb}{0.1, 0.1, 0.1}
 
 \renewcommand{\bvtitleauthor}{Brett Viren}
-\renewcommand{\bvtit}{Wire Cell Toolkit \\ Future Plans}
-\renewcommand{\bvtitle}{\LARGE Wire Cell Toolkit / Future Plans}
+\renewcommand{\bvtit}{Bee 2.0 and Wire Cell Toolkit Future Plans}
+\renewcommand{\bvtitle}{\LARGE Bee 2.0 and Wire Cell Toolkit \\ Future Plans}
 \renewcommand{\bvevent}{Wire Cell Summit 7-9 Dec 2015}
 \renewcommand{\bvbeamerbackground}{}
 
@@ -50,17 +48,205 @@
 
 \lstset{%
   language=C++,
-                basicstyle=\scriptsize\ttfamily,
-                keywordstyle=\color{blue}\ttfamily,
-                stringstyle=\color{red}\ttfamily,
-                commentstyle=\color{gray}\ttfamily,
-                morecomment=[l][\color{magenta}]{\#}
+  basicstyle=\scriptsize\ttfamily,
+  keywordstyle=\color{blue}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  commentstyle=\color{gray}\ttfamily,
+  morecomment=[l][\color{magenta}]{\#}
 }
 
-\section{Roadmap}
+\section{Bee 2.0}
+
+\subsection{Concepts}
 
 \begin{frame}
-  \frametitle{General Wire Cell Toolkit Roadmap}
+  \frametitle{Assumptions}
+  
+  Want a tool to inject ad-hoc, human invented heuristics into the reconstruction.
+
+  \vspace{3mm}
+  Assumptions:
+  \begin{itemize}
+  \item[$\rightarrow$] current automated algorithms are not fully adequate.
+  \item[$\rightarrow$] improving them by writing code is too slow.
+  \item[$\rightarrow$] want some full reconstruction results quickly.
+  \item[$\rightarrow$] can ``port'' human heuristics to new automated code.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Analogy}
+  \begin{itemize}
+  \item Doctors get images from X-ray, CT scan, MRI
+    scans, etc.
+  \item Researchers build an automated computer
+    program to tell what diseases the patient has,
+    based on the features “seen” in the images.
+    \begin{itemize}
+    \item False positives might be high
+    \item  False negatives might be high
+    \item Hospitals can not afford to have high probability of
+      mistakes
+    \end{itemize}
+  \item In the end still need expert doctors’ consultations
+    to make final decisions
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{What are the goals?}
+  What we have now:
+  \begin{itemize}
+  \item Very robust 3-D images.
+  \item View images by human with Bee 1.0.
+  \end{itemize}
+
+  The current steps:
+  \begin{itemize}
+  \item Automated pattern recognition (of some efficacy).
+  \item Views of the resulting objects (eg clusters)
+  \end{itemize}
+
+  Questions:
+  \begin{itemize}
+  \item[$\rightarrow$]  What are the metrics by which to judge the performance?
+  \item[$\rightarrow$]  What is the goal to reach
+  \item[$\rightarrow$]  How can we improve the performance to reach the goal?
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Human vs. Machine}
+  Humans are very good at pattern recognition
+  \begin{itemize}
+  \item[$\rightarrow$] By eye, can easily judge if and where the reconstruction
+went wrong.
+  \item[$\rightarrow$] Can we inject such kind of knowledge into the
+reconstruction?
+  \end{itemize}
+
+  \vfill
+
+  Machines are very good at processing a lot of
+  data and following our instructions.
+  \begin{itemize}
+  \item[$\rightarrow$] Can we help the machine to learn?
+  \end{itemize}
+\end{frame}
+
+\begin{frame} 
+  \frametitle{Human-directed automatic reconstruction}
+  \begin{enumerate}
+  \item Human operates on \textbf{selectable graphical elements}, eg:
+    \begin{itemize}\footnotesize
+    \item Add or remove cells from a blob or cluster.
+    \item Join or break clusters or tracks.
+    \item Change pattern recognition category.
+    \item Associate clusters to particles (eg, two showers to a $\pi^0$)
+    \end{itemize}
+  \item Bee sends \textit{command object} to backend.
+  \item Database records command and associated initial state.
+  \item Backend applies command via Wire Cell and reruns automated reconstruction as needed.
+  \item Database records new state, associated with command.
+  \item Notify user when done:
+    \begin{itemize}\footnotesize
+    \item Bee refreshes event if results are fast, or send email/SMS
+      with new link.
+    \end{itemize}
+  \end{enumerate}
+  ``Physics PhotoShop''
+\end{frame}
+
+\begin{frame}
+  \frametitle{Mining Heuristics}
+  
+  Command database has secondary use:
+  \begin{itemize}\footnotesize
+  \item Allows for full reproduction/replay of operations later.
+  \item Further, can we mine database for things to feed back to automated code?
+  \item[$\rightarrow$] Frequent human operations may indicate a heuristic which is ripe for invention.
+  \item Maybe this metadata is useful input into some machine learning (suggested to us)
+  \end{itemize}
+
+  \vfill
+
+  ``Google Analytics''
+\end{frame}
+
+\subsection{Design}
+\begin{frame}
+  \tableofcontents[currentsection,hideothersubsections]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Front-end requirements}
+  \begin{itemize}
+  \item Show necessary diagnostic plots/summaries to
+help the human make decisions.
+  \item Pick/select possible objects
+    \begin{itemize}
+    \item Hits, clusters, tracks, vertices, etc.
+    \end{itemize}
+  \item Form possible operational command objects
+    \begin{itemize}
+    \item Add, delete, split, merge, etc.
+    \end{itemize}
+  \item Send operation states to a service.
+  \item Get new results back from the service.
+  \item Live-update the new results in the web browser.
+  \item Support Undo / Revert.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \includegraphics[width=\textwidth,trim=25mm 16cm 35mm 25mm,clip]{bee2-ecosystem.pdf}
+\end{frame}
+\begin{frame}
+  \frametitle{Bee 2.0 Design Highlights}
+
+  Structure overall system async Pub/Sub \& RPC (eg,  WAMP).
+  \begin{itemize}\footnotesize
+  \item A networked crossbar with support for JS, Python, etc.
+  \item Provides flexible ways to return possibly high latency results.
+  \item Assures capture of all input and results.
+  \item Focus on overall system logic not gory details of protocols.
+  \end{itemize}
+
+  Bee frontend:
+  \begin{itemize}\footnotesize
+  \item Support more reconstructed object types (clusters, tracks, showers)
+  \item Add selection of entities, forming of command objects.
+  \item User registration UI.
+  \item WAMP hooks (command object/results/auth).
+  \end{itemize}
+
+  Bee backend
+  \begin{itemize}\footnotesize
+  \item May still keep django for serving Bee JS, event indices, handling user uploads.
+  \end{itemize}
+
+  Wire Cell batch service
+  \begin{itemize}\footnotesize
+  \item Respond to RPC for applying commands.
+  \item Manage job queue running on dedicated cluster.
+  \item Publish results as they come in.
+  \end{itemize}
+
+\end{frame}
+
+
+\section{Toolkit}
+
+\begin{frame}
+  \tableofcontents[currentsection,hideothersubsections]
+\end{frame}
+
+\subsection{Roadmap}
+\begin{frame}
+  \frametitle{Wire Cell Toolkit Roadmap}
 
   \begin{enumerate}\small
   \item Complete design and initial implementation for Data Flow
@@ -69,27 +255,23 @@
   \item Evaluate performance on single-machine, multi-thread.
   \item Investigate GPU-accelerated DFP nodes for bottlenecks.
   \item Develop a Wire Cell service application.
-  \item Implement distributed DFP (edges with MPI or ZeroMQ or ???).
-  \item Port toolkit to run on HPC (ANL Mira)
+  \item Implement distributed DFP (ie MPI/ZMQ-edges).
+  \item Port toolkit to run on HPC (target ANL's Mira)
   \end{enumerate}
 
-  Once \#1 is done the rest can proceed in parallel.
+  Once \#1 is done the rest can proceed, more or less, in parallel.
 
-  \textbf{Any volunteers?}
+  \vfill
 
-  \begin{center}
-      In general:   \textbf{hack new ideas and do studies!}
-  \end{center}
+  \textbf{Volunteers?}
 
+  \vfill
 
-\end{frame}
-
-\section{Tasks}
-
-\begin{frame}
-  \tableofcontents[currentsection,hideothersubsections]
   I'll go through what each task needs $\longrightarrow$
+
 \end{frame}
+
+\subsection{Tasks}
 
 \begin{frame}
   \frametitle{Finish DFP}
@@ -107,23 +289,22 @@
   \frametitle{Port prototype algorithms}
 
   \begin{itemize}\small
-  \item Xin has produced a huge body of intellectual work in the prototype.
+  \item Xin has produced a \textbf{huge body of intellectual work} in the prototype.
   \item Focus was on results, not maintenance or software design.
-  \item Structure supporting the prototype is now different in the toolkit.
-  \item Effort is needed to understand each algorithm and refactor its code into Toolkit concepts.
-  \item Porters will contend with:
-    \begin{itemize}
+  \item Effort is needed to \textbf{understand} each algorithm and \textbf{refactor} its code into Toolkit concepts.
+  \item \textbf{Porters} will contend with:
+    \begin{itemize}\footnotesize
     \item Extracting hard-coded configuration parameters.
     \item Monolithic code blocks need to be split.
     \item Adapting to data model changes.
     \item Conversion of statefull classes to functional ones.
     \item Go from ``services'' to dependency injection.
     \end{itemize}
-  \item Xin has done some optimization, but I expect more can be had
+  \item Xin has done some \textbf{optimization}, but I expect more can be had
     along the way.  Porters should be/get familiar with profiling
     tools.
-  \item Suggest to focus on reproduce prototype results before making your own improvements.
   \end{itemize}
+  Suggest to focus on \textbf{reproducing prototype results} before making novel improvements.
 \end{frame}
 
 \begin{frame}
@@ -134,10 +315,10 @@
   \item But, want a \textbf{systematic performance audit} of full chain.
   \item Understand performance as a function of thread count.
   \item \textbf{Kill any easy bottlenecks}.
-  \item Document before/after performance and what the fixes were.
+  \item Document before/after performance and the changes.
   \end{itemize}
 
-  Maybe not a lot of fun, but the results will make you a hero.
+  Maybe not a lot of fun, but the results will make you a hero!
 
 \end{frame}
 
@@ -147,12 +328,11 @@
   \item Best done after CPU-level optimization is exhausted.
   \item Understand remaining bottlenecks.
   \item Determine if they can be accelerated with GPU.
-  \item Develop drop-in replacements for DFP nodes which are
-    bottlenecks and which run the algorithm on a GPU.
+  \item Develop drop-in replacements nodes which run alg on GPU instead of CPU.
   \end{itemize}
 
   This work should be done with awareness of existing and emerging GPU
-  use on HPC (eg, the new BNL HPC).
+  and Phi use on HPC (eg, the new BNL HPC).
 
 \end{frame}
 
@@ -174,10 +354,10 @@
   \item Best to have prior experience in developing network servers.
   \item Need to pick a suitable client/server protocol that can be
     implemented on HPC and can mesh well with C++ and JavaScript
-    clients.
+    clients.  Or just use WAMP like with Bee 2.0.
   \end{itemize}
 
-  If this is interesting to you, talk with Chao and me.
+  If this is interesting to you?  Talk with Chao and me.
 
 \end{frame}
 
@@ -209,19 +389,25 @@
     \begin{description}\footnotesize
     \item [Architectural] eg, ROOT doesn't work, dynamic linking
       considered harmful.
-    \item [Environmental] eg, special ``edge'' computing to run LArSoft.
+    \item [Environmental] eg, special ``edge'' computing to run LArSoft and/or data source/sink.
     \item [Security] HPCs less accessible than Grid
-      nodes.  How to get \textbf{high data rate} in and results out?  
+      nodes.  How to get \textbf{high data rate} (full raw data) in and results out?  
     \item [Other] HPC is largely new to neutrino physicists, expect interesting challenges.
     \end{description}
   \end{itemize}
 
+  \vspace{-3mm}
   Initial efforts:
   \begin{itemize}\footnotesize
   \item Already collaborating with BNL ``HPC Code Center''.
   \item BNL has a small, 8 node HPC with GPU for testing now and is
     building a larger, modern HPC in the coming year.
   \item Started very useful discussions with ANL to use Mira.
+    \begin{itemize}\scriptsize
+    \item
+      \href{http://www.alcf.anl.gov/events/getting-started-alcf-resources}{link
+        to ANL HPC Training courses}
+    \end{itemize}
   \end{itemize}
 
 \end{frame}
@@ -235,14 +421,15 @@
 \begin{frame}
   \frametitle{Summary}
   \begin{itemize}
-  \item Once some technical coding/design issues are finished, the toolkit is ready for outside contributions.
+  \item Bee 2.0 is an ambitious system allowing \textbf{human-directed automatic reconstruction} with follow-on data mining of applied commands.
+  \item Some technical coding/design issues to do but, the \textbf{toolkit is soon ready} for outside contributions.
   \item A number of known tasks are identified and which can largely be worked on in parallel.
   \item \textbf{Volunteers are most welcome!}
     \begin{itemize}
     \item[$\rightarrow$] if interested, let's discuss!
     \end{itemize}
   \item In general, Wire Cell Toolkit can soon serve as a vehicle to
-    \textbf{advance new reconstruction ideas} and apply toward \textbf{detector optimization studies}.
+    advance \textbf{new reconstruction ideas} and apply toward \textbf{detector optimization studies}.
   \end{itemize}
 \end{frame}
 
