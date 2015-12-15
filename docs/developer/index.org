@@ -1,3 +1,6 @@
+#+TITLE: Wire Cell Developer Manual
+#+LATEX_HEADER: \usepackage{svg}
+
 * Developing Wire Cell Software
 
 This manual provides guidance for people wishing to develop Wire Cell software.  It is organized by the type of developer.  The considered categories as follows:
@@ -17,16 +20,9 @@ Before getting into details, a few high level things must be understood to devel
 
 *** Dependencies
 
-The Wire Cell Toolkit (WCT) is designed to be integrated into other
-applications or software systems in a flexible and straight-forward
-manner.  To support that, certain "rules" must be followed when
-developing the core of WCT.  This includes developing code that will
-provide objects given to the WCT.
+The Wire Cell Toolkit (WCT) is designed to be integrated into other applications or software systems in a flexible and straight-forward manner.  To support that, certain "rules" must be followed when developing the core of WCT.  This includes developing code that will provide objects given to the WCT.
 
-WCT provides an API based on a collection of abstract interface
-classes.  In general no "bare" implementation classes may be exposed
-except as subclasses of these interface classes.  The classes can be
-partitioned into the following categories:
+WCT provides an API based on a collection of abstract interface classes.  In general no "bare" implementation classes may be exposed except as subclasses of these interface classes.  The classes can be partitioned into the following categories:
 
 - data :: interfaces to the information on which Wire Cell operates.
 
@@ -34,92 +30,116 @@ partitioned into the following categories:
 
 - executors :: see next section
 
-One can think of the operators and data objects making up the "verbs"
-and "nouns", respectively, of a Wire Cell "language".  
+One can think of the operators and data objects making up the "verbs" and "nouns", respectively, of a Wire Cell "language".
 
-When doing "core" development on a WCT library or on an "external"
-library provides WCT interface implementations, one must also access
-WCT objects only through the API, with one exception.  A class in a
-WCT library my directly instantiate or otherwise use a concrete
-subclass that is defined in the same library.  No compile-time
-dependencies between WCT implementation libraries are allowed (only
-depend on WCT "iface" library and access required instances via the
-=NamedFactory= method).
+When doing "core" development on a WCT library or on an "external" library provides WCT interface implementations, one must also access WCT objects only through the API, with one exception.  A class in a WCT library my directly instantiate or otherwise use a concrete subclass that is defined in the same library.  No compile-time dependencies between WCT implementation libraries are allowed (only depend on WCT "iface" library and access required instances via the =NamedFactory= method).
 
 *** Execution model
 
-WCT /operators/ are defined in such a way to partition the problem
-space of Wire Cell at divisions and a granularity considered proper to
-allow for competing implementations to be developed and to provide
-beneficial parallel processing.
+WCT /operators/ are defined in such a way to partition the problem space of Wire Cell at divisions and a granularity considered proper to allow for competing implementations to be developed and to provide beneficial parallel processing.
 
-The operator interfaces are designed to be called in the context of
-/Data Flow Programming/ (DFP) paradigm graph.  Following the DFP
-paradigm allows complex Wire Cell processing to be run in a highly
-parallel fashion by writing components that do not have to care much
-about the complexity of parallel processing.  Some freedom is allowed
-in defining the interfaces of core algorithms.  The limitation that is
-levied on the implementations is that they do not violate thread
-safety by accessing global state that is shared by other threads.
-Ultimately an /executor/ adapter to an abstract execution model is
-required.  This abstract execution model must then be implemented with
-code that is aware of a specific DFP engine (eg, [[https://www.threadingbuildingblocks.org/][TBB]] or
-[[https://github.com/erenon/pipeline][Boost.Pipeline]]) which takes care of scheduling and overall data flow
-control.
+The operator interfaces are designed to be called in the context of /Data Flow Programming/ (DFP) paradigm graph.  Following the DFP paradigm allows complex Wire Cell processing to be run in a highly parallel fashion by writing components that do not have to care much about the complexity of parallel processing.  Some freedom is allowed in defining the interfaces of core algorithms.  The limitation that is levied on the implementations is that they do not violate thread safety by accessing global state that is shared by other threads.  Ultimately an /executor/ adapter to an /abstract execution model/ (AEM) is required.  This AEM must then be implemented with code that is aware of a specific DFP engine (eg, [[https://www.threadingbuildingblocks.org/][TBB]] or [[https://github.com/erenon/pipeline][Boost.Pipeline]]) which takes care of scheduling and overall data flow control.
 
 
 ** Compute nodes
 
-DFP nodes are units of computation.  They are similar to subroutines, functions or classes (in fact they are classes).  Unlike these general programming structures node implementations are intentionally limited in scope in order to support the parallel, asynchronous data flow programming paradigm.  Nodes must:
+In Wire Cell, a unit of computation is called a /node/.  A node is like a function (or subroutine if your beard is grey).  However, a node is implemented as a functional object that is a Wire Cell /component/ (ie, it may be looked up by name).  So, instead of writing applications by aggregating functions in a hard-coded manner and compiling them, in Wire Cell nodes may be strung together by the end user through a simple configuration language.  This is the so called /data flow programming/ (DFP) paradigm.  Wire Cell nodes are designed to still allow traditional hard-coded aggregation as this is important for writing concise, focused unit tests.
+
+In traditional hard-coded programming the programmer may aggregate functions with arbitrarily complex interstitial code.  This "glue" code is primarily used to marshal data out of one function and into another.  It is not uncommon for this "glue" to become complex and to provide actual functionality beyond just data marshaling.  The DFP paradigm attempts to enforce a clear distinction between functions and data marshaling, to the granularity of node definitions.  Inside a node implementation the developer is free to be as clear or as complex as desired/required.
+
+It is typical to represent the structure of a DFP program as a graph with vertices identified with nodes and connecting edges representing transfer of data out of one node and into another.  In fact, Wire Cell is aggregated by explicitly "drawing" such a graph via end-user configuration.
+
+Once constructed, a DFP graph must be executed in some manner.  Data must flow in, through and out the nodes.  Data flow is driven by scheduling the execution of individual nodes.  This must be done with attention to the state of the DFP graph so that, for example, one node doesn't execute too frequently thus building up a backlog of buffered output.  This scheduling may be complex and different scheduling strategies may be suitable for different workloads.  To address this Wire Cell supports an /abstract execution model/ (AEM).  This means it is possible swap out different "engines" to "run" the DFP graph.
+
+Besides this clarity-of-structure and programming-by-configuration, DFP asynchronous and parallel execution of nodes.  In general, such execution requires complex programming and careful data structures with attention to threads, their locking and safe intercommunication.  DFP makes this simple by offloading much of the complexity of managing parallel asynchronous processes to the  execution engine.  The DFP node developer must then follow a few simple rules to make nodes that may execute safely.
+Wire Cell nodes must:
 
 - not access global, mutable state (const state is okay).
-- not access local, mutable state if they run conncurrent instances.
-- implement specific abstract base classes (interfaces).
+- not access local, mutable state if concurrent copies are run.
+- implement specific abstract base classes (interfaces, described more below).
 - obey the Wire Cell end-of-stream (EOS) protocol.
 
-*** Node Ports
+The rest of this section goes into details about how nodes are developed.
 
-Nodes receive input data and produce output data through something named a /port/.  A port passes data of a specific type, in exactly one direction (input to or output from the node) and via a particular mechanism.  These three characteristics: /data type/, /direction/ and /mechanism/ are tightly coupled.  In general, a port is conceptual and as it is realized in a few different ways depending on these characteristics.  Ports are made concrete in the node interface base class.
+*** Data
 
-At the most fine-grained, data passes through ports as a /pointer/ (specifically a =std::shared_ptr<const IDataType>= where =IDataType= is a data model interface base class).  It needs stressing that the pointer is to constant, immutable data and this data is shared.  Its allocated memory will live on as long as it is held by at least one =shared_ptr<>=.  Node implementations must not violate this (must not bust out and don't hold the underlying raw pointer and must not use =const_cast<>=).
+A Wire Cell node must consume or produce data (or both).  A unit of data is an instance of an implementation of an interface class from the Wire Cell data model (or possibly a collection of one).  Once such a data object is created it is forever constant and is held by a =shared_ptr<const DataType>=.  Details on how such objects are transferred between nodes is given below.
 
-There are three mechanisms by which pointers, as described above, are passed through ports.  These mechanisms may work independently from each of the node's ports or may work in concert with a subset.  
+A node may maintain internal state.  This is required for some algorithms but it should be avoided if possible.  Such nodes are inherently not thread-safe and must run with at most one concurrent instance.  If a developer feels internal state must be maintained, an attempt to factor that node into two (or more) should be attempted, particularly if the stateless part of the algorithm benefits from running parallel copies.
 
-The simplest mechanism is that a single pointer is passed through a node's interface.  If input, the node may immediately may access the data pointed to.  For output, the node creates a new, concrete data model object, wraps it into an appropriate =shared_ptr<>= and returns it to the caller.  
+*** Ports
 
-In order to implement /joining/ or /splitting/ of synchronous streams into compound parts, a fixed number of ports may be ganged together such that data is passed as a tuple of pointers (potentially with elements of differing types).  
+A node receives input data  and sends output data through a conceptual /port/.  A node can be thought of as a machine with a number of in-boxes and a number of out-boxes.  The machine takes things from input ports, does something to produce new things and places them in the appropriate output port.  Where the input comes from and where the output goes is of no concern to the machine.  The machine just needs to know how to access its ports.
 
-The process of joining and splitting may need to be asynchronous.  This means a node may require any and differing numbers of data objects from multiple input ports or likewise for output.  Insertion of data to and extraction of data from a node is both asynchronous.  Depending on the nature of the nodes algorithm, typically such operations must maintain local state and thus may not safely run concurrently.  Often, such nodes may be factored out into multiple, simpler nodes.  In any case, data is passed through asynchronous by passing queues to the node for filling.
+In Wire Cell, the collection of ports associated with a node are exactly defined by the arguments to its =operator()= method.  The signature of this method is defined in Wire Cell node interface classes and depends on two things: inheritance level and node category.  
+The basic inheritance chain for nodes is shown below.  
+
+#+BEGIN_HTML
+<center><img width="90%" src="node-inheritance.svg"/></center>
+#+END_HTML
+
+#+BEGIN_LaTeX
+  \begin{center}
+    \includegraphics[width=0.9\textwidth]{node-inheritance.pdf}
+  \end{center}
+#+END_LaTeX
+
+The inheritance chain has several layers serving different purposes:
+
+- base :: =INode= is an =IComponent= and provides access to the maximum concurrency number and a category enum.
+- category base :: each category defines a calling interface in terms of =boost::any= objects.
+- category :: a templated layer that casts between =boost::any= and templated interface types from the Wire Cell data model.
+- function :: a choice of concrete Wire Cell data model interface types to match a particular functionality.  (eg, =IDrifter= sets the use of =IDepo= objects.
+- implementation :: final high level implementation of the actual node.  The max concurrency may be overridden.
+
+The signature of the =operator()= methods is expressed in terms of =boost::any= at lower levels, in terms of templated types in the middle and in concrete types from the Wire Cell data model at the highest level of implementation.  Implementations that produce data may use provided simple data model implementations or its own.  Objects are ultimately passed via =shared_ptr<const DataType>= at the middle and high levels.  At all levels and depending on the node category objects may be passed as a collection as described next.
 
 *** Node categories
 
-Given just the preceding description an overly rich zoo of nodes could be invented.  In order to reduce complexity a subset of possible node patterns are defined.  A Wire Cell node must implement one.  The allowed categories are illustrated in the following diagram.
+Independent of the inheritance level, the =operator()= method signatures depend on the node category in terms of how data objects are collected for input or output.  A signature is composed of one or two arguments: a single output argument for sources, a single input argument for sinks or both an input and an output argument for all other categories.  Arguments may be of the form:
 
-[[./node-categories.png]]
+- bare :: a single object (=boost::any= or =shared_ptr<>=)
+- queue :: a =std::deque= of objects
+- tuple :: a =std::tuple= of objects or queues
 
-Each category is given a name shown in the box and a default maximum concurrency value, "c" is given.  The default value is chosen based on assumptions on the concrete implementations.  Nodes which likely must maintain mutable state are given a maximum concurrency of "1".  If implementation is likely to be stateless then a value of "N", indicating unbound concurrency, is given.  Developers of concrete node classes may change this value.  
+If the argument is /bare/ or directly a /queue/ then it represents a single port.  If the argument is a /tuple/ (of either /bare/ or /queue/ elements) then each element represents one port.
 
-A summary of the node categories is given in the following table.
+Given these limitations there are a number of categories that can be defined.  Some are illustrated in the diagram below.
 
-+----------+-------------+------------+------+
-|          |     in      | out        |      |
-+----------+-----+-------+-----+------+------+
-| Name     |  #  | type  |  #  | type | conc |
-+----------+-----+-------+-----+------+------+
-| source   |   0 | n/a   |    1| ptr  |    1 |
-+----------+-----+-------+-----+------+------+
-| sink     |   1 | ptr   |    0| n/a  |    1 |
-+----------+-----+-------+-----+------+------+
-| function |   1 | ptr   |    1| ptr  |    N |
-+----------+-----+-------+-----+------+------+
-| multiout |   1 | ptr   |    N| ptr  |    1 |
-+----------+-----+-------+-----+------+------+
-| join     |   1 | tuple |    1| ptr  |    N |
-+----------+-----+-------+-----+------+------+
-| split    |   1 | ptr   |    1| tuple|    N |
-+----------+-----+-------+-----+------+------+
-| hydra    |   N | ptr   |    N| ptr  |    1 |
-+----------+-----+-------+-----+------+------+
+#+BEGIN_HTML
+<center><img width="90%" src="node-categories.svg"/></center>
+#+END_HTML
+
+#+BEGIN_LaTeX
+  \begin{center}
+    \includegraphics[width=0.9\textwidth]{node-categories.pdf}
+  \end{center}
+#+END_LaTeX
+
+Each category is given a name  shown in the box which corresponds to a =NodeCategory= enum.  Also shown is the default maximum concurrency value, "c" chosen based on assumptions on what concrete implementations likely best match the category.  Nodes which likely must maintain mutable state are given a maximum concurrency of "1".  If implementation is likely to be stateless then a value of "N", indicating unbound concurrency, is given.  Developers of concrete node classes may change this value.  
+
+Ports labeled /tuple/ mean a tuple of /bare/ objects.  Nodes showing a single /queue/ are queues of bare objects.  Nodes showing multiple /queues/ indicate these queues are passed as a =std::tuple=.
+
+
+  +----------+-------------+------------+------+
+  |          |     in      | out        |      |
+  +----------+-----+-------+-----+------+------+
+  | Name     |  #  | type  |  #  | type | conc |
+  +----------+-----+-------+-----+------+------+
+  | source   |   0 | n/a   |    1| ptr  |    1 |
+  +----------+-----+-------+-----+------+------+
+  | sink     |   1 | ptr   |    0| n/a  |    1 |
+  +----------+-----+-------+-----+------+------+
+  | function |   1 | ptr   |    1| ptr  |    N |
+  +----------+-----+-------+-----+------+------+
+  |queuedout |   1 | ptr   |    N|queue |    1 |
+  +----------+-----+-------+-----+------+------+
+  | join     |   1 | tuple |    1| ptr  |    N |
+  +----------+-----+-------+-----+------+------+
+  | split    |   1 | ptr   |    1| tuple|    N |
+  +----------+-----+-------+-----+------+------+
+  | hydra    |   N | queue |    N|queue |    1 |
+  +----------+-----+-------+-----+------+------+
 #+TBLFM: 
 
 
