@@ -29,8 +29,8 @@ The Wire Cell Services is a system that ties Bee and the Toolkit to provide huma
 The manual is separated into of parts addressing different audiences.
 
 - Researcher :: understand the concepts.
-- User :: non-programmer usage.
 - Installer :: how to install the Wire Cell software.
+- User :: non-programmer usage.
 - Developer :: how to contribute to Wire Cell.
 - Administrator :: how to set up and administer Wire Cell Services.
 - Documenter :: contributing to this document.

@@ -1,0 +1,65 @@
+* Understanding nodes
+
+Wire Cell Toolkit processes data following the /Data Flow Programming/ (DFP) paradigm.  In DFP, each unit of processing or "node" (or "vertex") follows a functional design.  Each unit takes well-defined input and produces well-defined output.  It cares not where the input comes from nor where the output goes.
+
+The data flow program consists of an aggregation of nodes into a directed graph.  Nodes are connected along edges which transfer data from the output "port" of one node to the input port of another.  When the graph is executed an "engine" is responsible for calling each node's function while feeding input data and accepting output data.
+
+** Node Layers
+
+A Wire Cell node is layered like an onion.  From outside to inside these layers are:
+
+- concrete execution engine :: some 3rd party implementation of the DFP paradigm including native representation of data flow graphs and nodes and node connection methods (eg, =tbb/flow_graph.h=)
+
+- execution adapters :: a layer of "glue" which allows Wire Cell nodes to be called connected and executed by this native engine (eg, wrappers around the =WireCell::INode= base interface class which allows the call of TBB's  templated =make_edge<>()= function).
+
+- type erasure and restoration :: As data flows from the core of a Wire Cell node implementation, out through the above layers, through the concrete connection, and back down into the next node's layers it undergoes type erasure and subsequent restoration.  This is handled by the =INode= class hierarchy.  In the core of a node the data is in the form of a high-level interface class from the Wire Cell data model.  As seen by the concrete execution engine the data is held as type =boost::any=.
+
+- node implementation :: The core of the node, the part with the "real" code, provides a transform of the data from the nodes input ports sending the results to the output ports.
+
+This layered design is chosen to provide certain features in the face of certain restrictions imposed by the targeted concrete execution engines.  For example, popular engines (such as TBB's flow graph) are be written following Generic Programming paradigm (ie, with C++ templates).  The compiler must connect nodes using concrete types.  However, the one goal of Wire Cell is to allow the user to design graphs through a configuration language and not require recompilation to define new graphs.  This requires the graph of nodes to be expressed outside of C++ and leads to the use of abstract base classes and following an Object Oriented programming paradigm.  To glue these two paradigms together without exhaustive coding requires type erasure to reduce the diversity of types.  This leaves a diversity of port multiplicity among possible nodes to contend with.  It is then up to the adapters to contend with this with help from hints from the Wire Cell node abstract base interface classes.
+
+** Ports
+
+If a node is an onion, a port is a hole bored through the onion.  It is through input bore holes that input data is sent down through the layers to the core implementation, restoring type as it goes.  Output bore holds send data, erasing types as it goes, from the core and out along the connected edge.
+
+The collections of a nodes input and output ports should be considered to be ordered list.  A port (input or output) has an index number.  The meaning of each port and the data type it must accept are set in the middle-layer Wire Cell interface classes inheriting from =WireCell::INode=.  
+
+** Node Categories
+
+Wire Cell nodes fall into one of several possible categories which describe their functional interface.  The description covers:
+
+ - multiplicity and synchronicity of input and output ports
+ - calling argument prototype
+ - return value and interpretation
+
+For example a /source/ node has no inputs and one output port and returns =false= when it has no more objects.
+A /sink/ node has the opposite port structure but accepts all data it is given.
+
+A /join/ node (or "fan-in") expects a set of data objects to be delivered synchronously to its input ports and then from this set produces one output object.  Conversely, a /split/ node (or "fan-out") will produce synchronous data on its output ports after consuming a data object from its single input port.  
+
+A /function/ node has one input and one output port and produces exactly one output object for each consumed input.
+A /multifunction/ node takes a single input and produces asynchronous objects on multiple output ports.  
+
+The node category is used by the execution adapter to select a suitable native node form which the Wire Cell node may be called.
+
+As a bit of explanation, a single, general node category could be developed which allows for a super-set of all these examples.  However, to allow optimization specialization is required.  For example, a /function/ node can be written so that it does not manage any state.  Such a node may safely execute multiple copies concurrently.  A /source/ is likely managing mutable state and so only a single instance should execute.  The input port synchronization required by a /join/ node could be implemented "by hand" but then would be duplicating functionality better done at the engine layer. 
+
+In fact, nodes in the /hydra/ category are examples of this general purpose node.  They are effectively a composite of a /join/ node connected to a /multifunction/ node.  A hydra accepts synchronous data on its multiple input ports and produces zero or more data objects on each of its output ports each time it executes.
+
+
+** Details
+
+*** =WireCell::INode=
+
+The base =INode= class methods provides access to meta information about the node including:
+
+ - number of input and output ports
+ - their data types
+ - max number of allowed concurrent copies of the node to run
+ - the functional interface category of the node 
+
+*** mid layers
+
+*** implementations including creation of new objects.
+
+
