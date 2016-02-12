@@ -1,0 +1,35 @@
+
+\begin{tikzpicture}[align=center, node distance=2cm]
+
+\tikzstyle{dataobj} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=blue!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+\node (daqmc) [process,highlight=2] {DAQ/MC sim};
+\node (frames) [process,highlight=2, below of=daqmc] {Signal Processing};
+\node (slicing) [process,highlight=2, below of=frames] {Slicing};
+\node (slices) [dataobj, below of=slicing] {Time Slices};
+\node (wires) [dataobj, left=0.5cm of frames] {Wire geometry};
+\node (tiling) [process,highlight=2, left=0.5cm of slicing] {Cell Tiling};
+\node (cells) [dataobj, left=0.5cm of slices] {Cells geometry};
+\node (hitcells) [process,highlight=3, below of=slices] {Hit cell selection};
+\node (blobbing) [process,highlight=3, below of=hitcells] {Blob forming};
+\node (clustering) [process,highlight=4, below of=blobbing] {Clustering};
+\node (tracking) [process,highlight=4, below of=clustering] {Tracking};
+\node (pid) [process,highlight=5, below of=tracking] {Particle ID};
+\node (physics) [dataobj, below of=pid] {Physics Quantities};
+
+\draw [arrow] (wires) -- (tiling);
+\draw [arrow] (tiling) -- (cells);
+\draw [arrow] (cells) -- (hitcells);
+\draw [arrow] (daqmc) -- (frames);
+\draw [arrow] (frames) -- (slicing);
+\draw [arrow] (slicing) -- (slices);
+\draw [arrow] (slices) -- (hitcells);
+\draw [arrow] (hitcells) -- (blobbing);
+\draw [arrow] (blobbing) -- (clustering);
+\draw [arrow] (clustering) -- (tracking);
+\draw [arrow] (tracking) -- (pid);
+\draw [arrow] (pid) -- (physics);
+\end{tikzpicture}

@@ -42,30 +42,6 @@ A set of plugins can be specified on the command line.
 *** Component Configuration
 
 Every Wire Cell component is created in some default state as determined in the source code.  
-It may then be configured with information supplied by the user on the =wire-cell= command line.
-
-The form of the configuration information is specific to the component's concrete class.  
-In general, a component's configuration information is in the form of a dictionary (set of key/value pairs).
-
-Configuration data structures may be supplied by the user on the =wire-cell= command line.  
-There, the representation of the information is formatted as [[http://www.json.org/][JSON]].
-The representation must follow the schema understood by =wire-cell=. 
-It follows a nested set of dictionaries three levels deep.
-
-- top :: overall configuration is a dictionary keyed by component class names.
-- class :: each class dictionary is keyed by instance names (=""= indicates an unspecified instance).
-- instance :: each instance dictionary is keyed by component-specific configurable parameter names.
-
-**** Dumping default component configuration
-
-Every component that can be configured can also produce a representation of its default configuration and this can be dumped to the user through the =wire-cell= CLI.
-
-**** A note on use of JSON for configuration
-
-In principle JSON is accessible to humans as it is "just plain text" of a simple format and Wire Cell requires to follow a simple schema.
-However, JSON is merely a data representation syntax.
-It provides no facilities to assure consistency, exploit symmetries, express iterations or other features that more full-featured configuration languages (and certainly programming languages) provide.
-As such, when any given configuration grows to a certain size it will quickly become a burden to manage manually.
-Thus, it is expected that some external mechanism will be developed and used to the JSON configuration.
-At some later time, Wire Cell may provide tools for this. 
-
+Some components may then accept configuration parameters.  
+The configuration may be provided or dumped through the  =wire-cell= command line.
+See the document on [[./config.org][configuration]] for more informatin.
