@@ -1,4 +1,4 @@
-\section{Technique}
+\section{Wire Cell Technique}
 
 \begin{frame}
   \tableofcontents[currentsection,hideothersubsections]
@@ -16,16 +16,15 @@
         \begin{itemize}        \scriptsize
         \item Deconvolve \textbf{detector response and filter noise}.
         \item Construct \textbf{wire} geometry and associated \textbf{cells}.
-        \item Read framed data stream, form \textbf{time slices}
+        \item Form \textbf{time slices} across all wires.
         \end{itemize}
       \item<3> Imaging of Activity
         \begin{itemize}        \scriptsize
-        \item The heart of the Wire Cell technique
-        \item Identify the likely hit \textbf{cells} in each time slice.
+        \item The heart of the Wire Cell technique.
+        \item Identify regions (``\textbf{cells}'') in each time slice that contain charge.
         \end{itemize}
       \item<4> Pattern Recognition 
         \begin{itemize}         \scriptsize
-        \item Application of Wire Cell imaging
         \item \textbf{Cluster} activity in space and across time slices.
         \item \textbf{Categorize}: track, shower, etc.
         \end{itemize}
@@ -74,7 +73,7 @@
           electronics shaping time}: combine 4 FADC ``ticks'' =
         \SI{2}{\micro\second}.
       \item Select \textcolor{red}{wires} above threshold in the slice.
-      \item Identify regions near triple-wire overlap as potential ``\textcolor{blue}{cells}'' holding charge in the \textbf{time slice}.
+      \item Identify regions near triple-wire overlap as potential ``\textcolor{blue}{cells}'' holding drifted charge in that \textbf{time slice}.
       \end{itemize}
     \end{column}
   \end{columns}
@@ -99,19 +98,20 @@
   \footnotesize
   Cell construction:
   \begin{itemize}
-  \item Each ``cell'' a 2D region near \textit{approximate triple crossings} of one wire from each of the three planes.
-  \item Cells completely tile the plane.
-  \item Cell pattern determined by wire \textbf{pitch}, \textbf{angle} and \textbf{phase}.
+  \item Each ``cell'' is a 2D region near the approximate \textbf{triple-crossing of one
+    wire from each plane}.
+  \item Cells completely tile the plane (\textit{ie} they are odd looking 2D bins)
+  \item Pattern determined by \textbf{pitch}, \textbf{angle} and \textbf{phase} of wire planes.
     \begin{description}
     \item[MicroBooNE] regular isosceles triangles.
     \item[DUNE] variety of polygons with a spectrum of sizes
     \end{description}
   \end{itemize}
 
-  \textbf{The heart of the Wire Cell concept:} if all three of the
-  triple-crossing \textbf{wires} are above threshold in a \textbf{time
-    slice}, the associated \textbf{cell} likely contains the element
-  of \textbf{drifted charge}.
+  \textbf{The heart of the Wire Cell concept:} if all three
+  \textbf{wires} are above threshold in a \textbf{time slice}, the
+  associated \textbf{cell} \textit{likely} contains some 
+  \textbf{drifted charge}.
 
 \end{frame}
 
@@ -127,14 +127,14 @@
   \item[$\mathbf{G}$] fixed wire-cell \textbf{connection} matrix (geometry)
   \end{description}
 
-  Reality sucks!
+  In a \textbf{real detector}:
 
   \begin{itemize}
-  \item Often, too few knowns, too many unknowns: $N_{wires} < N_{cells}$
+  \item Often, \textbf{fewer knowns than unknowns} $(N_{wires} < N_{cells})$
     \begin{itemize}\footnotesize
-    \item Tomographic detectors have 100s of view, not just 3!
+    \item CT scanners have 100s of views in each slice, not just 3!
     \end{itemize}
-  \item Charge measurements ($\vec{w}$) uncertain
+  \item \textbf{Uncertainty in charge measurements} ($\vec{w}$)
     \begin{itemize}\footnotesize
     \item Environmental, electronic and thermal noise.
     \item Statistical uncertainty due to digitization.
@@ -156,16 +156,24 @@
       \end{center}
     \end{column}
     \begin{column}{0.65\textwidth}
+      One tiny pattern in one time slice:
+      \begin{itemize}\footnotesize
+      \item 9 cells and their associated wires.
+      \item wires: color=plane, thickness=charge
+      \item purple shows true drifted charge
+      \end{itemize}
+
+      \onslide<2->{
       \begin{description}\footnotesize
       \item[Good] wire \textcolor{blue}{v3} measures no charge, \\$\therefore$ all its cells must \textbf{not} be hit.
       \item[Bad] wires hit by charge in \textbf{c2}, \textbf{c7} and \textbf{c8} induce ``ghost'' at \textbf{c4}.
       \item[Ambiguous] multiple cells measured by same wire.
         How much charge is in \textbf{c6}???
-      \end{description}
+      \end{description}}
 
-      \vspace{6mm}
+      \vfill
 
-      \onslide<2>{$\Rightarrow$Must reduce number of unknowns!}
+      \onslide<3->{\flushright $\Rightarrow$Must reduce number of unknowns!}
     \end{column}
   \end{columns}
 \end{frame}
@@ -204,13 +212,15 @@
 \begin{frame}
   \frametitle{Charge Measurement Uncertainty}
 
+  Can form:
+
   \[\chi^2 = (\vec{w}_{meas}-\vec{w}_{exp})^\intercal\mathbf{V}^{-1} (\vec{w}_{meas}-\vec{w}_{exp})\]
 
   \vspace{3mm}
 
   \begin{description}\footnotesize
   \item[$\vec{w}_{meas}$] measured (merged) wire charges (in a slice)
-  \item[$\vec{w}_{exp}$] expected wire charge $(\mathbf{G}\vec{b})$
+  \item[$\vec{w}_{exp}$] expected wire charge $(\vec{w}_{exp} = \vec{w}_b = \mathbf{G_{wb}}\vec{b})$
   \item[$\mathbf{V}$] wire charge uncertainty covariance matrix
   \end{description}
 
@@ -223,25 +233,28 @@
 
   \footnotesize
   \begin{description}
-  \item[$\mathbf{B}$] matrix connecting merged wires to wires (per slice).
+  \item[$\mathbf{B}$] matrix connects ``merged'' wires to individual wires (per slice).
   \end{description}
 
+  \begin{center}
+    Still, only works if $N_{blob} < N_{w_b}$!
+  \end{center}
 \end{frame}
 
 \begin{frame}
   \frametitle{But wait!}
 
-  Still, when $N_{wires} < N_{blobs}$ $\Rightarrow$ zero eigenvalues!
+  If still more unknowns than knowns $\Rightarrow$ get zero eigenvalues, ambiguous solution.
   \begin{itemize}
-  \item   Try to remove \textbf{blob combinations} until get nonzero eigenvalues.
-  \item   Try to be clever but still \textbf{hugely time consuming!}  
+  \item   Try to remove \textbf{blob combinations} until get all nonzero eigenvalues.
+  \item   Try to be clever, but \textbf{combinatorics} $\Rightarrow$ \textbf{hugely time consuming!}  
     \begin{itemize}
-    \item Maybe $\rightarrow$ GPUs?
-    \item Maybe be cleverer?
+    \item Maybe we can exploit GPUs?
+    \item Maybe we can be even cleverer?
     \end{itemize}
-  \item  No solution by a fixed number of iterations?
+  \item  For now, if no solution is found after fixed number of iterations:
     \begin{itemize}
-    \item[$\Rightarrow$] give up on slice....
+    \item[$\Rightarrow$] give up on time slice....
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -274,7 +287,7 @@
   \item \textbf{Excellent imaging} of major track features as well as isolated
     activity.
     \begin{itemize}\scriptsize
-    \item[$\rightarrow$] a static 2D view doesn't do it justice!  \href{http://www.phy.bnl.gov/wire-cell/bee/set/6/event/0/}{Follow link to try it}.
+    \item[$\rightarrow$] a static 2D view doesn't do it justice!  \href{http://www.phy.bnl.gov/wire-cell/bee/set/6/event/0/}{Follow link to view it online}.
     \end{itemize}
   \item \textbf{Residual ambiguity} seen as wide blue patches.
     \begin{itemize}\scriptsize
@@ -282,7 +295,7 @@
       \begin{itemize}\scriptsize
       \item due to activity running parallel to the wire plane in one time slice.
       \end{itemize}
-    \item[$\rightarrow$] Pursue
+    \item[$\rightarrow$] Will pursue
       an \textbf{iterative} approach: constrain ambiguous regions
       after taking well reconstructed parts to the kinematics-level.
     \end{itemize}
@@ -302,7 +315,7 @@
   \item \textbf{categorize} success/failure of track to account for the
     cluster's charge distribution.
   \end{enumerate}
-  Some categories:
+  Some initial, coarse categories:
   \begin{description}
   \item[track] cluster is well characterized by the track.
   \item[shower] cluster consistent with an EM/hadronic shower.

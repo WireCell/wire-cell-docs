@@ -1,4 +1,4 @@
-\section {Liquid Argon Time Projection Chambers}
+\section {LArTPC}
 
 
 \begin{frame}
@@ -62,9 +62,9 @@
   \end{center}
 
 
-  Three stages of LArTPC detectors:
+  Three stages of DUNE LArTPC detectors:
   \begin{enumerate}\footnotesize
-  \item ``\textbf{35ton}'' prototype (at FNAL) recently filled, starting cosmic-$\mu$ exposure. 
+  \item ``\textbf{35ton}'' prototype (at FNAL), just started operating, cosmic-$\mu$ exposure. 
   \item Full-scale ``\textbf{protoDUNE}'' (at CERN) 2017 with $\pi, K, p$ beam tests.
   \item Full ``\textbf{DUNE}'' far detector underground in South Dakota $\sim$2025.
     \begin{itemize}
@@ -72,7 +72,7 @@
       5 mm wire pitch, \textbf{375K channels}.
 
     \item Total of \textbf{40 kt fiducial mass} in \textbf{4 separate cryostats}, \\
-      \footnotesize{different LAr tech possible for each.}
+      \footnotesize{different tech possible for each module.}
 
     \end{itemize}
   \end{enumerate}
@@ -80,11 +80,11 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{\textbf{L}iquid \textbf{Ar}gon \textbf{T}ime \textbf{P}roportional \textbf{C}hamber Basics}
+  \frametitle{LArTPC with Wire Readout - Basics Principles}
 
   \begin{itemize}
-  \item Charged tracks leave behind tracks of ionized LAr
-  \item Electrons drift in applied electric field 
+  \item Charged particles produce tracks of ionized LAr
+  \item Electrons drift in an applied electric field 
     \begin{itemize} \footnotesize
     \item Eg: E = \SI{500}{\volt/\cm}, $v_{\mbox{drift}}=$ \SI{1.6}{\milli\meter/\micro\second}
     \end{itemize}
@@ -99,7 +99,8 @@
   \end{itemize}
 
   \begin{itemize}
-  \item [$\rightarrow$] \textbf{three independent 2D views} (wire vs time) of drifted 3D image of charge pattern from ionizing tracks.
+  \item [$\rightarrow$] acquire \textbf{three independent measures} of each element of drifting charge.
+  \item [$\rightarrow$] these \textbf{three 2D views} (wire vs time) multiplex the two transverse dimensions.
   \end{itemize}
 
   \vfill
@@ -124,7 +125,7 @@
       LArTPC can produce \textbf{prodigious quantities} of \textbf{high-resolution} data from \textbf{huge detector volumes}:
       \begin{itemize}
       \item $10^4$ -- $10^6$ channels
-      \item 2MHz @ 12 bit FADC digitization
+      \item 2MHz @ 12 bit waveform digitization
       \item each ``event'' spans several milliseconds
       \end{itemize}
     \end{column}
@@ -132,7 +133,7 @@
       \begin{center}
         \includegraphics[width=\textwidth,trim=13cm 0cm 0cm 0cm,clip]{signal-15.png}
 
-        \scriptsize \SI{0.5}{\micro\second} waveform digitization.
+        %\scriptsize \SI{0.5}{\micro\second} waveform digitization.
       \end{center}
     \end{column}
   \end{columns}
@@ -142,16 +143,16 @@
   \footnotesize
   Two general DAQ readout strategies:
   \begin{description}
-  \item[Full Stream] reads out entire waveform (\textbf{MicroBooNE})
+  \item[Full Stream:] read out entire waveform (\textbf{MicroBooNE})
     \begin{itemize}
     \item \textbf{30GB/s in 120 MB ``events''}.
-    \item DUNE would produce 5 TB/s in 25 GB ``events''!
+    \item DUNE at FS would produce 5 TB/s in 25 GB ``events''!
     \end{itemize}
-  \item[Zero Supression] only save waveform parts with significant activity (\textbf{DUNE})
+  \item[Zero Supression:] only save waveform parts with significant activity (\textbf{DUNE})
     \begin{itemize}
     \item Threshold chosen based on noise ($E_{thesh} \sim$\SI{0.1}{\mega\electronvolt}/wire)
     \item 2.5 MB/event $\rightarrow$ \textbf{100's TB/year}
-    \item caveat: DAQ must reject natural $^{39}$Ar decay or \textbf{50 PB/year}
+    \item requires rejection of natural $^{39}$Ar decay @ \textbf{50 PB/year}
     \end{itemize}
   \end{description}
 

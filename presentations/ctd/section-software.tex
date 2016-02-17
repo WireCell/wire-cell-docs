@@ -1,4 +1,4 @@
-\section{Software}
+\section{Wire Cell Software}
 
 \begin{frame}
   \tableofcontents[currentsection,hideothersubsections]
@@ -8,13 +8,13 @@
 \begin{frame}
   \frametitle{Wire Cell Software Ecosystem}
 
-  Wire Cell breaks up into three main parts:
+  Wire Cell is composed into three main parts:
 
   \begin{description}
   \item[visualization] the ``Bee'' web application (Chao Zhang)
   \item[prototype] reconstruction algorithms, initial proof of
     principle (Xin Qian)
-  \item[toolkit] production process, parallelism and for long-term development (bv)
+  \item[toolkit] production process, parallelism and basis for long-term development (bv)
   \end{description}
 
 \end{frame}
@@ -28,7 +28,7 @@
   \begin{itemize}
   \item Browser-based, general purpose 3D event display, 
   \item Implemented in \textbf{JavaScript/WebGL} + \textbf{Django}.
-  \item Displays reconstructed and ``true'' information.
+  \item Can display variety of reconstructed and ``true'' information.
   \item Simple \textbf{JSON} data file format, 
     \begin{itemize}
     \item \href{http://bnlif.github.io/wire-cell-docs/viz/uploads/}{drag-and-drop user
@@ -40,7 +40,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Interactive 3D visualization}
+  \frametitle{Bee Screenshot}
   \begin{center}
     \includegraphics[height=0.7\textheight]{bee-full-gui.png}    
   \end{center}
@@ -60,14 +60,13 @@
   \item \textbf{Very successful proof of principle!}
   \item Currently \textbf{leads the state of the art} in LArTPC
     reconstruction techniques.
-  \item Amazingly fast development (\textbf{Xin Qian}!)
   \end{itemize}
 
   \begin{center}
     \includegraphics[height=0.5\textheight,trim=0cm 0cm 0cm 2cm,clip]{xin-shower.png}
 
     \scriptsize
-    Colors indicate identified tracks and showers.
+    Example result showing imaging + pattern recognition.  Colors indicate identified tracks and showers.
   \end{center}
 
 \end{frame}
@@ -97,12 +96,12 @@
   \item Built-in wire and cell \textbf{geometry descriptions} or load from file.
   \item Includes simple \textbf{LArTPC detector simulation}.
   \item Rewriten implementations of core \textbf{prototype algorithms}.
-  \item Abstracted \textbf{Data Flow Programming execution model}
+  \item \textbf{Data Flow Programming} execution model with \textbf{abstracted DFP engine}.
   \end{itemize}
 
   \vfill
 
-  Just now becoming available, but more work to do.
+  Just now becoming available with work still needed.
 
 \end{frame}
 
