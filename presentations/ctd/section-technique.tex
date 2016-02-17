@@ -74,7 +74,7 @@
           electronics shaping time}: combine 4 FADC ``ticks'' =
         \SI{2}{\micro\second}.
       \item Select \textcolor{red}{wires} above threshold in the slice.
-      \item Regions of triple-wire overlap: potential ``\textcolor{blue}{cells}'' holding charge in the \textbf{time slice}.
+      \item Identify regions near triple-wire overlap as potential ``\textcolor{blue}{cells}'' holding charge in the \textbf{time slice}.
       \end{itemize}
     \end{column}
   \end{columns}
@@ -116,38 +116,56 @@
 \end{frame}
 
 \begin{frame}
+  \frametitle{Ideal Solution}
+
+  In a \textbf{perfect detector}, simply invert:
+  \[\vec{w} = \mathbf{G} \vec{c}\]
+
+  \begin{description}
+  \item[$\vec{w}$] measured charge in \textbf{wires} (in time slice)
+  \item[$\vec{c}$] expected charge in \textbf{cells} (in time slice)
+  \item[$\mathbf{G}$] fixed wire-cell \textbf{connection} matrix (geometry)
+  \end{description}
+
+  Reality sucks!
+
+  \begin{itemize}
+  \item Often, too few knowns, too many unknowns: $N_{wires} < N_{cells}$
+    \begin{itemize}\footnotesize
+    \item Tomographic detectors have 100s of view, not just 3!
+    \end{itemize}
+  \item Charge measurements ($\vec{w}$) uncertain
+    \begin{itemize}\footnotesize
+    \item Environmental, electronic and thermal noise.
+    \item Statistical uncertainty due to digitization.
+    \item Systematic uncertainties from deconvolution.
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
   \frametitle{Cell Ambiguity - Example Hit Pattern}
 
   \begin{columns}
     \begin{column}{0.35\textwidth}
       \begin{center}
         \scriptsize Zoom in on $5 \times 5 \times 3$ wires:
-
         \includegraphics[width=\textwidth,trim=3.5cm 6cm 5cm 3cm,clip]{example-hit-cells.pdf}        
-
       \end{center}
     \end{column}
     \begin{column}{0.65\textwidth}
-
-      Inherent \textbf{ambiguity} due to spatial multiplexing.
-
-      \vspace{5mm}
-
-      \begin{description}\scriptsize
+      \begin{description}\footnotesize
       \item[Good] wire \textcolor{blue}{v3} measures no charge, \\$\therefore$ all its cells must \textbf{not} be hit.
-      \item[Bad] hits \textbf{c2}, \textbf{c7} and \textbf{c8} induce ``ghost'' at \textbf{c4}.
-      \item[Ambiguous] multiple cells measured by same wire.\\
+      \item[Bad] wires hit by charge in \textbf{c2}, \textbf{c7} and \textbf{c8} induce ``ghost'' at \textbf{c4}.
+      \item[Ambiguous] multiple cells measured by same wire.
         How much charge is in \textbf{c6}???
       \end{description}
 
-      \vspace{5mm}
+      \vspace{6mm}
 
-      \onslide<2->{
-      Want to solve linear matrix equation like 
-      \[\vec{w} = \mathbf{G} \vec{c}\]
-    }
-      \onslide<3>{\footnotesize{However, typical time slice has more \textbf{unknowns} (cells) than \textbf{knowns} (wires), ambiguities remain in solution}}.
-
+      \onslide<2>{$\Rightarrow$Must reduce number of unknowns!}
     \end{column}
   \end{columns}
 \end{frame}
@@ -155,67 +173,79 @@
 
 \begin{frame}
   \frametitle{Blobs}
-  \vspace{-10mm}
+
   \begin{columns}
     \begin{column}{0.6\textwidth}
-      Goal: \textbf{reduce matrix size} and \textbf{remove ambiguity}.
+      \textbf{Reduce matrix size} and (try to) \\
+      \textbf{remove ambiguity} by exploiting knowledge
+      of cell-nearest-neighbors.
     \end{column}
     \begin{column}{0.4\textwidth}
       \includegraphics[width=0.8\textwidth]{wires-and-true-hits.png}          
     \end{column}
   \end{columns}
-      
-  \begin{enumerate}
-  \item Select cells with their three wires above threshold.
-  \item Partition set into spatially contiguous subsets: ``\textbf{blobs}''.
-  \end{enumerate}
-  Equation to solve becomes:
-  \[\vec{w_b} = \mathbf{G_{wb}} \vec{b}\]
-
-  \begin{description}
-  \item[$\vec{b}$] vector of charge in each blob.
-  \item[$\mathbf{G_{wb}}$] the wire-blob adjacency matrix for the slice.
-  \item[$\vec{w_b}$] vector of charge on all wires associated with a blob.
-  \end{description}
-
-  Now, often \textbf{more favorable numerology}: $N_{blob} \lesssim N_{w_b}$
-\end{frame}
-
-% maybe remove this slide...
-\begin{frame}
-  \frametitle{Another wrinkle: charge uncertainty}
-
-  Each wire's measure of drifting charge is uncertain.
-  \begin{itemize}
-  \item Environmental, electronic and thermal noise.
-    \begin{itemize}\footnotesize
-    \item[$\rightarrow$] Can be correlated across wires/channels/chips/boards/etc.
-    \end{itemize}
-  \item Statistical uncertainty due to digitization.
-  \item Systematic uncertainties from deconvolution.
-  \end{itemize}
-
-  \vspace{3mm}
-
-  Form a $\chi^2$ comparing measured wire charge ($\vec{w}_{meas}$)
-  with expected ($\vec{w}_{exp}$) and covariance uncertainty matrix
-  $\mathrm{V}$.
-  
-  \[\chi^2 = (\vec{w}_{meas}-\vec{w}_{exp})^\intercal\mathrm{V}^{-1} (\vec{w}_{meas}-\vec{w}_{exp})\]
-
-  \vspace{3mm}
 
   \begin{center}
-    \textbf{$\rightarrow$ This is a very CPU intensive, but critical step!}
+    cells $\to$ blobs
+
+    wires $\to$ merged wires
   \end{center}
 
-  \footnotesize And recall:
+  Same basic problem to solve:
+  \[\vec{w_b} = \mathbf{G_{wb}} \vec{b}\]
+
   \begin{itemize}
-  \item this must be done at the raw-data processing stage
-  \item need to do this each \SI{2}{\milli\second} time slice
+  \item \textbf{Sometimes} gives more favorable numerology: $N_{blob} \lesssim N_{w_b}$
+  \item \textbf{But not always!} some $\mathbf{G_{wb}}$ can still not be inverted.
+  \item[$\rightarrow$] and we still haven't taken into account uncertainty.
   \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Charge Measurement Uncertainty}
+
+  \[\chi^2 = (\vec{w}_{meas}-\vec{w}_{exp})^\intercal\mathbf{V}^{-1} (\vec{w}_{meas}-\vec{w}_{exp})\]
+
+  \vspace{3mm}
+
+  \begin{description}\footnotesize
+  \item[$\vec{w}_{meas}$] measured (merged) wire charges (in a slice)
+  \item[$\vec{w}_{exp}$] expected wire charge $(\mathbf{G}\vec{b})$
+  \item[$\mathbf{V}$] wire charge uncertainty covariance matrix
+  \end{description}
+
+  \vspace{3mm}
+
+  \footnotesize{Minimization over blob charges is equivalent to matrix inversion to
+  give:}
+
+  \[\vec{b} = (\mathbf{G}^\intercal\mathbf{V}\mathbf{G})^{-1}\mathbf{G}^\intercal\mathbf{V}^{-1}\mathbf{B}\vec{w}_{meas} \]
+
+  \footnotesize
+  \begin{description}
+  \item[$\mathbf{B}$] matrix connecting merged wires to wires (per slice).
+  \end{description}
 
 \end{frame}
+
+\begin{frame}
+  \frametitle{But wait!}
+
+  Still, when $N_{wires} < N_{blobs}$ $\Rightarrow$ zero eigenvalues!
+  \begin{itemize}
+  \item   Try to remove \textbf{blob combinations} until get nonzero eigenvalues.
+  \item   Try to be clever but still \textbf{hugely time consuming!}  
+    \begin{itemize}
+    \item Maybe $\rightarrow$ GPUs?
+    \item Maybe be cleverer?
+    \end{itemize}
+  \item  No solution by a fixed number of iterations?
+    \begin{itemize}
+    \item[$\Rightarrow$] give up on slice....
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
 
 \begin{frame}[fragile]
   \frametitle{The Payoff: imaged \SI{3}{\giga\electronvolt} $\nu_e$ interaction}
