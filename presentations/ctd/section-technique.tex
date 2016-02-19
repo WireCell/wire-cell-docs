@@ -16,17 +16,17 @@
         \begin{itemize}        \scriptsize
         \item Deconvolve \textbf{detector response and filter noise}.
         \item Construct \textbf{wire} geometry and associated \textbf{cells}.
-        \item Form \textbf{time slices} across all wires.
+        \item Form \textbf{time slices} across all wire signal waveforms.
         \end{itemize}
       \item<3> Imaging of Activity
         \begin{itemize}        \scriptsize
         \item The heart of the Wire Cell technique.
-        \item Identify regions (``\textbf{cells}'') in each time slice that contain charge.
+        \item Identify regions (``\textbf{cells}'') in each time slice that likely contain the drifted charge.
         \end{itemize}
       \item<4> Pattern Recognition 
         \begin{itemize}         \scriptsize
-        \item \textbf{Cluster} activity in space and across time slices.
-        \item \textbf{Categorize}: track, shower, etc.
+        \item \textbf{Cluster} imaged activity in space and time slices.
+        \item \textbf{Categorize} patterns as track, shower, etc.
         \end{itemize}
       \item<5> Physics Quantities
         \begin{itemize}         \scriptsize
@@ -96,15 +96,15 @@
   \end{center}
 
   \footnotesize
-  Cell construction:
   \begin{itemize}
-  \item Each ``cell'' is a 2D region near the approximate \textbf{triple-crossing of one
-    wire from each plane}.
-  \item Cells completely tile the plane (\textit{ie} they are odd looking 2D bins)
+  \item Try to localize drifted charge into 2D bins or ``cells'' in
+    the plane transverse to the electron drift direction.
+  \item Each cell covers region near the approximate
+    \textbf{triple-crossing of one wire from each plane}.
   \item Pattern determined by \textbf{pitch}, \textbf{angle} and \textbf{phase} of wire planes.
     \begin{description}
-    \item[MicroBooNE] regular isosceles triangles.
-    \item[DUNE] variety of polygons with a spectrum of sizes
+    \item[MicroBooNE] regular isosceles triangles of fixed size.
+    \item[DUNE] variety of polygons with a spectrum of sizes.
     \end{description}
   \end{itemize}
 
@@ -115,22 +115,23 @@
 
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Ideal Solution}
 
-  In a \textbf{perfect detector}, simply invert:
+  In a \textbf{perfect detector}, simply invert matrix equation:
   \[\vec{w} = \mathbf{G} \vec{c}\]
 
-  \begin{description}
-  \item[$\vec{w}$] measured charge in \textbf{wires} (in time slice)
-  \item[$\vec{c}$] expected charge in \textbf{cells} (in time slice)
+  \begin{description}\footnotesize
+  \item[$\vec{w}$] measured charge on \textbf{wires} (in time slice)
+  \item[$\vec{c}$] expected charge o n \textbf{cells} (in time slice)
   \item[$\mathbf{G}$] fixed wire-cell \textbf{connection} matrix (geometry)
   \end{description}
 
+  \onslide<2->{
   In a \textbf{real detector}:
 
   \begin{itemize}
-  \item Often, \textbf{fewer knowns than unknowns} $(N_{wires} < N_{cells})$
+  \item \textbf{Solution is often ambiguous} $(N_{wires} < N_{cells})$
     \begin{itemize}\footnotesize
     \item CT scanners have 100s of views in each slice, not just 3!
     \end{itemize}
@@ -140,13 +141,12 @@
     \item Statistical uncertainty due to digitization.
     \item Systematic uncertainties from deconvolution.
     \end{itemize}
-  \end{itemize}
-
+  \end{itemize}}
 \end{frame}
 
 
 \begin{frame}
-  \frametitle{Cell Ambiguity - Example Hit Pattern}
+  \frametitle{Ambiguities - Example Hit Pattern}
 
   \begin{columns}
     \begin{column}{0.35\textwidth}
@@ -156,7 +156,7 @@
       \end{center}
     \end{column}
     \begin{column}{0.65\textwidth}
-      One tiny pattern in one time slice:
+      Cartoon of activity in one time slice:
       \begin{itemize}\footnotesize
       \item 9 cells and their associated wires.
       \item wires: color=plane, thickness=charge
@@ -173,7 +173,7 @@
 
       \vfill
 
-      \onslide<3->{\flushright $\Rightarrow$Must reduce number of unknowns!}
+      \onslide<3->{\footnotesize\flushright $\Rightarrow$Fight ambiguity by reducing number of unknowns!}
     \end{column}
   \end{columns}
 \end{frame}
@@ -205,7 +205,7 @@
   \begin{itemize}
   \item \textbf{Sometimes} gives more favorable numerology: $N_{blob} \lesssim N_{w_b}$
   \item \textbf{But not always!} some $\mathbf{G_{wb}}$ can still not be inverted.
-  \item[$\rightarrow$] and we still haven't taken into account uncertainty.
+  \item[$\rightarrow$] And, we still haven't taken into account \textbf{uncertainty}.
   \end{itemize}
 \end{frame}
 
@@ -226,8 +226,8 @@
 
   \vspace{3mm}
 
-  \footnotesize{Minimization over blob charges is equivalent to matrix inversion to
-  give:}
+  \footnotesize{Minimization over blob charges is equivalent to matrix inversion and
+  gives:}
 
   \[\vec{b} = (\mathbf{G}^\intercal\mathbf{V}\mathbf{G})^{-1}\mathbf{G}^\intercal\mathbf{V}^{-1}\mathbf{B}\vec{w}_{meas} \]
 
@@ -237,25 +237,30 @@
   \end{description}
 
   \begin{center}
-    Still, only works if $N_{blob} < N_{w_b}$!
+    Reminder: only works if $N_{blob} < N_{w_b}$!
   \end{center}
 \end{frame}
 
 \begin{frame}
-  \frametitle{But wait!}
+  \frametitle{Remaining Ambiguities}
 
-  If still more unknowns than knowns $\Rightarrow$ get zero eigenvalues, ambiguous solution.
+  Even after forming \textbf{blobs} sometimes still some \textbf{time slices} with:
+  \[N_{blob} > N_{w_b}\]
+
+  $\Rightarrow$ \textbf{zero-value eigenvalues}, remaining ambiguity.
+
+
   \begin{itemize}
-  \item   Try to remove \textbf{blob combinations} until get all nonzero eigenvalues.
-  \item   Try to be clever, but \textbf{combinatorics} $\Rightarrow$ \textbf{hugely time consuming!}  
+  \item<2-> Try removing \textbf{blobs in
+      combinations}: 2, 3, ... until all \textbf{eigenvalues are nonzero}
+
+  \item<2-> \textbf{Combinatorics $\Rightarrow$ hugely time consuming!}  
     \begin{itemize}
-    \item Maybe we can exploit GPUs?
-    \item Maybe we can be even cleverer?
+    \item Algorithm optimization and shortcuts employed.
+    \item Still, some time slices can take $\sim$hours.
+    \item[$\Rightarrow$] We are looking into exploiting GPUs.
     \end{itemize}
-  \item  For now, if no solution is found after fixed number of iterations:
-    \begin{itemize}
-    \item[$\Rightarrow$] give up on time slice....
-    \end{itemize}
+  \item<2->  For now, if no solution is found after fixed number of iterations $\Rightarrow$ give up on time slice....
   \end{itemize}
 \end{frame}
 
@@ -284,20 +289,17 @@
 
   \footnotesize
   \begin{itemize}
-  \item \textbf{Excellent imaging} of major track features as well as isolated
+  \item<2-> \textbf{Excellent imaging} of major features and isolated
     activity.
     \begin{itemize}\scriptsize
     \item[$\rightarrow$] a static 2D view doesn't do it justice!  \href{http://www.phy.bnl.gov/wire-cell/bee/set/6/event/0/}{Follow link to view it online}.
     \end{itemize}
-  \item \textbf{Residual ambiguity} seen as wide blue patches.
+  \item<3-> \textbf{Residual ambiguity} seen as wide blue patches.
     \begin{itemize}\scriptsize
-    \item[$\rightarrow$] \textbf{Inherent in LArTPC technology}, Wire Cell just makes it evident.
-      \begin{itemize}\scriptsize
-      \item due to activity running parallel to the wire plane in one time slice.
-      \end{itemize}
-    \item[$\rightarrow$] Will pursue
-      an \textbf{iterative} approach: constrain ambiguous regions
-      after taking well reconstructed parts to the kinematics-level.
+    \item[$\rightarrow$] \textbf{Inherent problem of tomography using low number of viewing angles}
+    \item[$\rightarrow$] Will pursue an \textbf{iterative} approach:
+      constrain ambiguous regions after reconstructing the good parts
+      to the kinematics-level.
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -306,14 +308,13 @@
 \subsection{Pattern Recognition}
 
 \begin{frame}
-  \frametitle{Pattern Recognition}
-  Our current \textbf{post-imaging} approach:
+  \frametitle{Post-imaging Pattern Recognition}
+
   \begin{enumerate}
   \item \textbf{cluster} together blobs contiguous in space and time
     (slice).
-  \item \textbf{track} a line through a cluster.
-  \item \textbf{categorize} success/failure of track to account for the
-    cluster's charge distribution.
+  \item \textbf{track} straight line through a cluster.
+  \item \textbf{categorize} track fit solutions/failures.
   \end{enumerate}
   Some initial, coarse categories:
   \begin{description}
@@ -325,6 +326,7 @@
 
   \begin{itemize}
   \item This is an \textbf{active area of development} for Wire Cell.
+  \item Plan for \textbf{semi-automated, hand-scanning} to \textbf{map out problem space}.
   \item Maybe a problem suited for \textbf{machine learning}? 
   \end{itemize}
 

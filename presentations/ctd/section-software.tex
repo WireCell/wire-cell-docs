@@ -8,7 +8,9 @@
 \begin{frame}
   \frametitle{Wire Cell Software Ecosystem}
 
-  Wire Cell is composed into three main parts:
+  The software is composed into three main parts:
+
+  \vspace{3mm}
 
   \begin{description}
   \item[visualization] the ``Bee'' web application (Chao Zhang)
@@ -26,17 +28,27 @@
 
   Select features:
   \begin{itemize}
-  \item Browser-based, general purpose 3D event display, 
-  \item Implemented in \textbf{JavaScript/WebGL} + \textbf{Django}.
-  \item Can display variety of reconstructed and ``true'' information.
+  \item \textbf{Web browser-based} 3D event display, 
+  \item Shows variety of reconstructed and ``true'' information.
+  \item Implemented in \textbf{JavaScript/WebGL} (\textbf{Django} backend).
   \item Simple \textbf{JSON} data file format, 
     \begin{itemize}
     \item \href{http://bnlif.github.io/wire-cell-docs/viz/uploads/}{drag-and-drop user
       file uploads}.
     \end{itemize}
-  \item \textbf{Bee 2.0} will add interactive human-guided
-    reconstruction at the pattern recognition level.
   \end{itemize}
+
+  \onslide<2->{ 
+    \textbf{Bee 2.0} in development
+    \begin{itemize}
+    \item[$\rightarrow$] \textbf{semi-automated, human-guided} pattern
+      recognition.
+    \item[$\rightarrow$] collect and replay human decisions.
+    \item[$\rightarrow$] look for \textbf{low-hanging fruit to
+        automate}.
+    \item[$\rightarrow$] maybe feed into machine learning?
+    \end{itemize}}
+
 \end{frame}
 
 \begin{frame}
@@ -90,18 +102,18 @@
   Address compromises made in the name\\
   of rapid prototyping 
   \begin{itemize}
-  \item Includes \textbf{packaging and build} system.
+  \item Modular \textbf{packaging and build} system (waf).
   \item Comprehensive \textbf{API} via abstract interface classes.
   \item Mindful of \textbf{dependencies}, external and internal.
   \item Built-in wire and cell \textbf{geometry descriptions} or load from file.
   \item Includes simple \textbf{LArTPC detector simulation}.
-  \item Rewriten implementations of core \textbf{prototype algorithms}.
+  \item Rewriten implementations of \textbf{prototype algorithms}.
   \item \textbf{Data Flow Programming} execution model with \textbf{abstracted DFP engine}.
   \end{itemize}
 
   \vfill
 
-  Just now becoming available with work still needed.
+  Just now becoming available but with some work still to do.
 
 \end{frame}
 
@@ -115,10 +127,10 @@
       \begin{itemize}
         \item Design influenced by
           \href{http://www0.bnl.gov/events/details.php?q=8932}{VisTrails} and others.
-        \item Data flows through a graph made from:
+        \item Data flows through a \textbf{graph} made from:
           \begin{description}
-          \item[vertices:] computational units / algorithms
-          \item[edges:] data queues of a given type
+          \item[vertices:] \textbf{computational units} (algorithms)
+          \item[edges:] \textbf{data queues} of a given type
           \end{description}
         \item Streamed processing minimizes RAM usage.
         \item High-level ``graph programming'' in user config.
@@ -127,9 +139,6 @@
           \begin{itemize}\scriptsize
           \item Intel TBB provides reference implementation.
           \end{itemize}
-        \item Encourages isolated, targeted development and testing of each
-          compute vertex.
-        \item Feedback loops to implement iterative workflows.
         \end{itemize}
       \end{column}
       \begin{column}{0.3\textwidth}
@@ -138,7 +147,7 @@
 
         \includegraphics[width=\textwidth]{dataflow.pdf}
 
-        \tiny One possible high-level flow.
+        \tiny One possible Wire Cell flow.
       \end{column}
     \end{columns}
 \end{frame}
