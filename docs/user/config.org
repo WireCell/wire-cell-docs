@@ -1,0 +1,166 @@
+* Configuration system
+
+Wire Cell Toolkit provides a comprehensive configuration system.
+It allows parameters to be injected by the end user at run-time.
+Any class which implements =WireCell::IConfigurable= interface may receive parameters.
+The contents and structure of a parameter set are specific to the concrete class that implements this interface.
+Different instances of a configurable class may receive unique parameter sets.
+
+The configuration subsystem can be decomposed into the following parts:
+
+- interface :: Wire Cell communicates to a configurable class strictly through the =IConfigurable= interface.
+
+- naming :: configurables are with constructed and later located by a pair of names identifying the /component/ class and its object /instance/.
+
+- manager :: ad-hoc usage of =IConfigurable= is possible but a wire cell program may use the provided =WireCell::ConfigManager= to assist.
+
+- representation :: configuration information can be persisted as JSON and internally is represented as JSONCPP objects.
+
+- generators :: Wire Cell does not limit how the JSON configuration is produced but some strategies are recommended.
+
+Each of these parts are described in more detail.
+
+** Interface
+
+Any class implementing =IConfigurable= ("configurables" or "configurable classes") may receive configuration information.
+This interface requires producing a default configuration and accepting an externally provided configuration.
+How the configurable satisfies this interface is not restricted but the following are recommended behaviors:
+
+- default should be static (hard-coded)
+- default should be complete, and contain all supported parameters even if they be set to bogus values
+- external configuration should be assumed not complete and be used to /update/ the configurable's internal representation rather than wholly replace
+- numeric values are bare numbers without dimensions/units.  See the document on [[./units.org][units]] for recommended ways to handle this. 
+
+See the documentation on [[./interfaces.org][interfaces]] for more information on Wire Cell interfaces.
+
+** Naming
+
+Like for all Wire Cell components, a configurable class factory is registered by a unique component name (usually the class name) and individual instances produced by the factory have a name which is unique at least to the factory that produced it.  
+This pair of component/instance names is used to associate a parameter set in the configuration with an instance.
+These names are not part of the parameter set given to the instance.
+That is, a component does not "know" its instance nor component names through the configuration mechanism.
+
+When using a factory to create an instance the instance name is optional. 
+If omitted the default (empty string) will be used implicitly.
+When configuring such an instance an explicit empty string must be given for the instance name.
+
+** Manager
+
+The =ConfigManager= provides a simple facade for building up a global configuration set in memory, loading/dumping it from/to persistent stores and assisting in delivering individual parts to their intended instances.
+
+** Representation
+
+In C++ memory, the configuration is represented as a hierarchy of JSONCPP objects.  
+This hierarchy may be serialized to JSON strings and persisted.
+In memory and persistent representations follow the same structure.
+At its top, this structure is a list of dictionaries.
+Each dictionary has the keys:
+
+- =type= :: the component type (usually the C++ class name)
+- =name= :: the instance name (empty string may be used as default)
+- =data= :: a component-specific data structure
+
+An example configuration in JSON representation is:
+
+#+BEGIN_SRC json
+  [
+      {
+          "type": "TrackDepos",
+          "data": {
+              "clight": 1,
+              "step_size": 1,
+              "tracks": [ ]
+          }
+      },
+      {
+          "type": "Drifter",
+          "name": "drifterU",
+          "data": {
+              "drift_velocity": 0.0016,
+              "location": 3
+          },
+      },
+      {
+          "type": "Drifter",
+          "name": "drifterV",
+          "data": {
+              "location": 2
+          },
+      },
+      {
+          "type": "Drifter",
+          "name": "drifterW",
+      }
+  }
+#+END_SRC
+
+Four components will be configured.  
+The =TrackDepos= need not specify a =name= while each of the three =Drifter=s must be named uniquely.
+Numeric literals are implicitly assumed to be expressed in the native Wire Cell system of units.
+The second =Drifter= has no =drift_velocity= which means the hard-coded default will be used for just that parameter.
+The last =Drifter= has no =data= at all which means all hard-coded defaults are used.
+
+** Generators
+
+JSON allows describing structured data in a way that can be easily transferred between unrelated pieces of software.
+In principle, a plain JSON Wire Cell configuration file can be created using the user's favorite text editor.
+However, even for a modest number of component instances this becomes tedious and error prone for a few reasons:
+
+- any symmetries in the structure are fully expanded and implicit.
+- dependencies between elements of the structure are fully resolved and thus can become out of sync if changes are needed.
+- values are given as dimensionless numbers and the system of units is apparent (intentionally so).
+
+The user is free to generate Wire Cell configuration information in compliant JSON schema in any manner they wish.  
+Wire Cell provides some recommendations.
+
+*** Jsonnet
+
+The [[http://jsonnet.org/][Jsonnet]] (say, "jay-sonnet") language is an extension to JSON which helps define or generate a form which is basic JSON.  
+The workflow involves writing a number of =.jsonnet= files and expanding them to plain JSON with the =jsonnet= command line program.
+
+Wire Cell provides the file =wirecell.jsonnet= which provides some helpful utilities to write Jsonnet files that can be expanded into Wire Cell JSON configuration files.  An example of its use is:
+
+#+INCLUDE: "jsonnet/example.jsonnet" src json 
+
+The =wc.Component= provides the default values for a component dictionary. 
+The dictionary that follows overrides the =type= and =data= keys while =name= is left unspecified to take the default.
+Explicit units can be specified for numeric quantities.
+If any additional =data= items are taken by this =ExampleType= then their hard-coded values in the C++ will be used.
+
+Running the =jsonnet= command produces the fully inflated JSON:
+
+#+BEGIN_SRC sh  :dir jsonnet :exports both :results value code :wrap src json
+jsonnet example.jsonnet
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_src json
+[
+   {
+      "data": {
+         "pitch": 5,
+         "tick": 500
+      },
+      "name": "",
+      "type": "ExampleType"
+   }
+]
+#+END_src
+
+While the value of =data= is component-specific but the following guidelines are generally followed:
+
+- prefer explicit dictionary to simple list
+- use same structure for like concepts.
+
+Some common concepts:
+
+- Point :: a dictionary with "x", "y" and "z" keys which are distances.  The =wc.Point= default object and =wc.point()= function are provided.
+- Ray :: a dictionary with "tail" and "head" keys each of which are a =Point=. The =wc.Ray= default object and =wc.ray()= function are provided.
+
+
+
+
+
+
+
+
