@@ -29,6 +29,25 @@
 	data:{}
     },
     TrackDepos :: self["Component"] + { type: "TrackDepos" },
+
+    // DFP
+    Node :: {type:"",name:"",port:0},
+    uvw:: ["U","V","W"],
+    conn_uvw_uvw(a,b,p)::
+    {
+	tail: {type:a, name:a + $.uvw[p], port:p},
+	head: {type:b, name:b + $.uvw[p], port:p},
+    },
+    conn_one_uvw(a,b,p)::
+    {
+	tail: {type:a, name:a},
+	head: {type:b, name:b + $.uvw[p]},
+    },
+    conn_uvw_one(a,b,p)::
+    {
+	tail: {type:a, name:a + $.uvw[p]},
+	head: {type:b, name:b,            port:p},
+    },
     
 }
 
