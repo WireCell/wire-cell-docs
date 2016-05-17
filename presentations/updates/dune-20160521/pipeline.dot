@@ -1,0 +1,72 @@
+digraph pipeline {
+        chdb[label="channel database\ngood/bad\nnoisy freqs"];
+
+	start[label="channel data"];
+	
+	{rank=same;
+		chdb;
+		start;
+		goodres;
+		badres}
+
+	config[label="Good\ngain/shape?",shape=diamond];
+
+
+        gaincor[label="gain fix\n(time)",shape=invhouse];
+        invgaincor[label="gain unfix\n(time)",shape=house];
+        gainshapecor[label="gain/shape response fix\n(freq)"];
+        bandfilt[label="band filters\n(freq)"];
+	dft[label="Fourier\n(time->freq)",shape=triangle];
+        idrc[label="Missed peak\n(freq)",shape=diamond];
+	rcfix[label="RC fix\n(freq)"];
+	idft[label="Inv Fourier\n(freq->time)",shape=invtriangle];
+        chirp[label="chirp masking\n(time)",shape=box];
+	baseline[label="nominal rebaseline\n(time)"];
+	whatis[label="What is?",shape=diamond]
+	chirpbaseline[label="chirp rebaseline\n(time)"];
+	rcbaseline[label="RC rebaseline\n(time)"];
+
+	badres[label="Bad response\nfunction (freq)"];
+	goodres[label="Good response\nfunction (freq)"];
+
+	noisy[label="ID Still Noisy\n(time)"];
+	coherent[label="coherent subtraction\n(time)"];
+	
+	chdb->bandfilt[style=dashed];
+	chdb->config[style=dashed];
+	
+	
+	start->config;
+	config->gaincor[label="no",color=red];
+	gaincor->chirp->invgaincor[color=red];
+	config->chirp[label="yes"];	
+
+
+        invgaincor->dft->idrc[color=red];
+        chirp->dft->idrc;	
+
+
+	idrc->rcfix[label="no",color=black];
+	idrc->rcfix[label="no",color=red];
+	idrc->bandfilt[label="yes",color=black];
+	idrc->gainshapecor[label="yes",color=red];
+
+
+	rcfix->bandfilt->idft->baseline[color=black];
+	rcfix->gainshapecor->bandfilt[color=red];
+
+	badres->gainshapecor[style=dashed];
+	goodres->gainshapecor[style=dashed];
+	baseline->whatis;
+	whatis->chirpbaseline[label="chirp"];
+	chirpbaseline->noisy;
+	whatis->rcbaseline[label="missed\npeak"];
+	rcbaseline->noisy;
+	whatis->noisy[label=" normal"];
+
+	noisy->coherent[label=" 48"];
+	
+	chirp->chirpbaseline[style=dotted];
+	chirp->whatis[style=dotted];
+	idrc->whatis[style=dotted];
+}
