@@ -1,0 +1,118 @@
+#+TITLE: Deconvolution in Wire Cell
+
+* 2D
+
+The 2D deconvolution is in the prototype in the class [[https://github.com/BNLIF/wire-cell-2dtoy/blob/master/src/uBooNE_Data_2D_Deconvolution.cxx][=uBooNEData2DDeconvolutionFDS=]].
+
+** Notation
+
+The functionality is described below with this notation:
+
+- $A_{xy}$ :: A matrix (complex valued in general) of coordinates $x$ vs $y$.  The first $x$ is in wire/channel or its Fourier periodicity space, the second $y$ is in time or frequency space.
+- $A_{xz} = FFT_{y\to{}z}(A_{xy})$ :: A Fourier transform that takes coordinate $y$ to its dual $z$.   The transfer operates in a row-wise or column-wise manner. *Note, changing index labels implies a new matrix value!*  See definition of indices below.
+- $F_x$  :: a filter function operating independently (row-wise or column-wise) on a single coordinate $x$.
+
+Each plane is considered independently and so the notation is free of
+any plane indices.  Wrapped wires are not currently considered.
+
+Values are measured in discrete space (eg. wire pitch distance) and
+time (eg ticks).  Fourier transforms on both of these coordinates and
+in both directions are taken.  These labels are used:
+
+- $d$ :: channel, wire number or wire region number giving a proxy for
+         the discrete distance along the wire pitch direction.  For
+         channels it runs $0 \le d < N_{wires}$ where for typical
+         planes, $N_{wires}$ is two or three thousand.  For wire
+         regions it runs $0 \le d \le 2 N_{regions}$ to give $\pm
+         N_{regions}$ on either side of the wire-of-interest plus one
+         around the wire-of-interest.
+- $p$ :: the ``periodicity number'' or spatial frequency number
+         corresponding to the Fourier transform over the distance
+         measures $d$.
+- $t$ :: the discrete sample time or tick.  The $t$ spans a readout
+         which is typically a few ms sampled at 0.5 \mu{}s giving
+         about ten thousand indices.
+- $f$ :: the temporal frequency number corresponding to the Fourier
+         transform over the time measure $t$.
+
+** Field Response as Distance vs. Time
+
+An element of the ``field response matrix'' $R_{dt}$ describes the
+instantaneous induced current on a given wire-of-interest at the time
+$t$ due to a drifting charge distributed uniformly across the region
+near a wire which is $d$ wires from the wire-of-interest.  These are
+calculated on a finer time scale and are later down-sampled
+and extended to match the digitization sample time and extent.
+
+** Field Response as Distance vs Frequency
+
+The Fourier transform is applied along the time coordinate
+independently for each wire region response of in $R_{dt}$ to form
+$R_{df} = FFT_{t\to{}f}(R_{dt})$.  
+
+** Field Response as Periodicity vs Frequency
+
+A second Fourier transform is applied across the spatial (wire region)
+coordinate of the field response matrix giving $R_{pf} =
+FFT_{d\to{}p}(R_{df})$.  Here, $d$ or $p$ run across the $2 N_{regions}+1$
+indices
+
+** Measured Current as Distance vs. Time
+
+The full detector ``frame'' readout is represented by a matrix $M_{dt}$
+(for a given plane) which represents the measured waveform in channel
+$d$ over digitization time ticks $t$. 
+
+** Measured Current as Distance vs. Frequency
+
+The Fourier transform is applied to each measured waveform to produce
+$M_{df} = FFT_{t\to{}f}(M_{dt})$.
+
+** Measured Current as Periodicity vs. Frequency
+
+A second Fourier transform is applied across the distance coordinate
+to produce the ``periodicity'' (spatial frequencies) of the (temporal)
+frequency spectra.  This is $M_{pf} = FFT_{d\to{}p}(M_{df})$.  
+
+** Spatial and Temporal filter functions
+
+Two functions operate as filters, one in the spatial frequency
+(periodicity) and one in the temporal frequency domains.  Both are of
+the form of an falling exponential of some power of the coordinate.  The spatial ``wire
+filter'' is $F_p$ and the temporal frequency filter is $F_f$.
+
+** Signal as Periodicity vs. Frequency with Filter
+
+The deconvolution is performed in spatial and temporal frequency space
+as the ratio of the measured current and the response and a product of a filter which is composed of function of the wire dimension and one of the time dimension.  $S_{pf} = \frac{M_{pf}}{R_{pf}}\frac{F_p}{N_{wires}N_{ticks}}$.
+
+** Signal as Distance vs. Frequency
+
+The signal is transformed from spatial frequency (periodicity) to distance $S_{df} = FFT_{p\to{}d}(S_{pf})$. 
+
+** Signal as Distance vs. Time with Filter
+
+The signal is finally transformed back to time after a frequency
+filter is applied.  $S_{dt} = FFT_{f\to{}t}(S_{df} F_f)$.
+
+** Baseline restoration
+
+Finally the baseline is restored.
+
+
+
+* Implementation
+
+The full 2D deconvolution in the above notation can be condensed to: 
+
+- signal :: $S_{dt} = FFT_{f\to{}t}(FFT_{p\to{}d}(FFT_{d\to{}p}(FFT_{t\to{}f}(M_{dt})) * F_{pf}))$
+- filter :: $F_{pf} =  f_p * f_f / (N_{wire} N_{tick} * R_{pf})$
+With all variables being $N_{wire} \times N_{tick}$ matrices:
+
+- $M_{dt}$ :: measured ADC and
+- $F_{pf}$ :: a filter in wire periodicity vs frequency space composed of:
+- $f_x$ :: a frequency space filter in either the time or wire dimension.
+- $R_{pf}$ :: total response, a product of:
+- $R_{field,pf}$ :: field response and
+- $R_{elec,pf}$ :: electronics response.
+
