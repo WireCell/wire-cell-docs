@@ -20,3 +20,6 @@ auto
 *.toc
 *.vrb
 *.nav
+*.html
+*.pdf
+*.tex

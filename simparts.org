@@ -1,0 +1,106 @@
+#+TITLE: Wire Cell Simulation Parts
+
+* Conceptual overview
+
+The current scope of the simulation begins after the production of ionization electrons and ends at the production of digitized waveforms.  Each major phase of the simulation is implemented as a Wire Cell /component interface/.  This allows different applications to narrow the scope or to emply different implementations.  For the most part, the details governing the detector design are abstracted out to user-accessible configuration parameters and input data. 
+
+The simulation provides reference a implementation for all the major components.  This makes some limiting assumptions such as: three wire planes (this limitation is actually baked into several places and needs proper factoring), single-sided anode but does allow for a non trivial mapping from wires to channels.  Double-sided and multiple anode planes can be implemented at the application  layer by suitably remapping the location of energy depositions into a single drift volume.  The rest of this section describes some of the concepts in more detail.
+
+** Drift Volumes
+
+A /drift volume/ is a region in space where energy deposition gave rise to *point* ionizations of electrons (=IDepo= data interface).  Transverse to the nominal drift direction it is bounded by a field cage.  Longitudinally it begins at a cathode plane and terminates at a logical /response plane/ described below.
+
+Drifting of point depositions is achieved through the application of a component implementing the =IDrifter= interface.  It applies a transformation to each initial deposition and creates a new one which is located on the /response plane/.  This transformation must include spatial and temporal translations as well as effects such as electron diffusionn and absorption and relevant statistics.  It may implement arbitrary drift paths in order to account for a nominal, uniform electric field or additionally model space charge distributions.
+
+** Response Plane
+
+Once a deposition reaches the /response plane/ it is considered close enough to the wires to induce a measurable amount of signal current.  The location of this plane must be coordinated between the implementation of the =IDrifter= and the component that completes the lifetime of the deposition as it passes through the /anode plane volume/.
+
+** Anode Plane Volume
+
+The /anode plane volume/ is a region near the wire planes, starting at the response plane, where drifting charge can induce an appreciable amount of signal on the wires.  The anode plane volume has no other specific boundary.  Depositions, (which typically at this point have finite longitudinal and transverse extent), are managed by a component implementing the =IDuctor= interface.  Its purpose is to produce the (sampled) current responses on nearby wires or the voltage response on attached amplifier channels due to the motion of a deposition along the final length of its drift path before being collected on one or more wires.
+
+The reference Wire Cell implementation of =IDuctor= uses a broad and detailed, 2D field response calculation, a model for the electronics response, and a mapping from wires to channels to produce their voltage waveforms.  This reference implementation neglects any residual electron diffusion and absorption that occurs in the final centimeters of drift through the anode plane volume.
+
+** Noise
+
+Models for the noise (inherent or excess) can be implemented as an =IFrameSource= component. Their resulting sampled voltage waveforms are summed with the signals produced above.
+
+
+** Wire Planes
+
+The anode plane volume contains a number of parallel wire planes stacked up along the nominal drift direction.  Each wire plane is composed of a finite number of parallel wires arrayed with uniform separation (pitch).  Were required, the length of the wires may be limited by some bounding box.   
+
+Wire planes consist of wire segments and do not embody any concept of wire wrapping.  Each wire is considered to be an independent electrode.  As described above, a logical mapping may be used to model the connectivity of individual wires into a contiguous conductor which is attached to an input channel of an amplifier.
+
+** Coordinate systems
+
+There are two types of coordinate systems used by the simulation: a /volume coordinate system/ (VCS) and a /wire coordinate system/ (WCS).
+
+*** Volume Coordinate System
+
+Each /drift volume/ carries an associated /volume coordinate system/ with the Cartesian axes:
+
+- X :: points perpendicular to and from anode to cathode (counter to the nominal electron drift direction)planes
+- Y :: points upward, against gravity assuming a level detector
+- Z :: $(= X \times Y)$,  a drifting electron facing the anode has +Z on its left hand side
+
+The origin is described below.  In the case of a detector with two drift volumes sensed by one double-sided anode plane, each drift volume has its own VCS each of which is rotated by 180 degrees w.r.t. the other and around their common Y-axis direction.
+
+*** Wire Coordinate System
+
+Each /wire plane/ carries its own /wire coordinate system/ with Cartesian axes:
+
+- drift :: parallel to the X volume coordinate axes
+- wire :: points along the wire direction, with positive direction generally upwards
+- pitch :: $(drift \times wire )$, points along the wire pitch
+
+The origin is described below.  A point in the VCS can be transformed to a WCS with the help of a =Pimpos= object.  This object also provides routines to handle binning at the /wire region/ level and the /impact position/ level.  A wire region is a strip of width that of the wire plane pitch and centered on each wire.  This width is further subdivided into impact positions.   
+
+*** Coordinate Origins
+
+Each WCS is defined w.r.t. an /origin/ expressed in VCS coordinates.  Different planes need not share the same origin.  The extent of a wire plane is specified w.r.t. to the origin.  This extent need not have any particular symmetry about the origin but the reference implementation places the wire planes so that they extend the same (pitch) distance to either side.
+
+*** Change from space to temporal drift
+
+The "location" of a wire plane along the VCS "X" or WCS "drift" axes is not explicitly specified.  Rather, (at least in the reference implementation of =IDuctor=) it is embodied in the field response functions and is given in terms of a sample time coordinate and not a spacial coordinate.  That is, a deposition is transported to /response plane/, its transverse location and extent is converted into a coverage of wire regions (more precisely impact positions) and its longitudinal extent is converted into a temporal one.  Each bin of the transverse extent can then be considered to contain a temporal profile of charge density passing through the response plane.  This profile is convolved with the field response function associated with that same impact position.  Aggregating these convolutions into the associated wire produces its full response.  Finally, aggregating via a channel map produces the final sampled voltage waveform.
+
+
+** Wire numbering
+
+
+
+
+** Response Plane
+
+Each side of an /anode plane/ has an associated  
+
+ /response plane/  is near and parallel to the wire planes.  It is chosen to separate the detector volume in to two qualitatively different regions.  The largest region is the bulk of the detector volume where the drift field is nominally uniform and which is too far away to induce significant current on the sense wires.  On the other side of the /response plane/ 
+
+ and the region where field becomes non uniform (typically requiring special calculation such as with Garfield or LARF) and where induction begins to become appreciable.
+
+to demark  be the point at which nominal uniform field can no longer be assumed and where a detailed calculated field takes over (in next "D").  Drifting also applies any diffusion and absorption and its associated statistics on the total charge of the deposition.  The resulting object is a new =IDepo=.
+
+
+
+
+Here are the "D" concepts.
+
+** Deposition
+
+Produce initial ionization electrons (=IDepo= objects).  Likely as an =IDepoSource=.  Could be parameterized or an object that reads a file of, say, G4 hits.  
+
+Requires:
+- understanding of the coordinate system assumed for the volume and its relationship to that used by the wire planes.
+
+** Drifting 
+
+
+Requires:
+
+- knowledge of the /drift stop plane/ at which to stop drifting,
+- parameters of electron diffusion, absorption and drift speed.
+
+** Ductor
+
+Take =IDepo= objects 

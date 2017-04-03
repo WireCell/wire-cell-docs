@@ -1,0 +1,54 @@
+#+TITLE: Wire-Channel Mapping
+
+* Wires
+
+A wire plane is made of many parallel wires (strictly /wire segments/).  In a plane, a wire is identified by its sequential zero-based index in an array.  In contexts where a wire is finite, its endpoints are determined by a rectangular bounding box associated with the wire plane.  This sides of this box are parallel to the detector Cartesian coordinates.  The first wire (array element zero) in a plane is at the most negative possible Z location.
+
+Wire planes are parallel to the X axis (positive X points in the anti-drift direction).  The wires of a plane run at an angle measured w.r.t. the Y-axis (positive Y is counter to the direction of the force of gravity).  The positive wire direction, for any wire plane, has a positive Y component.  The pitch direction is perpendicular to the wire direction and parallel to the wire plane.  Its positive direction, for any wire plane, has a positive Z component.
+
+* Planes
+
+Wire Cell Toolkit currently supports a fixed number of three wire planes.  These are given letter labels, in order of decreasing X: "U", "V", and "W".  Typically, U and V are "induction planes" and are at some non-zero angle and "W"' is the "collection" plane with zero angle. 
+
+* Wires and Channels
+
+Wire Cell Toolkit's simulation of drifting charge produces current waveform responses on wires.  One or more wire forms a logically continuous conductor which feeds the input of the electronics amplifier channel.  Channels tend to be defined in order of where the end of the conductor attaches to the frame (where the last wire intersects the bounding box) which will not in general match the ordering of wires described above.  Channels may be numbered globally sequentially or with multi-dimensional identifiers such as used for wires.  For any given detector, there may be multiple "right" ways to associate wire and channel identifiers.  In general an explicit wire-channel map must specified to perform this association.
+
+** Single-sided Anode
+
+Detectors with single-sided anode planes (eg, MicroBooNE) have one-to-one wire-channel map.  It is fairly "linear" because runs of wire numbers in each plane can be easily identified with locations on the anode frame and thus with contiguous channel numbers.
+
+** Double-sided Anode
+
+Double-sided anode detectors (eg, DUNE) typically also either wrap the conductor around the anode frame or jumper wires that would otherwise terminate on abutted sides of two anode planes.  In either case, one channel is sensitive to more than one drift volume and the wire-channel mapping for such detectors are more complex.  In the case of wrapped wires, the wire-channel map is many-to-many while jumpered wires it is one-to-one.
+
+** Specification
+
+Specifying wire geometry and a wire-channel map poses a non trivial numerical challenge.  The relevant parameters include:
+
+- number, angle and pitch and "phase" of wires in a plane
+- width and height of bounding box
+- employing wrapped conductors or jumpered wires
+- constraints to populate electronics in discrete units
+- rotational or (X-axis) mirror symmetry constraints
+
+This presents an over-constrained problem.  It is not possible to arbitrarily choose any value for all numerical parameters.  For example, given a bounding box, an angle and a pitch, the number of wires is determined (up to maybe off-by-one differences as the phase is varied and a wire is "pushed out" of the bounding box).  Alternatively, for a given wire number and angle, the pitch must vary to accommodate any change in the frame dimensions.  If there is mirror symmetry then the angle of U and V must be identical.  
+
+If \alpha is the angle of the U or V wires and $h$ and $w$ given the dimensions of the wire plane bounding box then this relation must hold
+
+$h\cos(\alpha) + w\sin(\alpha) = N_{wires} * pitch$
+
+ProtoDUNE U/V planes have the following specifications (from the TDR)
+
+- pitch :: 4.669 mm
+- angle :: $35.707^\circ$ 
+- #channels :: 800 (both sides)
+- active height :: 5.920 m
+- active width :: 2.295 m
+
+These "active" dimensions are smaller than the actual bounding box required to find actual wire end points.  Taking them at face value and assuming through segments perpendicular to the planes gives $N_{wires} = 1316.46$.  In practice, some wires will not be constructed as they are two short to be useful.
+
+** TODO 
+
+- How many wires per conductor?  Always 3 except for special cases with an wire endpoint near a corner? 
+
