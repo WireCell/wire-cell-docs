@@ -164,6 +164,7 @@ $ mkdir <name>
 $ cd <name>/
 $ echo "bld.smplpkg('WireCell<Name>', use='WireCellUtil WireCellIface')" > wscript_build
 $ git init
+$ git add wscript_build
 $ git commit -a -m "Start code package <name>"
 ```
 
