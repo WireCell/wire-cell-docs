@@ -22,7 +22,7 @@ def build(bld):
                 source = dot,
                 target = [dot.replace('.dot','.map'), dot.replace('.dot','.png')])
 
-    # note, mkdocs always rebuilds everything
-    bld(rule='${MKDOCS} build',
-        source = 'docs/img/ecosystem-data.png',
-        target = 'site/img/ecosystem-data.png')
+    # # note, mkdocs always rebuilds everything
+    # bld(rule='${MKDOCS} build',
+    #     source = 'docs/img/ecosystem-data.png',
+    #     target = 'site/img/ecosystem-data.png')

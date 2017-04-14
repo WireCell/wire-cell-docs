@@ -12,11 +12,48 @@ No ROOT in core.  core: =util= base, =iface= next. reference implementation: =ge
 
 ** Package structure
 
-The =src=, =inc= etc dirs.  The =wscript_build= file.
+The =src=, =inc=, =python= etc dirs.  The =wscript_build= file.
 
 ** Build system
 
 Not how to build but what developer needs to know to make a package comply.
+
+* Coding conventions
+
+** C++ code formatting 
+
+- Base indentation /should/ be four spaces.
+
+- Tabs /should/ not be used.
+
+- Opening braces /should not/ be on a line onto themselves, closing braces /should be/.
+
+- Class names /should/ be =CamelCase=, method and function names /should be/ =snake_case=, class data attributes  /should be/ prefixed with =m_= (signifying "member").
+
+- Doxygen triple-slash =///= or double-star =/** */= comments /must/ be used for in-source reference documentation.
+
+- Normal comments /may/ be used for implementation documentation.
+
+- Interface classes and their types and methods /must/ each have a documenting Doxygen comment.
+
+- Header files /must/ have =#ifndef/#define/#endif= protection.
+
+- The C++ =using namespace= keyword /must not/ be used at top file scope in a header.
+
+- Unused headers /should not/ be retained.
+
+- Any =#include# need in an implementation file but not the corresponding header file /should not/ be in the header file.
+
+
+** C++ namespaces
+
+- All C++ code part of WCT proper and which may be accessed by other packages (eg, exported via "public headers") /must/ be under the =WireCell::= namespace.
+
+- WCT core code (=util= and =iface= packages) /may/ exist directly under =WireCell::= but bare functions /must/ be in a sub namespace.
+
+- Non-core, WCT implementation code (eg contents of =gen= package) /must/ use secondary namespace (eg =WireCell::Gen::=).
+
+- Any third-party packages providing WCT-based components or otherwise depending on WCT /should not/ use the =WireCell::= namespace.
 
 * Interfaces
 

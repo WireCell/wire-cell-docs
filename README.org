@@ -1,0 +1,10 @@
+#+TITLE Wire Cell Documentation
+
+* Toolkit
+
+The Wire Cell *Toolkit* documentation consists of various [[./manuals/index.org][manuals]].
+They are online as HTML at http://wirecell.github.io/wire-cell-docs/.
+
+* Prototype
+
+The Wire Cell *Prototype* documentation is at http://BNLIF.github.io/wire-cell-docs/.

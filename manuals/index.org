@@ -15,3 +15,4 @@ Implementation-specific documentation corresponding to individual WCT packages.
 - [[./iface.org][Interfaces]]
 - [[./gen.org][Simulation]]
 - [[./sigproc.org][Signal Processing]]
+- [[./python.org][Python]]
