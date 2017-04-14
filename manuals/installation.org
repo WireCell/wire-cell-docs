@@ -1,0 +1,20 @@
+#+ Wire Cell Toolkit Installation Manual
+
+* Toolkit Installation
+
+assuming you have externals
+
+* Guide for Installation of Dependencies
+
+** Manual
+
+DIY
+
+** Spack
+
+Installation and setup with Spack Views or with EM.
+
+** UPS
+
+Setup with UPS.
+

@@ -1,0 +1,49 @@
+#+TITLE: Wire Cell Toolkit Internals
+
+* Intro
+
+This doc describes the toolkit structure, not so much what it implements.
+
+* Packages
+
+** Dependencies
+
+No ROOT in core.  core: =util= base, =iface= next. reference implementation: =gen=, =sigproc=, I/O or peripheral: =sst=.   Need for something between =iface= and ref. imp.
+
+** Package structure
+
+The =src=, =inc= etc dirs.  The =wscript_build= file.
+
+** Build system
+
+Not how to build but what developer needs to know to make a package comply.
+
+* Interfaces
+
+pure, abstract.  all in one package.
+
+* Components
+
+Pointer and shared vector access.  Named factory.
+
+* Configuration
+
+CPP macro.  interface methods.  common implementation patterns.
+
+* Execution Models
+
+** Ad-hoc
+
+Direct calling of utility functions and concrete objects.
+
+** Component
+
+Concrete components.
+
+** Interface
+
+Using NamedFactory.
+
+** Data flow programming
+
+Using abstract DFP

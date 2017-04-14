@@ -1,0 +1,17 @@
+#+TITLE: Wire Cell Toolkit Manuals
+
+* Toolkit manuals
+
+The general Wire Cell Toolkit is documented in various subject manuals.
+- [[./installation.org][Installation]] describes ways to build and install the WCT and its software dependencies.  needing to install 
+- [[./configuration.org][Configuration]] describes the built-in configuration mechanism
+- [[./internals.org][Internals]] describes the design and gives a tour of the software from a developer point of view.
+
+* Package manuals
+
+Implementation-specific documentation corresponding to individual WCT packages.
+
+- [[./util.org][Utilities]]
+- [[./iface.org][Interfaces]]
+- [[./gen.org][Simulation]]
+- [[./sigproc.org][Signal Processing]]
