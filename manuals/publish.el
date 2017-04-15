@@ -4,6 +4,7 @@
 (require 'ox-html)
 (message (format "org-mode version %s" org-version))
 
+;; https://github.com/fniessen/org-html-themes
 ;; $ emacs --batch -Q -l publish.el --eval '(org-publish-project "wct-manual")'
 
 
@@ -12,7 +13,8 @@
          :components (
                       "wct-manual-html"
                       "wct-manual-styles"
-                      "wct-manual-pdf"
+;; need to get some latex to deal with begin_hint, begin_warning, etc
+;;                      "wct-manual-pdf"
                       "wct-manual-md"
                       ))
 
@@ -30,7 +32,7 @@
 
         ("wct-manual-styles"
          :base-directory "org-html-themes/styles"
-         :publishing-directory "html/styles/"
+         :publishing-directory "web/styles/"
          :publishing-function (org-publish-attachment)
          :base-extension "css\\|js\\|png"
          :recursive t

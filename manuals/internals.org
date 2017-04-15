@@ -1,9 +1,6 @@
+This doc describes the Wire Cell Toolkit (WCT) internal structure and support facilities.  It is intended for developers to read carefully, understand and follow.  It may be of interest to users as well.   It does not cover the "batteries included" or "reference implementations" such as the simulation, signal processing, imaging, etc which are described in section [[Packages]].
 
-* Intro
-
-This doc describes the Wire Cell Toolkit (WCT) core internal structure and support facilities.   The "batteries included" or reference implementations that are also provided as part of the toolkit are documented in the individual package manuals.
-
-* Packages
+* Toolkit packages
 
 The WCT is composed of a number of /packages/.  Each package has an associated with a Git source repository.
 Most packages produce a shared library, which may also be a WCT plugin library, C++ header files, some number of main or test applications.   Others include a single package holding all Python code in various modules, a package providing support for developing WCT configuration files and the documentation package holding this document.
@@ -47,7 +44,10 @@ Fixme: make a script that generates a dot file and show the graph.
 
 ** Build package
 
-To actually build WCT see the section on toolkit installation.  The build system is based on [[https::waf.io][Waf]] and uses the =wcb= command and a =wscript= file provided by the top level /build package/.  Besides holding the main build instructions this package aggregates all the other packages via Git's "submodule" feature.  In principle, there may be more than one build package maintained.  This allows developers working on a subset to avoid having to build unwanted code.  In practice there is a single build package which is at: https://github.com/wirecell/wire-cell-build.
+To actually build WCT see the section on toolkit installation (section [[Installation]]).  The build system is based on [[https::waf.io][Waf]] and uses the =wcb= command and a =wscript= file provided by the top level /build package/.  More details on the build system are given in section [[Waf tools]])
+
+Besides holding the main build instructions this package aggregates all the other packages via Git's "submodule" feature.  In principle, there may be more than one build package maintained.  This allows developers working on a subset to avoid having to build unwanted code.  In practice there is a single build package which is at: https://github.com/wirecell/wire-cell-build.
+
 
 ** Adding a new code package
 
@@ -76,6 +76,7 @@ If you made your initial package directory inside the build package move it asid
     $ git push
 #+END_EXAMPLE
 In order to be picked up by the build the new package short name must be added to the =wscript= file.
+
 
 
 
