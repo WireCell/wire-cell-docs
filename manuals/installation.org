@@ -1,8 +1,8 @@
-#+ Wire Cell Toolkit Installation Manual
-
 * Toolkit Installation
 
-assuming you have externals
+~warning~
+You will likely need to first install some dependencies.  See the next section.
+
 
 * Guide for Installation of Dependencies
 

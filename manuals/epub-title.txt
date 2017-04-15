@@ -1,0 +1,6 @@
+---
+title: Wire Cell Toolkit Manual
+author: Brett Viren
+rights: © Brett Viren, CC-BY
+language: en-US
+...

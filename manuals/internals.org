@@ -1,14 +1,13 @@
-#+TITLE: Wire Cell Toolkit Internals
 
 * Intro
 
-This doc describes the Wire Cell Toolkit (WCT) core internal structure and support facilities.   The "batteries included" or reference implementations that are also provided as part of the toolkit are documented in [[index.org::* Package manuals][individual package manuals]].
+This doc describes the Wire Cell Toolkit (WCT) core internal structure and support facilities.   The "batteries included" or reference implementations that are also provided as part of the toolkit are documented in the individual package manuals.
 
 * Packages
 
 The WCT is composed of a number of /packages/.  Each package has an associated with a Git source repository.
-Most packages produce a shared library, which may also be a WCT plugin library, C++ header files, some number of main or test applications.   Others include a single package holding all [[./python.org][Python code]] in various modules, a package providing support for developing WCT [[./configuration.org][configuration files]] and the documentation package holding this document.
-One special type of package is a /build/ package described more in section [[Build package]].
+Most packages produce a shared library, which may also be a WCT plugin library, C++ header files, some number of main or test applications.   Others include a single package holding all Python code in various modules, a package providing support for developing WCT configuration files and the documentation package holding this document.
+One special type of package is a /build/ package described more in section on the build package.
 
 ** Names
 
@@ -18,7 +17,7 @@ If a package produces a shared library it should be named in =CamelCase= with a 
 
 ** Dependencies
 
-Some of the C++ packages are designated as /core/ packages.  These include the packages providing the toolkit C++ structure (described later in this document) as well as the reference implementations (eg, =gen=, =sigproc=).   These packages have strict requirements on what dependencies may be introduced and in particular their shared libraries are not allowed to depend on ROOT (although their apps and tests are, see sections [[Package structure]] and [[Build package]]]).
+Some of the C++ packages are designated as /core/ packages.  These include the packages providing the toolkit C++ structure (described later in this document) as well as the reference implementations (eg, =gen=, =sigproc=).   These packages have strict requirements on what dependencies may be introduced and in particular their shared libraries are not allowed to depend on ROOT (although their apps and tests are, see sections [[Package structure]] and [[Build package]]).
 
 The base package is =util= and it /must/ not depend on any other WCT package.  The next most basic is =iface= and it /must/ not depend on any other WCT except =util=.  Core implementation packages such as =gen= or =sigproc= may depend on both but should not depend on each other.
 
@@ -48,7 +47,7 @@ Fixme: make a script that generates a dot file and show the graph.
 
 ** Build package
 
-To actually build WCT see [[./installation.org::* Toolkit installation][the section on toolkit installation]].  The build system is based on [[https::waf.io][Waf]] and uses the =wcb= command and a =wscript= file provided by the top level /build package/.  Besides holding the main build instructions this package aggregates all the other packages via Git's "submodule" feature.  In principle, there may be more than one build package maintained.  This allows developers working on a subset to avoid having to build unwanted code.  In practice there is a single build package which is at: https://github.com/wirecell/wire-cell-build.
+To actually build WCT see the section on toolkit installation.  The build system is based on [[https::waf.io][Waf]] and uses the =wcb= command and a =wscript= file provided by the top level /build package/.  Besides holding the main build instructions this package aggregates all the other packages via Git's "submodule" feature.  In principle, there may be more than one build package maintained.  This allows developers working on a subset to avoid having to build unwanted code.  In practice there is a single build package which is at: https://github.com/wirecell/wire-cell-build.
 
 ** Adding a new code package
 
@@ -61,7 +60,7 @@ To add a new code package to a build package from scratch, select a =<name>= fol
     $ git add wscript_build
     $ git commit -a -m "Start code package <name>"
 #+END_EXAMPLE
-Replace =<name>= with your package name.  You can create and commit actual code at this time as well following the layout in [[Package layout]].
+Replace =<name>= with your package name.  You can create and commit actual code at this time as well following the layout in [[Package structure]].
 
 Now, make a new repository by going to the [[https://github.com/WireCell][WireCell GitHub]] and clicking "New repository" button. Give it a name like =wire-cell-<name>=.  Copy-and-paste the two command it tells you to use:
 #+BEGIN_EXAMPLE
@@ -120,7 +119,7 @@ In order to be picked up by the build the new package short name must be added t
 
 * Interfaces
 
-A central design aspect of the WCT is that all "important" functionality which may have more than one implementation must be accessed via an /pure abstract interface class/.  All such interface classes are held in the [[https://github.com/wirecell/wire-cell-iface][=iface=]] package.  Interface classes should present a very limited number of purely abstract methods that express a single, cohesive concept.  Implementations typically inherent from more than one interface.  If two concepts are close but not cohesive they are best put into two interface classes.
+A central design aspect of the WCT is that all "important" functionality which may have more than one implementation must be accessed via an /pure abstract interface class/.  All such interface classes are held in the [[https://github.com/wirecell/wire-cell-iface][iface]] package.  Interface classes should present a very limited number of purely abstract methods that express a single, cohesive concept.  Implementations typically inherent from more than one interface.  If two concepts are close but not cohesive they are best put into two interface classes.
 Besides defining the method interface, Interface classes may define types.  They may also be templated.
 
 After an implementation of an interface is instantiated and leaves local scope it should be referenced only through one of its interfaces.  It should be held through an appropriately typed =std::shared_ptr<>= of which one should be defined as =ITheInterface::pointer=.
@@ -165,7 +164,7 @@ Not typically required by most code but there exists also a function =lookup_fac
 
 One somewhat special component interface is =IConfigurable=.  A class inheriting from this interface is considered a /configurable component/ such as =TrackDepos= in the above example.  It is /required/ for any main application using the WCT toolkit to adhere to the Wire Cell Toolkit Configuration Protocol.  This is a contract by which the main application promises to do the following:
 
-1) Load in user-provided configuration information (see [[./configuration.org][the configuration manual]]).
+1) Load in user-provided configuration information (see the configuration section of hte manual)
 2) Instantiate all configurables referenced in that configuration.
 3) Request the default configuration object from each instance.
 4) Update that object with, potentially partial, information provided by the user.

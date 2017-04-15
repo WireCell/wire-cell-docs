@@ -1,7 +1,4 @@
-#+TITLE: Wire Cell Toolkit Configuration Manual
-#+OPTIONS: ':t
-
-* Introduction and Scope
+* Introduction and Scope 
 
 As the Wire Cell Toolkit (WCT) is a toolkit, it is up to the application to provide some mechanism for the user to provide configuration information.  Users of an application not provided by the WCT itself should refer to its documentation.  
 
@@ -21,7 +18,7 @@ Finally, configurations have a third attribute:
 
 In the next section,  WCT user-configuration support is described.  The following section gives guidance to developers who wish to write their own configurable components.
 
-* Configuration from a user point of view
+* Configuration from a user point of view :user:
 
 Users of the WCT command line interface =wire-cell= or any WCT application that uses =WireCell::ConfigManager= can provide configuration information in the form of one or more files.  This files express the same ordered list of configuration objects as described above.
 
@@ -140,7 +137,8 @@ One of the most irritating aspect of crafting JSON files by hand is that any arr
 
 The =wire-cell-cfg= package also provides support for popular LArTPC detectors.  You can find these files under a directory named for the experiment (such as [[./uboone/]]).
 
-* Configuration from a developer point of view
+
+* TODO Configuration from a developer point of view                   :devel:
 
 For the C++ part of developing WCT components or applications the developer should refer to the [[./internals.org::* Configuration][configuration section in the manual on WCT Internals]].
 
