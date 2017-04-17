@@ -1,0 +1,63 @@
+# -*- python -*-
+
+### Guidance on using this wscript
+
+## 1) make a local web area and get a copy of the web site
+# cd ~/public_html
+# git clone git@github.com:WireCell/wirecell.github.io
+
+## 2) Come back here
+# cd /path/to/work
+# git clone git@github.com:WireCell/wire-cell-docs
+# cd wire-cell-docs/manuals
+
+## 3) Configure to install into local web site
+# ./waf-1.9.9 configure --prefix=~/public_html/wirecell.github.io
+# ./waf-1.9.9 build install
+
+## 4) Check results are good, commit and push
+# cd ~/public_html
+# git commit -am "..."
+# git push
+
+import os
+
+def org2x(what, main="manual"):
+
+    # org-publish's cache is apparently broken for arbitrary include depths!
+    # Sneak in this work-around.  Waf handles the dependencies anyways.  More
+    # info at:
+    # http://lists.gnu.org/archive/html//emacs-orgmode/2015-11/msg00620.html
+    broken = os.path.expanduser("~/.org-timestamps/wct-%s-%s.cache" % (main, what))
+    if os.path.exists(broken):
+        os.unlink(broken)
+
+    return """${EMACS} --batch -Q -l ${SRC[1].abspath()} --eval '(org-publish-project "wct-%s-%s")'""" % (main, what)
+
+def configure(cfg):
+    cfg.find_program('emacs', var='EMACS')
+
+def build(bld):
+    manual_org = bld.path.ant_glob("manual.org")
+    index_org = bld.path.ant_glob("manual.org")
+    publish_el = bld.path.ant_glob("publish.el")
+    rest_org = [p for p in bld.path.ant_glob("*.org") if p in manual_org+index_org]
+
+    for ext in ["html", "md"]:            # also pdf
+        srcs = manual_org + publish_el + rest_org
+        bld(source=srcs, target="manual.{ext}".format(ext=ext),
+            rule=org2x(ext), install_path='${PREFIX}')
+
+    # stand-alone index
+    bld(source=index_org+publish_el, target="index.html",
+        rule=org2x("html", "index"), install_path='${PREFIX}')
+
+    # EPUB
+    bld(source="manual.md epub-title.txt", target="manual.epub",
+        rule="pandoc -o ${TGT[0].abspath()} --toc-depth=2 -N ${SRC}",
+        install_path='${PREFIX}')
+
+    # style directory
+    styledir=bld.path.find_dir("styles")
+    bld.install_files('${PREFIX}/styles', styledir.ant_glob('**'),
+                      cwd=styledir, relative_trick=True)

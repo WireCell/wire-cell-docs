@@ -11,4 +11,4 @@ The Wire Cell *Prototype* documentation is at http://BNLIF.github.io/wire-cell-d
 
 * Updating
 
-To update the the WCT docs run the [[./manuals/publish.sh]] script and copy the result into the a clone of this repo: https://github.com/WireCell/wirecell.github.io, commit and push.
+To update the the WCT docs see comments at top of [[./manuals/wscript]].

@@ -1,6 +1,7 @@
-* Introduction and Scope 
+As the Wire Cell Toolkit (WCT) is a toolkit, it is up to the parent application to provide some mechanism for the user to provide configuration information to WCT /components/.  Users of an application not provided by the WCT itself should refer to its documentation.  This section of the manual documents the configuration mechanism that is provided by WCT itself.  If an application decides to use the WCT file format then its users may refer to this document.  Developers of WCT components should read it as well.
 
-As the Wire Cell Toolkit (WCT) is a toolkit, it is up to the application to provide some mechanism for the user to provide configuration information.  Users of an application not provided by the WCT itself should refer to its documentation.  
+* Introduction
+
 
 WCT itself provides a such a mechanism which is exposed to the user by the =wire-cell= command line application.  Any application may easily adopt this same mechanism by making use of the =WireCell::ConfigManager= class.  
 

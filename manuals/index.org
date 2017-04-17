@@ -1,8 +1,15 @@
 #+TITLE: Wire Cell Toolkit Manual
 
-The manual is available in the following formats
+The manual is available in the following generated formats:
 
 - [[./manual.html][HTML]] for online viewing (fixme: need to change this to a URL)
 - [[./manual.pdf][PDF]] for printing
-- [[./manuals.epub][EPUB]] for e-book readers
-- [[./manual.org][Org]] the source
+- [[./manual.epub][EPUB]] for e-book readers
+- [[./manual.pdf][MD]] just because
+
+To author content the source is in Emacs Org mode.
+
+- [[https://github.com/WireCell/wire-cell-docs/tree/master/manuals][Org]] source on GitHub
+
+
+--------

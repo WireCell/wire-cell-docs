@@ -1,5 +1,3 @@
-* Installation
-
 The Wire Cell Toolkit (WCT) should be easy to build on any POSIX'y system with a recent C++ compiler.  This section describes how to build releases and development branches, it gives guidance for supplying the few software dependencies, and documents how releases are made.
 
 ** Toolkit installation :user:installer:developer:
