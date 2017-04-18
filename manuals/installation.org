@@ -114,18 +114,47 @@ Internally, WCT does not require any environment however it will search a =WIREC
 
 ** Guide for installation of dependencies :installer:
 
-*** TODO Manual
+The WCT depends on a number of third-party software packages.  They are intentionally limited to reduce the requirements for installation.  Some packages are optional.  Here lists packages that users may not already have as part of a "reasonably POSIX'y system and some guidance is given on how to install them.
 
- DIY
+The required packages are:
 
-*** TODO Spack
+- Boost :: various functions
+- Eigen3 :: matrix representation, interface to FFTW
+- FFTW3 :: for fast Fast Fourier Transforms
+- JsonCPP :: basis for configuration and input data files 
 
- Installation and setup with Spack Views or with EM.
 
-*** TODO UPS
+The optional package are:
 
- Setup with UPS.
+- Doxygen :: for building reference documentation.
+- Jsonnet :: structured configuration files.
+- ROOT :: for many tests and I/O packages
+- TBB :: for data flow programming paradigm support
 
+#+begin_note
+Some "optional" packages may actually be currently required for a successful build and test.  This is considered a "bug" and needs fixing.
+#+end_note
+
+This list may not represent current reality.
+To get a full, up-to-date list of what packages WCT can use run =./wcb --help=.   
+
+*** Manual
+
+In the DIY mode, the installer is free to provide the third-party packages in any convenient way.  Many of them are available on well supported operating systems such as Debian/Ubuntu.  Homebrew for Mac OS X is not a core developer platform but may provide many.  Redhat derived Linux distributions may find suitable package on EPEL.  Most of the required packages are fairly easy to build from source.
+
+However the installer decides to build in DIY-mode the WCT build system should be able to be given proper installation locations via the =--with-*= flags as described above.  If it seems not to be the case, please contact the developers.
+
+*** Spack
+
+[[https://github.com/LLNL/spack][Spack]] is a "meta build system" that runs the individual build systems that come with packages.  It allows one to manage an ever growing installation area which can accommodate multiple versions of a package.  It also comes with support for [[http://modules.sourceforge.net/][Environment Modules]] to handle your users' setup of these packages or can make targeted release "views" of its package tree.  
+
+WCT provides a package [[https://github.com/WireCell/wire-cell-spack][wire-cell-spack]] which collects instructions and an Spack "repo" that builds WCT and its third-party dependencies.  This leverages Spacks built-in "repo" to provide dependencies needed by WCT's direct dependencies.  Using it will tend to build packages that one may already have installed through the OS (eg, Python).  However, this duplication should not add much to the overall build time which is automatic nor lead to any problems.
+
+An installer that wishes to use wire-cell-spack to provide the dependencies should begin by following its [[https://github.com/WireCell/wire-cell-spack/blob/master/README.org][README]] file.
+
+*** UPS
+
+Fermi National Accelerator Lab (FNAL) uses a user environment similar but incompatible with to [[http://modules.sourceforge.net/][Environment Modules]].  It is typical to download binaries provided by FNAL and use UPS to "setup" a user environment with many environment variables.  For each package so setup there is a variable that gives the installation location.  These can be used to provide suitable values for the =--with-*= flags to =wcb= as described above.
 
 ** Release management :core:developer:
 
