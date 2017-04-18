@@ -41,7 +41,7 @@ def build(bld):
     manual_org = bld.path.ant_glob("manual.org")
     index_org = bld.path.ant_glob("manual.org")
     publish_el = bld.path.ant_glob("publish.el")
-    rest_org = [p for p in bld.path.ant_glob("*.org") if p in manual_org+index_org]
+    rest_org = [p for p in bld.path.ant_glob("*.org") if p not in manual_org+index_org]
 
     for ext in ["html", "md"]:            # also pdf
         srcs = manual_org + publish_el + rest_org

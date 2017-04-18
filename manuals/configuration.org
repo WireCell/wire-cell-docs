@@ -35,6 +35,8 @@ A user gives one or more configuration files to the =wire-cell= application each
 #+END_EXAMPLE
 If a relative path is given, the file will be searched for starting in the current working directory and then in each directory listed in a =WIRECELL_PATH= environment variable, if given.  When multiple configuration are used, their top-level arrays are conceptually concatenated in the order on which they are given on the command line.
 
+** Dump default configuration
+
 The user can also dump out the hard-coded default configuration for one or more components:
 #+BEGIN_EXAMPLE
   $ wire-cell \
@@ -43,7 +45,7 @@ The user can also dump out the hard-coded default configuration for one or more 
       -D <component2> \
       --dump-file=mydefaults.cfg
 #+END_EXAMPLE
-Here the components are specified by their "type" identifier as described above.  As the example shows, a plugin must be given.  The =wire-cell= application itself does not "know" about any components as they are all dynamically loaded when needed.  However, the application must be told a collection of plugins in which to find components.  A plugin typically takes the name of its shared library with the =lib= prefix and =.so= extension removed.  
+Here the components to dump are specified by their "type" identifier as described above.  The  /plugins/ which provide the components must be specified. A plugin typically takes the name of its shared library with the =lib= prefix and =.so= extension removed.  
 
 The user must know what components to dump.  There is no way for the application to iterate over all possible components.  In general, it is up to the provider of a plugin to catalog what component types it provides.  WCT provides a [[https://github.com/WireCell/wire-cell-cfg/blob/master/scripts/generate-defaults.sh][simple script]] that will search the WCT source, determine the components and dump them out using =wire-cell=.  Result of this dump, possibly out of date, is available in the [[https://github.com/WireCell/wire-cell-cfg/tree/master/defaults][wire-cell-cfg]] repository.
 
@@ -69,22 +71,22 @@ produces:
 #+END_SRC
 Here we see an array holding one element which is an object with the =type=, (instance) =name= and payload =data= structure as described above.  If =wire-cell= were to load this configuration it would create a default instance of the component type =TrackDepos= which happens to correspond to the C++ class =WireCell::Gen::TrackDepos= (see the [[./gen.org][simulation package manual]] for more information).  This component is responsible for produces deposition (=IDepo=) objects using a simple linear source model.  
 
-The =tracks= array in this example is empty and no depositions would be produced.  The user most certainly should specify a nonempty set of tracks.  In principle, the user may produces a huge =tracks= array.  WCT support bzip2 compressed JSON files (see the section on [[./util.org::* Persistence][persistence in the util package manual]].
+The =tracks= array in this example is empty and no depositions would be produced.  The user most certainly should specify a nonempty set of tracks.  In principle, the user may produces a huge =tracks= array.  WCT support bzip2 compressed JSON files (see the section on [[./util.org::* Persistence][persistence in the util package manual]]).
 
 ** Limitations of JSON
 
 As the complexity of a =wire-cell= job grows, hand crafting JSON becomes tedious and error prone.  Splitting the files and/or using =WIRECELL_PATH= can provide some rudimentary means of organizing a large, complex configuration.  
 
-However, a user will quickly outgrow direct authoring of JSON files.  An accomplished one will likely turn to some form of JSON generation using a more expressive language.  Or, some configuration may need to be extracted or converted from other source.  For example, Geant4 steps might be extracted and fed into =TrackDepos= as a long =tracks= array.
-The user is free to generate JSON in this manner in any way they desire as long as the result conforming to the required schema.
+However, a user will quickly outgrow direct authoring of JSON files.  An accomplished user will likely turn to some form of JSON generation using a more expressive language maybe by developing some scripts.  Or, some part of a configuration may need to be extracted or converted from another source.  For example, Geant4 steps might be extracted and formatted into a =TrackDepos= configuration as a long =tracks= array.
 
 Another limitation is that any numerical quantities *must* be expressed in the base units used by the WCT /system of units/ (see the section on [[./util.org::* Units][units in the Utilities manual]]).  This places a burden on the configuration author and is a source of error.
 
-WCT provides a more powerful JSON-like configuration file format as described next.
+The user is free to generate JSON in any manner they wish as long as the result conforms to the required schema.
+However, WCT provides a second, more powerful JSON-like configuration file format which described next.
 
 ** Learning Jsonnet
 
-WCT provides support for configuration files following the [[http://jsonnet.org/][Jsonnet data templating language]].  This language is evaluated to produce JSON.  If WCT is compiled with support it will evaluation Jsonnet files directly.  Otherwise the user may install and run the =jsonnet= command line program to produce JSON.
+WCT provides support for configuration files following the [[http://jsonnet.org/][Jsonnet data templating language]].  This language is evaluated to produce JSON.  If WCT is compiled with support it can evaluation Jsonnet files directly.  Otherwise the user may install and run the =jsonnet= command line program to produce JSON for feeding to WCT.
 
 To learn how to write Jsonnet in general, the user should refer to its documentation which is excellent.  There is no one right way to write Jsonnet, however, the [[https://github.com/wirecell/wire-cell-cfg][wire-cell-cfg]] package provides a number of examples and support files that can help the user craft their configuration in Jsonnet.  In particular the WCT system of units and some common data structures used by WCT are exported to Jsonnet in [[https://github.com/WireCell/wire-cell-cfg/blob/master/wirecell.jsonnet][wirecell.jsonnet]].  Some of this exported functionality is illustrated below.  
 
@@ -92,7 +94,7 @@ WCT locates Jsonnet files as it does JSON files and in particular using the envi
 
 *** System of units
 
-Wire Cell provides an internal system of units as described in the section on [[./util.org::* Units][units in the Utilities manual]]).  As stated above, users must take care to give numerical quantities JSON in base WCT units.  If writing Jsonnet this is less trouble as once can label a quantity by multiplying it with a symbolic unit.  For example:
+Wire Cell provides an internal system of units as described in the section on [[./util.org::* Units][units in the Utilities manual]] and as stated above, users must take care to give numerical quantities in WCT units when providing JSON.  However, when writing Jsonnet one can provide explicit units which is easy and far less error prone.  For example:
 #+BEGIN_SRC js :eval no
   local wc = import "wirecell.jsonnet";
   [
@@ -109,34 +111,124 @@ Wire Cell provides an internal system of units as described in the section on [[
 *** Functions
 
 Some data sub-structures are needed in multiple laces and it can be laborious to write them by hand.  Jsonnet provides functions to assist in this.  A number of functions are defined to assist in representing common data types. For example =point()= and =ray()=:
-#+BEGIN_EXAMPLE
+#+BEGIN_SRC js :eval no
   {
     // ...
     tracks : [ wc.ray(wc.point(10,0,0,wc.cm),
                wc.point(100,10,10,wc.cm)) ]
   },
-#+END_EXAMPLE
+#+END_SRC
 
-*** Default Structures
+*** Default parameters
 
-Some common structures are defined with default objects so that they may be extended/overridden. For example, the =Node= object defines a default =type=, =name= and =port= to be used in a graph connection. It is typical to override at least the =type=:
-#+BEGIN_EXAMPLE
-  graph:[
+It is typical that different components must share common values, or separate values which derive from common values.  Jsonnet allows for this to be expressed in the configuration in a simple manner.  For example, in the =gen= package both =Drifter= and =Ductor= may apply statistical fluctuations.  For debugging it can be useful to turn this feature off.  This can be done in a consistent manner like in a global parameter file
+
+#+BEGIN_SRC js :eval no
+  // in uboone/globals.json
   {
-    tail: wc.Node {type:"TrackDepos"},
-    head: wc.Node {type:"DumpDepos"}
-  },
-  //...
-  ]
-#+END_EXAMPLE
+      // ...
+      // True if simulation should do fluctuations
+      fluctuate: true,
+      // ...
+  }
+#+END_SRC 
+
+This file can then be imported so that this variable may be applied where ever it is needed.
+#+BEGIN_SRC js :eval no
+  // in uboone/components.jsonnet
+  local params = import "uboone/globals.jsonnet";
+  {
+      // ...
+      drifter: {
+          type : "Drifter",
+          data : {
+              // ... other parameters ...
+              fluctuate : params.fluctuate,
+          }
+      },
+      ductor: {
+          type : 'Ductor',
+          data : {
+              // ... other parameters ...
+              fluctuate : params.fluctuate,
+          }
+      },        
+      // ...
+  }
+#+END_SRC
+
+See next how these definitions are used.
+
+*** Default structures
+
+One useful way to factor a configuration is to have one Jsonnet file which holds default values and one or more that customize on top of those defaults.  For example one the [[https://github.com/WireCell/wire-cell-cfg/tree/master/uboone][MicroBooNE configuration]] provided by =wire-cell-cfg= defines a default configuration for the =FourDee= WCT app.  
+
+#+begin_note
+An "app" is a top level main class run by WCT while an "application" refers to a program built with WCT that a user runs.
+#+end_note
+
+This app is configured with a list of components to use for certain portions of the "FourDee" simulation.  By default these can are configured with the default types provided directly in the =gen= package.  Note, these configuration are generally in the form ="TypeName:InstanceName"= but the defaults to not specify an instance name.
+
+#+BEGIN_SRC js :eval no
+  // in uboone/components.json
+  {
+      // ...
+      fourdee : {
+          type : 'FourDee',
+          data : {
+              DepoSource: "TrackDepos",
+              Drifter: "Drifter",
+              Ductor: "Ductor",
+              Dissonance: "SilentNoise",
+              Digitizer: "Digitizer",
+              FrameSink: "DumpFrames",            
+          },
+      },
+      // ...
+  }
+#+END_SRC
+
+The default type for =FrameSink= is given as =DumpFrames=.  This component just prints a little bit of info to the terminal.  The user probably wants to be able to save the result of the simulation in some more useful way.  The [[https://github.com/WireCell/wire-cell-sio][simple I/O]] package provides a =FrameSink= which will save the resulting simulated waveforms as 2D ROOT histograms.  The user merely needs to override =FrameSink= like:
+
+#+BEGIN_SRC js :eval no
+// assumes user has this directory in their WIRECELL_PATH
+local uboone = import "uboone/components.jsonnet";
+[
+    // ... skip other overrides ...
+
+    uboone.fourdee {
+        data : super.data {
+            FrameSink: "HistFrameSink",            
+        }
+    },
+]
+#+END_SRC
+
+This says to override =uboone.fourdee= with what's given.  The =type= is inherited.  The =data= is replaced by the parent's via =super.data= plus the additional override of the =FrameSink= attribute.
 
 *** Commas
 
-One of the most irritating aspect of crafting JSON files by hand is that any array or object must not have a internal trailing comma.   Jsonnet allows this otherwise extraneous comma.  For this reason alone and if no other features are used, writing Jsonnet is worth the added dependency!
+One of the most irritating aspect of crafting JSON files by hand is that any array or object must *not* have an internal trailing comma.   Jsonnet allows this otherwise extraneous comma, as shown in the example above.  For this reason alone and if no other features are used, writing Jsonnet instead of raw JSON is worth the added dependency!
 
 ** Specific detector support
 
-The =wire-cell-cfg= package also provides support for popular LArTPC detectors.  You can find these files under a directory named for the experiment (such as [[./uboone/]]).
+The =wire-cell-cfg= package also provides support for popular LArTPC detectors.  You can find these files under a directory named for the experiment  (such as [[https://github.com/WireCell/wire-cell-cfg/tree/master/uboone][that for MicroBooNE]]).
+
+** Using Jsonnet 
+
+Jsonnet's command line program =jsonnet= is fast and gives good error messages.  It's often easiest to develop a Jsonnet configuration with periodic checking.  Assuming the current working directory is the top of the WCT source then running the following: 
+
+#+BEGIN_EXAMPLE
+  $ jsonnet -J cfg cfg/uboone/fourdee.jsonnet
+#+END_EXAMPLE
+
+should reward you with a big screen full of JSON.  You can then run =wire-cell= something like:
+
+#+BEGIN_EXAMPLE
+  $ wire-cell -c uboone/fourdee.jsonnet
+#+END_EXAMPLE
+
+This relies on the =WIRECELL_PATH= to include the =cfg/= directory as well as any directories holding any configuration data files referenced by the configuration.
 
 
 * TODO Configuration from a developer point of view                   :devel:

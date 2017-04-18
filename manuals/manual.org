@@ -5,7 +5,7 @@
 #+KEYWORDS: C++, software toolkit, neutrino, liquid argon time projection chamber, LArTPC, drift simulation, field response, event reconstruction, waveform signal processing, 3D imaging, Brookhaven National Lab
 #+LANGUAGE: en
 #+OPTIONS: ':t H:4  toc:3
-#+SETUPFILE: org-html-themes/setup/theme-bigblow-local.setup
+#+SETUPFILE: setup/theme-bigblow-local.setup
 
 
 #+INCLUDE: "body.org"
