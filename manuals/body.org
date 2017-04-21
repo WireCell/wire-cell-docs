@@ -12,11 +12,20 @@
 
 * Packages
 
-#+INCLUDE: "python.org" :minlevel 2
-#+INCLUDE: "util.org" :minlevel 2
-#+INCLUDE: "iface.org" :minlevel 2
-#+INCLUDE: "gen.org" :minlevel 2
-#+INCLUDE: "waftools.org" :minlevel 2
+** =wire-cell-python=
+#+INCLUDE: "python.org" :minlevel 3
+
+** =wire-cell-util=
+#+INCLUDE: "util.org" :minlevel 3
+
+** =wire-cell-iface=
+#+INCLUDE: "iface.org" :minlevel 3
+
+** =wire-cell-gen=
+#+INCLUDE: "gen.org" :minlevel 3
+
+** =wire-cell-waftools=
+#+INCLUDE: "waftools.org" :minlevel 3
 
 * Other Topics
 
