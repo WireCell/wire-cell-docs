@@ -37,11 +37,22 @@ def org2x(what, main="manual"):
 def configure(cfg):
     cfg.find_program('emacs', var='EMACS')
 
+    # hack a symlink so that pandoc can find the figures for making the EPUB
+    # maybe there is a better way?
+    bldfigs = cfg.bldnode.find_dir("figs")
+    if bldfigs is None:
+        srcfigs = cfg.srcnode.find_dir("figs")
+        os.symlink(srcfigs.abspath(), cfg.bldnode.abspath() + '/figs')
+
 def build(bld):
     manual_org = bld.path.ant_glob("manual.org")
     index_org = bld.path.ant_glob("manual.org")
     publish_el = bld.path.ant_glob("publish.el")
     rest_org = [p for p in bld.path.ant_glob("*.org") if p not in manual_org+index_org]
+
+    styledir = bld.path.find_dir("styles")
+    figsdir = bld.path.find_dir("figs")
+    figsrc = figsdir.ant_glob('**/*.svg')
 
     for ext in ["html", "md"]:            # also pdf
         srcs = manual_org + publish_el + rest_org
@@ -53,11 +64,18 @@ def build(bld):
         rule=org2x("html", "index"), install_path='${PREFIX}')
 
     # EPUB
-    bld(source="manual.md epub-title.txt", target="manual.epub",
-        rule="pandoc -o ${TGT[0].abspath()} --toc-depth=2 -N ${SRC}",
+    epubsrc = [ bld.path.find_or_declare("manual.md"),
+                bld.path.find_or_declare("epub-title.txt")]
+    epubsrc += figsrc
+    bld(source=epubsrc, target="manual.epub",
+        rule="pandoc -o ${TGT[0].abspath()} --toc-depth=2 -N ${SRC[0].abspath()} ${SRC[1].abspath()}",
         install_path='${PREFIX}')
 
+
     # style directory
-    styledir=bld.path.find_dir("styles")
     bld.install_files('${PREFIX}/styles', styledir.ant_glob('**'),
                       cwd=styledir, relative_trick=True)
+    # figs directory
+    bld.install_files('${PREFIX}/figs', figsrc,
+                      cwd=figsdir, relative_trick=True)
+    

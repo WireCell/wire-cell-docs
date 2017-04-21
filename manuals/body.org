@@ -12,7 +12,13 @@
 
 * Packages
 
+#+INCLUDE: "python.org" :minlevel 2
 #+INCLUDE: "util.org" :minlevel 2
 #+INCLUDE: "iface.org" :minlevel 2
 #+INCLUDE: "gen.org" :minlevel 2
 #+INCLUDE: "waftools.org" :minlevel 2
+
+* Other Topics
+
+** Garfield 2D Support
+#+INCLUDE: "garfield.org" :minlevel 3

@@ -1,0 +1,184 @@
+Garfield 2D is used to provide field response functions for WCT signal processing and simulation.  This section collects some documentation of this.
+
+* Garfield 2D data
+
+Garfield 2D is used to calculate various things:
+
+- the electrostatic or drift field near the wire planes
+- electron drift paths through this field starting from an array of points at a (nominal) fixed drift distance and terminating on an electrode
+- the Shockley-Ramo /weighting field/ for one /central wire/ of each wire plane
+- the instantaneous current in each central wire separately for each drift path and regularly sampled over time.
+
+The Garfield 2D user is free to pick the array drift path starting points however, a choice was made for initial field calculations and processing of Garfield 2D output assumes it holds.  In particular:
+
+- The drift paths all start with a fixed "X" coordinate value
+- There is one drift path exactly aligned with each wire in the transverse direction.
+- There is one drift path on one side of each wire starting exactly at the transverse midpoint with its neighbor
+- There are four more equal spaced drift paths between these two.
+
+These paths are said to start at /impact positions/.  These impact positions extend across the entire transverse domain, bounded by one half wire pitch below the lowest wire and one half pitch above the highest wire.  The impact positions where Garfield 2D paths start represent half of the total.  The remaining half are defined through symmetry.
+
+#+begin_warning
+In the initial =ub_10= data set with 21 wires $\times$ 6 impact positions $\times$ 3 planes the counting of impact position numbers and wire numbers are in opposite transverse directions.  This is corrected for in the preprocessing.  If future Garfield 2D runs attempt to "fix" this it will break the preprocessing.
+#+end_warning
+
+* Preprocessing of Garfield 2D data
+
+WCT provides a Python module to assist in generating a WCT field response file in compressed JSON format.  It also is responsible for filling in missing drift paths, correcting any vagaries, normalizing units.
+
+#+begin_info
+The output field response functions must be given in the form of a sampled, electric current waveform due to the passage of a *single electron* along the drift path and the current must be expressed in the WCT system of units for electric current.  The response function is *not* in units of electric charge.  
+#+end_info
+
+The main entry point into the Garfield 2D support is:
+
+#+BEGIN_SRC python :eval no
+  import wirecell.sigproc.garfield as garfield
+#+END_SRC
+
+The next section gives some detailed examples of use and subsequent ones give some plots.
+
+* Eyeballing Garfield 2D with =wirecell.sigproc.garfield=
+
+This is from the =ub_10= data set.
+
+Taking raw Garfield output shows, apparently, two electrons were drifted per path.  It's unclear why it's slightly more than 2.0 electrons of charge though.
+
+#+BEGIN_SRC python :eval no
+  import wirecell.sigproc.garfield as garfield
+  dat = garfield.load("/opt/bviren/wct-dev/share/wirecell/data/ub_10.tar.gz")
+  w = [r for r in dat if r.impact == 0 and r.region == 0 and r.plane == 'w'][0]
+  sum(w.response)
+  # -> -0.020265450377670812
+  w.times[1] / units.us
+  # -> 0.1
+  sum(w.response) * w.times[1] / units.coulomb
+  # -> -3.2468828093569448e-19
+  sum(w.response) * w.times[1] / units.eplus
+  # -> -2.0265450377670811
+  w0 = [r for r in dat if r.region == 0 and r.plane == 'w']
+  len(w0)
+  # -> 6
+  w0[0].region
+  # -> 0
+  sum(w0[0].response)/units.microampere
+  # -> -3.2577267395296085e-06
+  [sum(w.response)*w.times[1]/units.eplus for w in w0]
+  # -> [-2.033313287245619,
+  #     -2.0184390655262097,
+  #     -2.061704680164814,
+  #     -2.057934020579546,
+  #     -2.0501410482117408,
+  #     -2.0265450377670811]
+#+END_SRC
+
+Modify =garfield.load()= to normalize all responses so that this last array averages to 1.0.  After that change:
+
+#+BEGIN_SRC python :eval no
+  [sum(r.response)*r.times[1]/units.eplus for r in dat2 if r.region == 0 and r.plane == 'w']
+  # -> [0.99606489937379161,
+  #     0.98877842254157267,
+  #     1.0099730708830847,
+  #     1.0081259272658833,
+  #     1.0043083619718129,
+  #     0.99274931796385024]
+  sum([sum(r.response)*r.times[1]/units.eplus for r in dat2 if r.region == 0 and r.plane == 'w'])/6.0
+  # -> 0.99999999999999944
+#+END_SRC
+
+Same region 0 average in units of =eplus= for U is -6.9e-3  and for V is -5.5e-3.
+
+* Validation plots
+
+Some critical validation plots can be made from the command line using the =wirecell-sigproc= program.  In the examples below it is assumed, for brevity that the Garfield 2D data set is available via the =$G2D= environment variable set for example like:
+
+#+BEGIN_EXAMPLE
+  $ export G2D=/opt/bviren/wct-dev/share/wirecell/data/ub_10.tar.gz
+#+END_EXAMPLE
+
+** Perpendicular ideal track
+
+A perpendicular ideal track can be "simulated" by summing response functions.  This is because the response on neighboring wires due to a charge drifting near the central wire is equivalent to the response on the central wire due to charge drifting near neighboring wires.  
+
+There are three main data tiers:
+
+1) instantaneous induced current
+2) sampled voltage after preamplifier gain and shaping done in the FEE
+3) digitized ADC waveform of that voltage
+
+This command can be used to make plots of these with different parameterizations:
+
+#+BEGIN_EXAMPLE
+  $ wirecell-sigproc plot-garfield-track-response --help
+  Usage: wirecell-sigproc plot-garfield-track-response [OPTIONS]
+                                                       GARFIELD_FILESET PDFFILE
+
+    Plot Garfield response assuming a perpendicular track.
+
+  Options:
+    -o, --output TEXT         Set output data file
+    -g, --gain FLOAT          Set gain in mV/fC.
+    -s, --shaping FLOAT       Set shaping time in us.
+    -t, --tick FLOAT          Set tick time in us (0.1 is good for no shaping).
+    -n, --norm INTEGER        Set normalization in units of electron charge.
+    -a, --adc-gain FLOAT      Set ADC gain (unitless).
+    --adc-voltage FLOAT       Set ADC voltage range in Volt.
+    --adc-resolution INTEGER  Set ADC resolution in bits.
+    --help                    Show this message and exit.
+#+END_EXAMPLE
+
+If the shaping is zero, then the induced current is plotted.  If it is nonzero but the ADC gain is zero then pre-ADC voltages are plotted.  If both are nonzero (default) then the ADC waveforms are plotted
+
+** Induced current
+
+Garfield 2D provides instantaneous, sampled induced current waveforms.  Their per-plane sum, as described above equivalent to a perpendicular track, can be plotted with zero shaping time:
+
+#+BEGIN_EXAMPLE
+  $ wirecell-sigproc plot-garfield-track-response -s 0.0 $G2D figs/track-response-current.svg
+#+END_EXAMPLE
+
+[[./figs/track-response-current.svg]]
+
+#+begin_info
+The default normalization is such that there are 16000 electrons per pitch (MIP) and no diffusion.  Just doing the unit conversions, this many electrons arriving over 2-3 us should give a current of about a nanoamp.
+#+end_info
+
+** Amplified Voltage 
+
+The results of convolution with electronics response can be plotted with a zero per-ADC gain:
+
+#+BEGIN_EXAMPLE
+  $ wirecell-sigproc plot-garfield-track-response -a 0.0 $G2D figs/track-response-voltage.svg
+#+END_EXAMPLE
+
+[[./figs/track-response-voltage.svg]]
+
+#+begin_info
+The default preamplifier gain is 14 mV/fC.  This means that a delta-function current integrating to 1 fC would produce a smooth voltage curve with a *peak* of 14 mV.  The default 16000 electrons per pitch, if producing a delta-function of current, would produce 36 mV.  Because of broadening and finite width as shown in the previous plot, this peak should be reduced and smeared.
+#+end_info
+
+** Digitized ADC Waveform
+
+Finally, the expected ADC output is plotted by default.
+
+#+BEGIN_EXAMPLE
+  $ wirecell-sigproc plot-garfield-track-response $G2D figs/track-response-adc.svg
+#+END_EXAMPLE
+
+[[./figs/track-response-adc.svg]]
+
+#+begin_info
+This assumes the default 12 bit ADC spanning 2 volts.
+#+end_info
+
+* Producing WCT Field Response Data File
+
+The WCT does not directly read Garfield 2D data sets but instead requires the information to be compiled into a single, compressed JSON file.  This is done like:
+
+#+BEGIN_EXAMPLE
+  $ wirecell-sigproc convert-garfield $G2D garfield-1d-3planes-21wires-6impacts-v5.json.bz2
+#+END_EXAMPLE 
+
+FIXME: distribution of these data files needs some formal mechanism.  For now, they may be available here: http://www.phy.bnl.gov/~bviren/tmp/wctsim/wct-dev/share/wirecell/data/.
+
+

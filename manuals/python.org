@@ -1,1 +1,24 @@
-#+TITLE: Wire Cell Toolkit Python Package
+Wire Cell Toolkit provides some support for Python and requires it for some preprocessing, plotting and validation.  This support is held in the [[https://github.com/wirecell/wire-cell-python][wire-cell-python]] package
+
+* Installing =wire-cell-python=
+
+It's just a "normal" Python package.  Use your favorite method, such as
+
+#+BEGIN_EXAMPLE
+  $ virtualenv --system-site-packages venv
+  $ source venv/bin/activate
+  $ git clone https://github.com/WireCell/wire-cell-python.git
+  $ cd wire-cell-python/
+  $ python setup.py develop  
+  $ wirecell-sigproc --help
+#+END_EXAMPLE
+
+* =wirecell=
+#+BEGIN_SRC python :eval no
+  from wirecell import units
+#+END_SRC
+
+** =sigproc=
+*** =garfield=
+
+See the section [[Garfield 2D Support]].
