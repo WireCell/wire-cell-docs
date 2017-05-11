@@ -13,7 +13,19 @@ It's just a "normal" Python package.  Use your favorite method, such as
   $ wirecell-sigproc --help
 #+END_EXAMPLE
 
-* =wirecell=
+* Python command line programs
+
+A number of python command line programs are provided.  They are typically named like:
+
+#+BEGIN_EXAMPLE
+  wirecell-<name>
+#+END_EXAMPLE
+Where =<name>= is one a package short name (eg, =util=, =sigproc=, =gen=).
+
+All use the same command line interface (CLI) module ([[http://click.pocoo.org][Click]]) so have similar usage.  In particular, run the program without any arguments to get a help screen.
+
+
+* =wirecell= Python modules
 #+BEGIN_SRC python :eval no
   from wirecell import units
 #+END_SRC
