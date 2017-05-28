@@ -5,7 +5,14 @@
 #+INCLUDE: "configuration.org" :minlevel 2
 
 * Howtos
-#+INCLUDE: "howtos.org" :minlevel 2
+
+This section of the manual gives brief guidance on how to do various things with WCT.
+
+** Run =wire-cell= command line program
+
+** Add a new component class
+#+INCLUDE: "howto/add-a-component.org" :minlevel 3
+
 
 * Internals
 #+INCLUDE: "internals.org" :minlevel 2
@@ -26,6 +33,10 @@
 
 ** =wire-cell-waftools=
 #+INCLUDE: "waftools.org" :minlevel 3
+
+* Data Flow Programming
+
+#+INCLUDE: "dfp.org" :minlevel 2
 
 * Other Topics
 
