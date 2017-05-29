@@ -1,12 +1,18 @@
 This describes the steps to add a Wire Cell Toolkit /component/.  As an example, it walks through the creation of a component which will produce noise waveforms.  The sections below are organized more or less in the order in which a developer advances from initial concept to design and implementation.
 
 * Conceptual design
+  :PROPERTIES:
+  :CUSTOM_ID: component-concept
+  :END:
 
 Noise waveforms will be generated based on a voltage amplitude spectrum represented in the frequency domain.  This amplitude will be sampled and abide by some fluctuation distribution and may have some parameters that allow for parametric scaling or other transformation so that the user may explore the results.  For simplicity, the time domain noise waveforms will be produced given a fixed sample period and readout time which will also be configurable.  It is assumed that the user arranges that these parameters, if needed elsewhere, are set consistently.  (See Sec. [[Configuration]]).
 
 Producing noise waveforms as described here require no other input data and in particular, none that would change over time or be a function of some "event"   So, the component will follow the pattern of being a /source/ of data.  That is, waveforms will be produced on demand and in a manner which they are independent.  Below will show how this pattern is realized.
 
 * Estimating dependencies
+  :PROPERTIES:
+  :CUSTOM_ID: component-dependencies
+  :END:
 
 Before starting coding up an implementation it is prudent to understand what software dependencies are required to develop it.  Some trade-offs need to be understood.   Relying on "external" 3rd party packages to perform the "heavy lifting" of the implementation can make that implementation easier to develop.  However, adding dependencies increase the difficulty in installing and using the result on a wide variety of operating systems and system architectures.
 
@@ -17,12 +23,18 @@ One touchstone that has been made by the WCT developers is that the "core" packa
 For the noise source, the main functionality required is drawing random variables from an arbitrary distribution (the noise spectrum) and drawing from some conventional distributions (for the fluctuation).  The spectrum can be provided through WCT configuration services and drawing from it is a simple algorithm based on forming the cumulative distribution that can be directly integrated.  Pseudo random number generation can be done directly in C++ or [[https://github.com/WireCell/wire-cell-iface/issues/2][when this ticket is closed]] the WCT pRNG interface.
 
 * Selecting a package
+  :PROPERTIES:
+  :CUSTOM_ID: component-package
+  :END:
 
 While the implementer is free to develop their component in any manner they wish, if the component is to be distributed as part of the WCT then its code needs to be in some WCT package.   For here, the main thing to note is that the =util= package is the lowest in the dependency tree, on top of it is =iface= (more on interfaces below) and above that are all the /implementation/ packages.  The developer must choose an existing package or elect to make a new one depending on two main criteria: what dependencies are required and what implementation category does the component satisfy.
 
 For the noise waveform source, given the relative lack of dependencies and the fact that it provides a simulation, the [[https://github.com/WireCell/wire-cell-gen][wire-cell-gen]] package provides a suitable home.  If no suitable package exists the developer can see Section [[Packages]] for details on WCT packages. 
 
-* Selecting an interface
+* Selecting interfaces
+  :PROPERTIES:
+  :CUSTOM_ID: component-interfaces
+  :END:
 
 All major functionality, and indeed the defining characteristic of a WCT /component/ is that it implements one or more WCT /interfaces/ which are C++ abstract base classes.  Each interface defines some number of methods that the implementation must provide.  
 
@@ -31,6 +43,10 @@ More information is in the Section [[Interfaces]] but for here, what is needed i
 The noise waveform source requires configuration and will be an =IFrameSource= as it will produce frames of "traces" (waveform segments).   As development progresses, it may come to light that portions of the implementation are general and are factored into separate classes which themselves may be accessed via an Interface.
 
 * Component header
+  :PROPERTIES:
+  :CUSTOM_ID: component-header
+  :END:
+
 
 Developing the noise source component begins with a header file which ties together the interfaces through inheritance, declares the interface methods to be implemented and any private methods and data the implementation may need.    Following the layout conventions this header is placed in [[https://github.com/WireCell/wire-cell-gen/blob/master/inc/WireCellGen/NoiseSource.h][gen/inc/WireCellGen/NoiseSource.h]].  Some features to note:
 
@@ -39,11 +55,18 @@ Developing the noise source component begins with a header file which ties toget
 - add methods for each interface.  Due to the templating used in the node interfaces it's not always obvious which methods must be implemented unless one follows their inheritence tree.  However, most high level interfaces based on =INode= should provide a comment in their header file giving what to implement.
 
 * Component implementation
+  :PROPERTIES:
+  :CUSTOM_ID: component-implementation
+  :END:
+
 
 The implementation of a component, 
 following the layout conventions this header, is placed in [[https://github.com/WireCell/wire-cell-gen/blob/master/inc/WireCellGen/NoiseSource.h][gen/src/NoiseSource.cxx]].  
 
 ** Component boilerplate
+   :PROPERTIES:
+   :CUSTOM_ID: component-boilerplate
+   :END:
 
 A few lines of boilerplate are needed so that the component can be dynamically resolved by WCT.  Toward the top of the file, and in particular before any =using namespace= statements the following is needed.
 
@@ -61,6 +84,9 @@ This is a CPP macro with the following arguments:
 - The remaining arguments are variable in length and enumerate all interfaces through which this component may be accessed.
 
 ** Configuration implementation
+   :PROPERTIES:
+   :CUSTOM_ID: component-configuration
+   :END:
 
 A WCT /configurable component/ must provide two methods.  The first returns a default configuration object via the =default_configuration()= method.  This object should represent as much of a working configuration as is possible to specify using hard-coded or otherwise default knowledge.  If some parameter can not meaningfully be given a default value it should nonetheless be included with some default, possibly bogus value, eg =null=, =0= or empty string or list.  This can then be dumped via the =wire-cell= command line program as JSON to give the user guidance on how to provide correct input.
 

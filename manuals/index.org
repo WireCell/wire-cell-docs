@@ -11,5 +11,7 @@ To author content the source is in Emacs Org mode.
 
 - [[https://github.com/WireCell/wire-cell-docs/tree/master/manuals][Org]] source on GitHub
 
+Doxygen reference documentation may be available [[./doxy/html/][here]].
+
 
 --------

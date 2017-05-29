@@ -21,6 +21,7 @@
 # git push
 
 import os
+import shutil
 
 def org2x(what, main="manual"):
 
@@ -34,15 +35,27 @@ def org2x(what, main="manual"):
 
     return """${EMACS} --batch -Q -l ${SRC[1].abspath()} --eval '(org-publish-project "wct-%s-%s")'""" % (main, what)
 
+def epubify(task):
+
+    bldnode = task.outputs[0].parent
+    figsdir = os.path.join(bldnode.abspath(), 'figs')
+
+    # gotta do a hack to bring the figs into file system scope
+    if not os.path.exists(figsdir):
+        os.makedirs(figsdir)
+    svgs = [i.abspath() for i in task.inputs[2:] if i.abspath().endswith('.svg')]
+    for svg in svgs:
+        shutil.copy(svg, figsdir)
+
+    cmd = "pandoc -o %s --toc-depth=2 -N %s %s" % (task.outputs[0].abspath(),
+                                                       task.inputs[0].abspath(),
+                                                       task.inputs[1].abspath())
+    return task.exec_command(cmd) 
+
+
 def configure(cfg):
     cfg.find_program('emacs', var='EMACS')
 
-    # hack a symlink so that pandoc can find the figures for making the EPUB
-    # maybe there is a better way?
-    bldfigs = cfg.bldnode.find_dir("figs")
-    if bldfigs is None:
-        srcfigs = cfg.srcnode.find_dir("figs")
-        os.symlink(srcfigs.abspath(), cfg.bldnode.abspath() + '/figs')
 
 def build(bld):
     manual_org = bld.path.ant_glob("manual.org")
@@ -68,8 +81,8 @@ def build(bld):
                 bld.path.find_or_declare("epub-title.txt")]
     epubsrc += figsrc
     bld(source=epubsrc, target="manual.epub",
-        rule="pandoc -o ${TGT[0].abspath()} --toc-depth=2 -N ${SRC[0].abspath()} ${SRC[1].abspath()}",
-        install_path='${PREFIX}')
+            rule=epubify,
+            install_path='${PREFIX}')
 
 
     # style directory

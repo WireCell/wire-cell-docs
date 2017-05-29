@@ -1,15 +1,20 @@
-* Utilities
-
 Introduction.
 
-** Units
+* Units
+  :PROPERTIES:
+  :CUSTOM_ID: util-units
+  :END:
+
 
 Describe units.
 
-** Persistence
+* Persistence
+  :PROPERTIES:
+  :CUSTOM_ID: util-persistence
+  :END:
 
 Describe support for persistent files including compression and location.
 
-** Etc
+* Etc
 
 ....

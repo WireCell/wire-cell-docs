@@ -1,44 +1,101 @@
 * Installation
+  :PROPERTIES:
+  :ID: installation
+  :CUSTOM_ID: installation
+  :END:
+
 #+INCLUDE: "installation.org" :minlevel 2
 
 * Configuration
+  :PROPERTIES:
+  :CUSTOM_ID: configuration
+  :END:
+
 #+INCLUDE: "configuration.org" :minlevel 2
 
 * Howtos
+  :PROPERTIES:
+  :CUSTOM_ID: howtos
+  :END:
 
 This section of the manual gives brief guidance on how to do various things with WCT.
 
 ** Run =wire-cell= command line program
+   :PROPERTIES:
+   :CUSTOM_ID: run-wire-cell-cli
+   :END:
+
 
 ** Add a new component class
+   :PROPERTIES:
+   :CUSTOM_ID: add-a-component
+   :END:
+
 #+INCLUDE: "howto/add-a-component.org" :minlevel 3
 
 
 * Internals
+  :PROPERTIES:
+  :CUSTOM_ID: internals
+  :END:
+
 #+INCLUDE: "internals.org" :minlevel 2
 
 * Packages
+  :PROPERTIES:
+  :CUSTOM_ID: packages
+  :END:
+
 
 ** =wire-cell-python=
+   :PROPERTIES:
+   :CUSTOM_ID: pkg-python
+   :END:
+
 #+INCLUDE: "python.org" :minlevel 3
 
 ** =wire-cell-util=
+   :PROPERTIES:
+   :CUSTOM_ID: pkg-util
+   :END:
+
 #+INCLUDE: "util.org" :minlevel 3
 
 ** =wire-cell-iface=
+   :PROPERTIES:
+   :CUSTOM_ID: pkg-iface
+   :END:
+
 #+INCLUDE: "iface.org" :minlevel 3
 
 ** =wire-cell-gen=
+   :PROPERTIES:
+   :CUSTOM_ID: pkg-gen
+   :END:
+
 #+INCLUDE: "gen.org" :minlevel 3
 
 ** =wire-cell-waftools=
+   :PROPERTIES:
+   :CUSTOM_ID: pkg-waftools
+   :END:
 #+INCLUDE: "waftools.org" :minlevel 3
 
 * Data Flow Programming
+   :PROPERTIES:
+   :CUSTOM_ID: data-flow-programming
+   :END:
 
 #+INCLUDE: "dfp.org" :minlevel 2
 
 * Other Topics
+   :PROPERTIES:
+   :CUSTOM_ID: other-topics
+   :END:
 
 ** Garfield 2D Support
+   :PROPERTIES:
+   :CUSTOM_ID: garfield-2d-support
+   :END:
+
 #+INCLUDE: "garfield.org" :minlevel 3

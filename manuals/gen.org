@@ -1,11 +1,17 @@
-* Simulation
-
 Scope and intro blah blah.
 
-** Depositions
+* Depositions
 
-** Drifting
+TBD.
 
-** Response
+* Drifting
 
-** Digitizing
+TBD.
+
+* Response
+
+TBD.
+
+* Digitizing
+
+TBD.

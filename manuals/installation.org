@@ -1,6 +1,10 @@
 The Wire Cell Toolkit (WCT) should be easy to build on any POSIX'y system with a recent C++ compiler.  This section describes how to build releases and development branches, it gives guidance for supplying the few software dependencies, and documents how releases are made.
 
-** Toolkit installation :user:installer:developer:
+** Toolkit installation 
+   :PROPERTIES:
+   :CUSTOM_ID:       toolkit-installation
+   :END:
+
 
 #+begin_warning
 This assumes you already have available the required dependencies.  See section [[Guide for installation of dependencies]].
@@ -13,6 +17,9 @@ Installation requires four steps:
 4) install the results
 
 *** Source code
+    :PROPERTIES:
+    :CUSTOM_ID: source-code
+    :END:
 
 WCT source is composed of several packages (see section [[Packages]]) and all source is available from the [[https://github.com/WireCell/][Wire Cell GitHub organization]].  Releases of each package are made and documented on GitHub (/eg/ [[https://github.com/WireCell/wire-cell-build/releases][here]]) and can be downloaded as archives.  However, using git to assemble a working source area is recommended and easier.  Releases and development branches are handled slightly differently.
 
@@ -43,6 +50,9 @@ At some time later if there is a need to switch between HTTP or SSH a =switch-gi
 #+end_tip
 
 *** Configuring the source
+    :PROPERTIES:
+    :CUSTOM_ID: configuring-the-source
+    :END:
 
 At a minimum, the source must be configured with an installation location for the build results and to allow it to find its dependencies.  This, and the remaining steps are done with the provided =wcb= script which is an instance of [[https://waf.io/][Waf]].
 #+BEGIN_EXAMPLE
@@ -66,6 +76,9 @@ As shown in the example below, the flags to locate Boost are slightly different.
 This example assumes all externals are available in a directory set by the =WCT_EXTERNALS= variable.  This variable is *not* used by the build and is only used to make this example brief.
 
 *** Building the source
+    :PROPERTIES:
+    :CUSTOM_ID: building-the-source
+    :END:
 
 After a successful source configure step, the results are cached and any long command line need not be repeated.  To build the source simply run:
 
@@ -81,7 +94,43 @@ The build will try to run tests which can be avoided to save time:
   $ ./wcb --notests
 #+END_EXAMPLE
 
+*** Running unit tests
+    :PROPERTIES:
+    :CUSTOM_ID: running-unit-tests
+    :END:
+
+Unless =--notests= are passed as above, the build system will build and run the many unit test programs.  In general, all unit tests should run successfully (in practice some small fraction may not).  To give them a chance to succeed they must at least be run with a properly set up environment.  In particular =LD_LIBRARY_PATH= must contain all library directories for external packages.  Setting this is user/system dependent and so is left to the user.
+
+#+BEGIN_INFO
+Developers wishing to run unit tests that exercise code they are developing should take care in setting =LD_LIBRARY_PATH=.  If the WCT installation area is included then the unit tests will run against those libraries, effectively masking the locally built versions in the development area.  Alternatively, they must run =./wcb install= and then manually re-run the unit test.
+#+END_INFO
+
+Setting =LD_LIBRARY_PATH= is *not* as above required for building.  To avoid polluting the build environment with superfluous settings it is possible to create a little shell script that will be used to run each test.  As an example, we create =tester.sh= that looks like:
+
+#+BEGIN_SRC sh
+#!/bin/sh
+/usr/bin/env LD_LIBRARY_PATH=/path/to/extern1/lib:/path/to/extern2/lib "$@"
+#+END_SRC
+
+After making this script executable it can be used like:
+
+#+BEGIN_EXAMPLE
+  $ ./wcb --testcmd="/path/to/tester.sh %s"
+#+END_EXAMPLE
+
+Another useful option is =--dump-test-scripts= which will produce a =test_<name>_run.py= file for each =test_<name>= that bakes in the environment and gives you a per-test runner that you can execute directly.  You can use the same =tester.sh= script here
+
+#+BEGIN_EXAMPLE
+  $ /path/to/tester.sh ./wcb --dump-test-scripts --alltests
+  $ ./build/util/test_fft_run.py
+#+END_EXAMPLE
+
+Where these two commands are executed in a shell that has no =LD_LIBRARY_PATH= set.
+
 *** Install the results
+    :PROPERTIES:
+    :CUSTOM_ID: install-built-code
+    :END:
 
 To install the build results into the location given by =--prefix= simply issue:
 #+BEGIN_EXAMPLE
@@ -89,6 +138,10 @@ To install the build results into the location given by =--prefix= simply issue:
 #+END_EXAMPLE
 
 *** Other build commands
+    :PROPERTIES:
+    :CUSTOM_ID: other-build-commands
+    :END:
+
 
 These other commands may be useful:
 
@@ -104,7 +157,11 @@ These other commands may be useful:
   $ ./wcb --help         # see more options.
 #+END_EXAMPLE
 
-** Runtime environment :user:installer:
+
+** Runtime environment
+   :PROPERTIES:
+   :CUSTOM_ID: runtime-environment
+   :END:
 
 Managing environment is usually a personal choice or computer facility policy and WCT does not place any significant requirements on this.  The usual setting of =PATH= like variables will likely be needed.  
 
@@ -112,7 +169,10 @@ FIXME: we should look into setting =RPATH=.
 
 Internally, WCT does not require any environment however it will search a =WIRECELL_PATH= when locating configuration or other (non data) input files.  More information is in the section [[Configuration]].
 
-** Guide for installation of dependencies :installer:
+** Guide for installation of dependencies 
+   :PROPERTIES:
+   :CUSTOM_ID: installing-dependencies
+   :END:
 
 The WCT depends on a number of third-party software packages.  They are intentionally limited to reduce the requirements for installation.  Some packages are optional.  Here lists packages that users may not already have as part of a "reasonably POSIX'y system and some guidance is given on how to install them.
 
@@ -139,12 +199,18 @@ This list may not represent current reality.
 To get a full, up-to-date list of what packages WCT can use run =./wcb --help=.   
 
 *** Manual
+    :PROPERTIES:
+    :CUSTOM_ID: manual-externals-install
+    :END:
 
 In the DIY mode, the installer is free to provide the third-party packages in any convenient way.  Many of them are available on well supported operating systems such as Debian/Ubuntu.  Homebrew for Mac OS X is not a core developer platform but may provide many.  Redhat derived Linux distributions may find suitable package on EPEL.  Most of the required packages are fairly easy to build from source.
 
 However the installer decides to build in DIY-mode the WCT build system should be able to be given proper installation locations via the =--with-*= flags as described above.  If it seems not to be the case, please contact the developers.
 
 *** Spack
+    :PROPERTIES:
+    :CUSTOM_ID: spack-installed-externals
+    :END:
 
 [[https://github.com/LLNL/spack][Spack]] is a "meta build system" that runs the individual build systems that come with packages.  It allows one to manage an ever growing installation area which can accommodate multiple versions of a package.  It also comes with support for [[http://modules.sourceforge.net/][Environment Modules]] to handle your users' setup of these packages or can make targeted release "views" of its package tree.  
 
@@ -153,14 +219,25 @@ WCT provides a package [[https://github.com/WireCell/wire-cell-spack][wire-cell-
 An installer that wishes to use wire-cell-spack to provide the dependencies should begin by following its [[https://github.com/WireCell/wire-cell-spack/blob/master/README.org][README]] file.
 
 *** UPS
+    :PROPERTIES:
+    :CUSTOM_ID: using-externals-from-ups
+    :END:
 
 Fermi National Accelerator Lab (FNAL) uses a user environment similar but incompatible with to [[http://modules.sourceforge.net/][Environment Modules]].  It is typical to download binaries provided by FNAL and use UPS to "setup" a user environment with many environment variables.  For each package so setup there is a variable that gives the installation location.  These can be used to provide suitable values for the =--with-*= flags to =wcb= as described above.
 
-** Release management :core:developer:
+
+** Release management 
+   :PROPERTIES:
+   :CUSTOM_ID: release-management
+   :END:
+
 
 Releases are made by developers as needed and as described in this section.
 
 *** Release versions
+    :PROPERTIES:
+    :CUSTOM_ID: release-versions
+    :END:
 
 WCT label releases are made following a fixed procedure.  Releases are labeled with  the common three-number convention: =X.Y.Z=.  These take the following semantic meanings:
 
@@ -169,9 +246,15 @@ WCT label releases are made following a fixed procedure.  Releases are labeled w
 - Z :: a bug release fixes problems without otherwise substantial changes.
 
 *** Branch policy
+    :PROPERTIES:
+    :CUSTOM_ID: branch-policy
+    :END:
 
 Any new major or minor releases produce a new Git branch in each package.  Only bug fixes are made to this branch. Where applicable, release bug fixes should be applied to =master=.  Nominally, all development is on the =master= branch however developers are free to make their own feature branches.  They are encourage to do this if their development is expected to be disruptive to other developers.
 
 *** Branch mechanics
+    :PROPERTIES:
+    :CUSTOM_ID: branch-mechanics
+    :END:
 
 To make releases, the above details are baked into two test scripts [[https://github.com/WireCell/waf-tools/blob/master/make-release.sh][make-release.sh]] and [[https://github.com/WireCell/waf-tools/blob/master/test-release.sh][test-release.sh]].  See comments at the top of each for how to run them.  These scripts can be used by others but are meant for developers to make official releases.  

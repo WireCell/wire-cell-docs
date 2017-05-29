@@ -1,18 +1,28 @@
 This doc describes the Wire Cell Toolkit (WCT) internal structure and support facilities.  It is intended for developers to read carefully, understand and follow.  It may be of interest to users as well.   It does not cover the "batteries included" or "reference implementations" such as the simulation, signal processing, imaging, etc which are described in section [[Packages]].
 
 * Toolkit packages
+  :PROPERTIES:
+  :CUSTOM_ID: toolkit-packages
+  :END:
 
 The WCT is composed of a number of /packages/.  Each package has an associated with a Git source repository.
 Most packages produce a shared library, which may also be a WCT plugin library, C++ header files, some number of main or test applications.   Others include a single package holding all Python code in various modules, a package providing support for developing WCT configuration files and the documentation package holding this document.
 One special type of package is a /build/ package described more in section on the build package.
 
 ** Names
+   :PROPERTIES:
+   :CUSTOM_ID: package-names
+   :END:
+
 
 Package repositories are named like =wire-cell-<name>= where =<name>= is some short identifier giving indication of the main scope of the package.  In the documentation the =wire-cell-= prefix is often dropped and only this short name is used.  
 
 If a package produces a shared library it should be named in =CamelCase= with a prefix =WireCell=.  For example the =gen= package produces a library =libWireCellGen.so=.  As a plugin name or an entry in the build system, the =lib= and =.so= are dropped.  If the package has public header files to expose to other packages they should use this same name for a subdirectory in which to hold them.  Package layout is described move below.
 
 ** Dependencies
+   :PROPERTIES:
+   :CUSTOM_ID: package-dependencies
+   :END:
 
 Some of the C++ packages are designated as /core/ packages.  These include the packages providing the toolkit C++ structure (described later in this document) as well as the reference implementations (eg, =gen=, =sigproc=).   These packages have strict requirements on what dependencies may be introduced and in particular their shared libraries are not allowed to depend on ROOT (although their apps and tests are, see sections [[Package structure]] and [[Build package]]).
 
@@ -25,6 +35,9 @@ WCT also provides a number of peripheral implementation packages, which are free
 Finally, there may be third-party implementation packages.  They are free to mimic WCT packages but WCT itself will not depend on them.  They should not make use of the =WireCell::= C++ namespace.
 
 ** Package structure
+   :PROPERTIES:
+   :CUSTOM_ID: package-structure
+   :END:
 
 The WCT package layout and file extensions must follow some conventions in order to greatly simplify the build system.  In the description below, =WireCellName= is as described above.
 
@@ -43,13 +56,20 @@ The =bld= object is automagically available.  If the package has no dependencies
 Fixme: make a script that generates a dot file and show the graph.
 
 ** Build package
+   :PROPERTIES:
+   :CUSTOM_ID: build-package
+   :END:
 
-To actually build WCT see the section on toolkit installation (section [[Installation]]).  The build system is based on [[https::waf.io][Waf]] and uses the =wcb= command and a =wscript= file provided by the top level /build package/.  More details on the build system are given in section [[Waf tools]])
+To actually build WCT see the section on toolkit installation (section [[Installation]]).  The build system is based on [[https::waf.io][Waf]] and uses the =wcb= command and a =wscript= file provided by the top level /build package/.  More details on the build system are given in section [[=wire-cell-waftools=][Waf tools]].
 
 Besides holding the main build instructions this package aggregates all the other packages via Git's "submodule" feature.  In principle, there may be more than one build package maintained.  This allows developers working on a subset to avoid having to build unwanted code.  In practice there is a single build package which is at: https://github.com/wirecell/wire-cell-build.
 
 
 ** Adding a new code package
+   :PROPERTIES:
+   :CUSTOM_ID: add-new-package-to-build
+   :END:
+
 
 To add a new code package to a build package from scratch, select a =<name>= following guidance above and do something like:
 #+BEGIN_EXAMPLE
@@ -81,8 +101,15 @@ In order to be picked up by the build the new package short name must be added t
 
 
 * Coding conventions
+  :PROPERTIES:
+  :CUSTOM_ID: coding-conventions
+  :END:
+
 
 ** C++ code formatting 
+   :PROPERTIES:
+   :CUSTOM_ID: c++-code-formatting
+   :END:
 
 - Base indentation /should/ be four spaces.
 
@@ -108,6 +135,9 @@ In order to be picked up by the build the new package short name must be added t
 
 
 ** C++ namespaces
+   :PROPERTIES:
+   :CUSTOM_ID: c++-namespaces
+   :END:
 
 - All C++ code part of WCT proper and which may be accessed by other packages (eg, exported via "public headers") /must/ be under the =WireCell::= namespace.
 
@@ -119,6 +149,9 @@ In order to be picked up by the build the new package short name must be added t
 
 
 * Interfaces
+  :PROPERTIES:
+  :CUSTOM_ID: interface-internals
+  :END:
 
 A central design aspect of the WCT is that all "important" functionality which may have more than one implementation must be accessed via an /pure abstract interface class/.  All such interface classes are held in the [[https://github.com/wirecell/wire-cell-iface][iface]] package.  Interface classes should present a very limited number of purely abstract methods that express a single, cohesive concept.  Implementations typically inherent from more than one interface.  If two concepts are close but not cohesive they are best put into two interface classes.
 Besides defining the method interface, Interface classes may define types.  They may also be templated.
@@ -130,6 +163,9 @@ Interfaces are used not only to access functionality but the data model for majo
 Another category of interfaces are those which express the "node" concept.  They inherit from =WireCell::INode=.  These require implementation of an =operator()= method.   Nodes make up the main unit of code.  They are somewhat equivalent to =Algorithm= concept from the Gaudi framework where the =operator()= method is equivalent to Gaudi's =execute()= method.  They also require some additional instrumenting in order to participate in the data flow programming paradigm described below.
 
 * Components
+  :PROPERTIES:
+  :CUSTOM_ID: component-internals
+  :END:
 
 Components are implementations an interface which itself inherits from the =WireCell::IComponponent= interface class (this interface class is in =util= as a special case due to dependency issues.  fixme: needs to be solved with a general package depending on both =iface and =util=).  This inheritance follows [[https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern][CRTP]].
 
@@ -162,6 +198,10 @@ Not typically required by most code but there exists also a function =lookup_fac
 
 
 * Configuration
+  :PROPERTIES:
+  :CUSTOM_ID: configuration-internals
+  :END:
+
 
 One somewhat special component interface is =IConfigurable=.  A class inheriting from this interface is considered a /configurable component/ such as =TrackDepos= in the above example.  It is /required/ for any main application using the WCT toolkit to adhere to the Wire Cell Toolkit Configuration Protocol.  This is a contract by which the main application promises to do the following:
 
@@ -193,19 +233,38 @@ Developers of new configurables should keep this protocol in mind and should ref
 
 
 * Execution Models
+  :PROPERTIES:
+  :CUSTOM_ID: execution-models
+  :END:
 
 ** Ad-hoc
+   :PROPERTIES:
+   :CUSTOM_ID: ad-hoc-execution
+   :END:
+
 
 Direct calling of utility functions and concrete objects.
 
-** Component
+** Concrete
+   :PROPERTIES:
+   :CUSTOM_ID: execution-concrete-components
+   :END:
+
 
 Concrete components.
 
 ** Interface
+   :PROPERTIES:
+   :CUSTOM_ID: execution-via-interfaces
+   :END:
 
 Using NamedFactory.
 
-** Data flow programming
+** Data flow programming execution
+   :PROPERTIES:
+   :CUSTOM_ID: dfp-execution
+   :END:
 
-Using abstract DFP
+
+Using abstract DFP.  A whole section on [[Data Flow Programming]] is also available.
+
