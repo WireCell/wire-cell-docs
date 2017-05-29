@@ -59,7 +59,7 @@ def configure(cfg):
 
 def build(bld):
     manual_org = bld.path.ant_glob("manual.org")
-    index_org = bld.path.ant_glob("manual.org")
+    index_org = bld.path.ant_glob("index.org")
     publish_el = bld.path.ant_glob("publish.el")
     rest_org = [p for p in bld.path.ant_glob("*.org") if p not in manual_org+index_org]
 

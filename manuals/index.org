@@ -1,4 +1,10 @@
 #+TITLE: Wire Cell Toolkit Manual
+#+OPTIONS: ':t H:4  toc:nil
+
+* Formats
+  :PROPERTIES:
+  :CUSTOM_ID: formats
+  :END:
 
 The manual is available in the following generated formats:
 
@@ -7,11 +13,27 @@ The manual is available in the following generated formats:
 - [[./manual.epub][EPUB]] for e-book readers
 - [[./manual.pdf][MD]] just because
 
+* Editing
+  :PROPERTIES:
+  :CUSTOM_ID: editing
+  :END:
+
 To author content the source is in Emacs Org mode.
 
 - [[https://github.com/WireCell/wire-cell-docs/tree/master/manuals][Org]] source on GitHub
 
-Doxygen reference documentation may be available [[./doxy/html/][here]].
+* Other documentation
+  :PROPERTIES:
+  :CUSTOM_ID: other
+  :END:
+
+
+Also available is reference documentation generated from the source
+comments by Doxygen:
+
+- [[./doxy/html/][HTML]]
 
 
 --------
+
+
