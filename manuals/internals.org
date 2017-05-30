@@ -117,7 +117,7 @@ In order to be picked up by the build the new package short name must be added t
 
 - Opening braces /should not/ be on a line onto themselves, closing braces /should be/.
 
-- Class names /should/ be =CamelCase=, method and function names /should be/ =snake_case=, class data attributes  /should be/ prefixed with =m_= (signifying "member").
+- Class names /should/ follow =CamelCase=, method and function names /should/ follow =snake_case=, class data attributes  /should/ be prefixed with =m_= (signifying "member").
 
 - Doxygen triple-slash =///= or double-star =/** */= comments /must/ be used for in-source reference documentation.
 
@@ -146,6 +146,14 @@ In order to be picked up by the build the new package short name must be added t
 - Non-core, WCT implementation code (eg contents of =gen= package) /must/ use secondary namespace (eg =WireCell::Gen::=).
 
 - Any third-party packages providing WCT-based components or otherwise depending on WCT /should not/ use the =WireCell::= namespace.
+
+
+** Configuration Parameters
+   :PROPERTIES:
+   :CUSTOM_ID: configuration-conventions
+   :END:
+
+- Configuration parameter names should follow =snake_case=.
 
 
 * Interfaces
