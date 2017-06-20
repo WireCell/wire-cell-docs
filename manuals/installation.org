@@ -182,13 +182,12 @@ The required packages are:
 - Eigen3 :: matrix representation, interface to FFTW
 - FFTW3 :: for fast Fast Fourier Transforms
 - JsonCPP :: basis for configuration and input data files 
-
+- Jsonnet :: structured configuration files.
+- ROOT :: for many tests and I/O packages, but not the core library code
 
 The optional package are:
 
 - Doxygen :: for building reference documentation.
-- Jsonnet :: structured configuration files.
-- ROOT :: for many tests and I/O packages
 - TBB :: for data flow programming paradigm support
 
 #+begin_note
