@@ -54,6 +54,9 @@ If a relative path is given, the file will be searched for starting in the curre
    :CUSTOM_ID: dump-default-configuration
    :END:
 
+#+begin_warning
+This dumping functionality is removed from the =wire-cell= CLI for now.
+#+end_warning
 
 The user can also dump out the hard-coded default configuration for one or more components:
 #+BEGIN_EXAMPLE
@@ -72,6 +75,9 @@ The user must know what components to dump.  There is no way for the application
    :CUSTOM_ID: diving-into-json
    :END:
 
+#+begin_warning
+This dumping functionality is removed from the =wire-cell= CLI for now.
+#+end_warning
 
 An example configuration dump from this command
 #+BEGIN_EXAMPLE
