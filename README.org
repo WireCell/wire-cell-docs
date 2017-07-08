@@ -2,9 +2,8 @@
 
 * Toolkit
 
-The Wire Cell *Toolkit* documentation consists of various [[./manuals/index.org][manuals]].
-They are online as HTML at http://wirecell.github.io/.
-Sometimes early releases are placed at http://www.phy.bnl.gov/~bviren/wirecell.github.io.
+The Wire Cell *Toolkit* documentation consists of a manual and a news blog.
+These are online at http://wirecell.github.io/ (and some [[http://www.phy.bnl.gov/~bviren/wirecell.github.io][early releases]]).
 
 * Prototype
 
@@ -12,4 +11,6 @@ The Wire Cell *Prototype* documentation is at http://BNLIF.github.io/wire-cell-d
 
 * Updating
 
-To update the the WCT manual see comments at top of [[./manuals/wscript]].
+To update the the WCT manual see the 
+comments at top of [[./manuals/wscript]] and for the news blog see its 
+ [[./news/README.org][README]].

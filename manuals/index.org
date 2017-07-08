@@ -1,32 +1,30 @@
-#+TITLE: Wire Cell Toolkit Manual
+#+TITLE: Wire Cell Toolkit Documentation
 #+OPTIONS: ':t H:4  toc:nil
 
-* Formats
+* News:
   :PROPERTIES:
-  :CUSTOM_ID: formats
+  :CUSTOM_ID: news
   :END:
 
-The manual is available in the following generated formats:
+News items are posted to [[./news/][the Wire Cell news blog]].
+
+* Manual
+  :PROPERTIES:
+  :CUSTOM_ID: manual
+  :END:
+
+A manual is available for the Wire Cell Toolkit software in the following generated formats:
 
 - [[./manual.html][HTML]] for online viewing (fixme: need to change this to a URL)
 - [[./manual.pdf][PDF]] for printing
 - [[./manual.epub][EPUB]] for e-book readers
 - [[./manual.pdf][MD]] just because
-
-* Editing
-  :PROPERTIES:
-  :CUSTOM_ID: editing
-  :END:
-
-To author content the source is in Emacs Org mode.
-
-- [[https://github.com/WireCell/wire-cell-docs/tree/master/manuals][Org]] source on GitHub
+- [[https://github.com/WireCell/wire-cell-docs/tree/master/manuals][Org]] source on GitHub for editing
 
 * Other documentation
   :PROPERTIES:
   :CUSTOM_ID: other
   :END:
-
 
 Also available is reference documentation generated from the source
 comments by Doxygen:
