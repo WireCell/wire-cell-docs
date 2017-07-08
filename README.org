@@ -12,4 +12,4 @@ The Wire Cell *Prototype* documentation is at http://BNLIF.github.io/wire-cell-d
 
 * Updating
 
-To update the the WCT docs see comments at top of [[./manuals/wscript]].
+To update the the WCT manual see comments at top of [[./manuals/wscript]].

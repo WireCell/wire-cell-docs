@@ -1,10 +1,3 @@
-* News
-  :PROPERTIES:
-  :CUSTOM_ID: news
-  :END:
-#+INCLUDE: "news.org" :minlevel 2
-
-
 * Installation
   :PROPERTIES:
   :ID: installation

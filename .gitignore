@@ -30,3 +30,8 @@ theindex.org
 web
 build
 cut.py
+__pycache__
+.doit.db
+*.pyc
+cache
+output
