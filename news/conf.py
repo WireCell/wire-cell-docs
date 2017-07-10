@@ -26,7 +26,7 @@ SITE_URL = "http://wirecell.github.io/news/"
 # If not set, defaults to SITE_URL
 # BASE_URL = "http://wirecell.github.io/"
 BLOG_EMAIL = "bv@bnl.gov"
-BLOG_DESCRIPTION = "Updates related to Wire Cell."  # (translatable)
+BLOG_DESCRIPTION = "Updates on the Wire Cell Toolkit."  # (translatable)
 
 # Nikola is multilingual!
 #
@@ -138,6 +138,7 @@ NAVIGATION_LINKS = {
         ("/archive.html", "Archive"),
         ("/categories/", "Tags"),
         ("/rss.xml", "RSS feed"),
+        ("/../manual/", "Manual"),
     ),
 }
 

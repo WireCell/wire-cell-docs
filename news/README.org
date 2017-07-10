@@ -2,6 +2,10 @@ This area holds a Nikola source area for producing news.
 
 * Initial setup
 
+** Very first time
+
+This is what was done to get started from a green field.
+
 #+BEGIN_EXAMPLE
   $ virtualenv --system-site-packages -p python3 venv
   $ source venv/bin/activate
@@ -11,35 +15,55 @@ This area holds a Nikola source area for producing news.
   $ nikola plugin -i orgmode
 #+END_EXAMPLE
 
-* New post
+** New installs
+
+For new installs.
 
 #+BEGIN_EXAMPLE
-    $ virtualenv --system-site-packages -p python3 venv
-    $ source venv/bin/activate
-    $ cd news
-    $ nikola new_post \
-             -f orgmode \
-             -t "The News title" \
-             -a "Your Name" \
-             --tags=comma,separated,avoid,proliferation
-             -d YYYY/MM/DD
+  $ virtualenv --system-site-packages -p python3 venv
+  $ source venv/bin/activate
+  $ pip install Nikola ws4py watchdog webassets
+#+END_EXAMPLE
+
+* New post
+
+Set up for [[New installs]] and then:
+
+#+BEGIN_EXAMPLE
+  $ source venv/bin/activate
+  $ cd news
+  $ nikola new_post \
+           -f orgmode \
+           -t "The News title" \
+           -a "Your Name" \
+           --tags=comma,separated,avoid,proliferation
 #+END_EXAMPLE
 
 Notes:
 - Can also answer prompts instead of giving exhaustive command line args.
 - Other source formats are allowed other than =orgmode=.
 - Edit the resulting file to add content.
+- Try to reuse tags (=grep tags posts/*=)
 
 * Deployment
 
 The news (and the [[../manuals][manual]]) deploy into the =wirecell.github.io= git repo for serving by GitHub.  To deploy the news be sure that this repository is cloned "next door" to wire-cell-doc as in:
 
 #+BEGIN_EXAMPLE
-$ git clone git@github.com:WireCell/wirecell.github.io
-$ cd wire-cell-docs/news/
-$ nikola build
-$ cd ../../wirecell.github.io
-$ git add ...  # as needed
-$ git commit -am "Update news"
-$ git push
+  $ git clone git@github.com:WireCell/wirecell.github.io
+  $ cd wire-cell-docs/news/
+  $ nikola build
+  $ cd ../../wirecell.github.io
+  $ git add ...  # as needed
+  $ git commit -am "Update news"
+  $ git push
 #+END_EXAMPLE
+
+* Authoring
+
+#+BEGIN_EXAMPLE
+  $ nikola auto
+#+END_EXAMPLE
+
+Now visit http://127.0.0.1:8000/.
+
