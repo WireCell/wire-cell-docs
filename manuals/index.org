@@ -18,7 +18,7 @@ A manual is available for the Wire Cell Toolkit software in the following genera
 - [[./manual.html][HTML]] for online viewing (fixme: need to change this to a URL)
 - [[./manual.pdf][PDF]] for printing
 - [[./manual.epub][EPUB]] for e-book readers
-- [[./manual.pdf][MD]] just because
+- [[./manual.md][MD]] just because
 - [[https://github.com/WireCell/wire-cell-docs/tree/master/manuals][Org]] source on GitHub for editing
 
 * Other documentation

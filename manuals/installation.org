@@ -25,7 +25,8 @@ WCT source is composed of several packages (see section [[Packages]]) and all so
 
 To obtain a release requires no GitHub authentication:
 #+BEGIN_EXAMPLE
-  $ git clone --recursive --branch 0.5.x https://github.com/WireCell/wire-cell-build.git
+  $ git clone --recursive --branch 0.5.x \
+        https://github.com/WireCell/wire-cell-build.git
 #+END_EXAMPLE
 This gets the tip of the release branch for the =0.5.x= series.  If a specific release is desired a few more commands are needed.  For example, if the =0.5.0= release that started the series is wanted:
 #+BEGIN_EXAMPLE
@@ -37,7 +38,8 @@ This gets the tip of the release branch for the =0.5.x= series.  If a specific r
 
 To obtain the development branch requires SSH authentication with GitHub:
 #+BEGIN_EXAMPLE
-  $ git clone --recursive git@github.com:WireCell/wire-cell-build.git wct
+  $ git clone --recursive \
+        git@github.com:WireCell/wire-cell-build.git wct
 #+END_EXAMPLE
 
 Which ever way the source is obtained, enter the resulting directory
@@ -61,26 +63,29 @@ At a minimum, the source must be configured with an installation location for th
 
 This will print the results of the attempts to detect required and optional dependencies.  Missing but optional dependencies will not cause failure.  See below for guidance on installing dependencies if this step fails or if desired optional dependencies are not found.
 
-Dependencies are first located in standard system locations, barring that those that are traditionally installed with support for =pkg-config= may be found by suitably setting the =PKG_CONFIG_PATH= environment variable.  To force a particular location for any given dependency a =--with-*= option may be used.
+Dependencies will likely be found automatically if =pkg-config= is available possibly by suitably setting the =PKG_CONFIG_PATH= environment variable.  If automatic location fails then missing locations can be explicitly specified.  The following shows an example where all externals are installed at a single location identified by the =WCT_EXTERNALS= environment variable (not, this variable has no other special meaning other than to make this example brief).
 
-#+begin_note
-As shown in the example below, the flags to locate Boost are slightly different.
-#+end_note
 
 #+BEGIN_EXAMPLE
   $ ./wcb configure --prefix=/path/to/install \
-     --boost-includes=$WCT_EXTERNALS/include --boost-libs=$WCT_EXTERNALS/lib --boost-mt \
-     --with-eigen=$WCT_EXTERNALS --with-jsoncpp=$WCT_EXTERNALS --with-tbb=$WCT_EXTERNALS \
-     --with-root=$WCT_EXTERNALS --with-fftw=$WCT_EXTERNALS --with-root=$WCT_EXTERNALS
+     --boost-includes=$WCT_EXTERNALS/include \
+     --boost-libs=$WCT_EXTERNALS/lib --boost-mt \
+     --with-root=$WCT_EXTERNALS \
+     --with-fftw=$WCT_EXTERNALS \
+     --with-eigen=$WCT_EXTERNALS \
+     --with-jsoncpp=$WCT_EXTERNALS \
+     --with-jsonnet=$WCT_EXTERNALS \
+     --with-tbb=$WCT_EXTERNALS
 #+END_EXAMPLE
-This example assumes all externals are available in a directory set by the =WCT_EXTERNALS= variable.  This variable is *not* used by the build and is only used to make this example brief.
+
+If the externals are not all in one directory then their locations must be accordingly specified individually.
 
 *** Building the source
     :PROPERTIES:
     :CUSTOM_ID: building-the-source
     :END:
 
-After a successful source configure step, the results are cached and any long command line need not be repeated.  To build the source simply run:
+After the above is successful the =configure= results are cached and all other build related commands are brief.  To build the code to the temporary =build/= directory one simply runs:
 
 #+BEGIN_EXAMPLE
   $ ./wcb
@@ -98,6 +103,10 @@ The build will try to run tests which can be avoided to save time:
     :PROPERTIES:
     :CUSTOM_ID: running-unit-tests
     :END:
+
+#+begin_note
+Unit tests are meant to be small, focused tests.  Some have grown beyond this intention and into full, if ad-hoc, applications themselves.  These need to be reworked or moved into the [[https://github.com/wirecell/wire-cell-validate][wire-cell-validate]] package.
+#+end_note
 
 Unless =--notests= are passed as above, the build system will build and run the many unit test programs.  In general, all unit tests should run successfully (in practice some small fraction may not).  To give them a chance to succeed they must at least be run with a properly set up environment.  In particular =LD_LIBRARY_PATH= must contain all library directories for external packages.  Setting this is user/system dependent and so is left to the user.
 
@@ -174,9 +183,7 @@ Internally, WCT does not require any environment however it will search a =WIREC
    :CUSTOM_ID: installing-dependencies
    :END:
 
-The WCT depends on a number of third-party software packages.  They are intentionally limited to reduce the requirements for installation.  Some packages are optional.  Here lists packages that users may not already have as part of a "reasonably POSIX'y system and some guidance is given on how to install them.
-
-The required packages are:
+The WCT depends on a number of third-party "external" software packages which are not expected to be provided by a typical unix-like system:
 
 - Boost :: various functions
 - Eigen3 :: matrix representation, interface to FFTW
@@ -185,19 +192,20 @@ The required packages are:
 - Jsonnet :: structured configuration files.
 - ROOT :: for many tests and I/O packages, but not the core library code
 
-The optional package are:
+Additional, optional package are needed for additional functionality:
 
-- Doxygen :: for building reference documentation.
 - TBB :: for data flow programming paradigm support
 
-#+begin_note
-Some "optional" packages may actually be currently required for a successful build and test.  This is considered a "bug" and needs fixing.
-#+end_note
 
+#+begin_note
 This list may not represent current reality.
 To get a full, up-to-date list of what packages WCT can use run =./wcb --help=.   
+#+end_note
 
-*** Manual
+
+The following subsections gives some guidance for obtaining these "external" packages.
+
+*** Manual Installation of Externals
     :PROPERTIES:
     :CUSTOM_ID: manual-externals-install
     :END:
@@ -206,7 +214,7 @@ In the DIY mode, the installer is free to provide the third-party packages in an
 
 However the installer decides to build in DIY-mode the WCT build system should be able to be given proper installation locations via the =--with-*= flags as described above.  If it seems not to be the case, please contact the developers.
 
-*** Spack
+*** Automated Installation with Spack
     :PROPERTIES:
     :CUSTOM_ID: spack-installed-externals
     :END:
@@ -217,12 +225,12 @@ WCT provides a package [[https://github.com/WireCell/wire-cell-spack][wire-cell-
 
 An installer that wishes to use wire-cell-spack to provide the dependencies should begin by following its [[https://github.com/WireCell/wire-cell-spack/blob/master/README.org][README]] file.
 
-*** UPS
+*** Externals provided by UPS
     :PROPERTIES:
     :CUSTOM_ID: using-externals-from-ups
     :END:
 
-Fermi National Accelerator Lab (FNAL) uses a user environment similar but incompatible with to [[http://modules.sourceforge.net/][Environment Modules]].  It is typical to download binaries provided by FNAL and use UPS to "setup" a user environment with many environment variables.  For each package so setup there is a variable that gives the installation location.  These can be used to provide suitable values for the =--with-*= flags to =wcb= as described above.
+Fermi National Accelerator Lab (FNAL) uses a user environment system similar to [[http://modules.sourceforge.net/][Environment Modules]].  It is typical to download binaries provided by FNAL, either manually of automatically via a CVMFS mount, and then use the UPS shell function =setup= to configure a user environment with many environment variables.  For each package ("UPS product") that is so setup there is a variable that gives the installation location.  These can be used to provide suitable values for the =--with-*= flags to =wcb= as described above.  The source provides a script =waftools/wct-configure-for-ups.sh= which may help run =./wcb configure= in such an environment.
 
 
 ** Release management 
