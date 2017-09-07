@@ -99,3 +99,10 @@ This section of the manual gives brief guidance on how to do various things with
    :END:
 
 #+INCLUDE: "garfield.org" :minlevel 3
+
+** Running inside of art/LArSoft
+   :PROPERTIES:
+   :CUSTOM_ID: larsoft-integration
+   :END:
+
+#+INCLUDE: "larsoft-integration.org" :minlevel 3

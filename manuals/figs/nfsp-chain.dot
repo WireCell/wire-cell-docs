@@ -1,0 +1,25 @@
+digraph nfsp {
+
+	node[shape=box];
+	event[label="art::Event",fontname="fixed"];
+	input[label="converter"];
+	nfch[label="channel noise\nfilters"];
+	nfpm[label="PMT noise\nfilter"];
+	sp[label="signal\nprocessing"];
+	output[label="converter"];
+
+	{rank=same; input,nfch,nfpm,sp,output}
+
+	svcs[label="services"];
+	chndb[label="chan. noise DB"];
+
+	{rank=same; svcs, chndb}
+
+	event:w->input:ne[label="raw::RawDigit",fontname="fixed"];
+	input->nfch->nfpm->sp->output;
+	output:nw->event:e[label="recob::Wire",fontname="fixed"];
+	nfch->nfpm[label="*"];
+	nfpm->sp[label="*"];
+	svcs->chndb;
+	nfch->chndb[dir=back];
+}

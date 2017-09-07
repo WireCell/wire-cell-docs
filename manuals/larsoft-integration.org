@@ -1,0 +1,264 @@
+Wire Cell Toolkit can be run "stand alone" via the =wire-cell= command line program.  However, WCT is designed to run as part of some greater application.  On primary example is to run as a component in a program constructed as /art/ modules as provided by LArSoft (LS).  This section describes the so called Wire Cell Toolkit / LArSoft integration (WC/LS).  
+
+* Overview
+  :PROPERTIES:
+  :CUSTOM_ID: wcls-overview
+  :END:
+
+
+As of [[https://github.com/WireCell/wire-cell-build/releases/tag/0.6.1][WCT 0.6.1]] and [[https://cdcvs.fnal.gov/redmine/projects/larsoft/wiki/ReleaseNotes064800][LArSoft 6.48.0]] there is support for running WCT inside of /art/ in an extensible and maintainable manner.  The software that provides this /integration/ is maintained in the LArSoft package [[https://cdcvs.fnal.gov/redmine/projects/larwirecell][larwirecell]] maintained in FNAL's Redmine ([[https://github.com/brettviren/larwirecell][github mirror]]).
+
+The sections below cover the integration software design, special issues relating to configuration inside of /art/, how to prepare an /art/ runtime environment which includes WCT and how to develop WCT in the context of /art/ as the driving application.
+
+* Design
+  :PROPERTIES:
+  :CUSTOM_ID: wcls-design
+  :END:
+
+The design of the integration software is summarized in the following UML diagram.
+
+#+CAPTION: Wire Cell Toolkit / LArSoft integration design UML diagram.
+#+attr_html: :width 90%
+[[file:figs/nfsp-integ.svg]]
+
+The classes in blue are in =larwirecell=.  The dark blue module and the =WCLS= tool classes are implementations of /art/ concepts and remaining follow WCT.  A =WireCellToolkit= /art/ module is provided in =larwirecell=.  Instances of this class may be used directly or it can serve as a reference example.  Regardless of the module, the WCT processing is delegated to the =WCLS= tool.  It is effectively a copy of the =wire-cell= program but written to be called as an /art/ tool instead of from a command line.  In the section [[Configuration]] below it's shows that it shares most of the same options as =wire-cell=.
+
+The =WCLS= tool is responsible for WCT-side configuration and execution and special LS-side execution.  This latter entails calling the implementations to a LS-specific interface class =IArtEventVisitor=.  These objects likely also implement some other common WCT interface.  Two examples of the roles these objects have are:
+
+- data converter :: translating data products from LS to WCT, or vice versa.
+- service facade :: providing WCT access to some LS service.
+
+Bracketed by these "two (inter)faced" converter objects are the usual "core" components of the WCT job.  Shown in the figure are two frame filters implementing noise filtering and signal process, respectively.  Not shown is the WCT "application" object which is responsible for aggregating the top level components and marshalling data through them (in this example this would be the class =sigproc::Omnibus==).
+
+* Configuration
+  :PROPERTIES:
+  :CUSTOM_ID: wcls-config
+  :END:
+
+The bulk of configuring WCT to run inside of LS is identical to what it would be to run from the =wire-cell= command line.  The only difference pertains to: 
+
+- configuring /art/ and LS components
+- configuring WC/LS converter components
+
+It is recommended, and indeed easy, to structure the WCT configuration so that the parts that depend on the WC/LS layer are factored out from those that depend on LS-side WCT components.
+
+In addition there is the need to provide a family of job-independent WCT configuration "data" files.  These include, for example, the special field-response functions WCT uses.  They are provided by the [[https://github.com/wirecell/wire-cell-data][=wire-cell-data=]] package.
+
+The FHiCL fragment to configure the =WireCellToolkit= /art/ module and its =WCLS= tool for noise filtering and signal processing would look something like:
+
+#+BEGIN_EXAMPLE
+  physics :{
+     producers: {
+        nfsp : {
+           module_type : WireCellToolkit
+           wcls_main: {
+              tool_type: WCLS                             # (1)
+              apps: ["Omnibus"]                           # (2)
+              plugins: ["WireCellGen", "WireCellSigProc", # (3)
+                        "WireCellSio", "WireCellLarsoft"]
+              configs: ["uboone-nf-sp.jsonnet"]           # (4)
+              inputers: ["wclsRawFrameSource",            # (5)
+                         "wclsChannelNoiseDB"]
+              outputers: ["wclsCookedFrameSink"]          # (6)
+              params: {                                   # (7)
+                 detector: "uboone"
+              }
+          }
+        }
+     }
+     # ...
+}
+#+END_EXAMPLE
+
+Notes which refer to the parenthetical numbers:
+
+1) Declare that the configuration applies to an /art/ class tool of type =WCLS=.
+2) The =apps= list defines WCT application objects which are responsible for performing top-level execution.  They are somewhat conceptually equivalent to /art/ modules.
+3) The =plugins= list defines WCT plugin libraries in which WCT may find definitions of component classes.  A plugin name matches its library name with the leading =lib= and trailing extension remove.  The =WireCellLarsoft= plugin contains WC/LS integration components from the =larwirecell= package.
+4) The =configs= list gives an ordered list of all top-level WCT configuration files.  As shown, these are in [[http://jsonnet.org/][Jsonnet]] data tempting but may also be in JSON.  They, like all WCT configuration files (including job-independent configuration "data" files) are found via the =WIRECELL_PATH= environment variable.  More information on WCT configuration is in [[#configuration]].
+5) The =inputers= list =IArtEventVisitor= components that should be called *before* the WCT application objects are executed.  Here, the component which converts from LS's =raw::RawDigit= collections to WCT's =IFrame= instances is included.  The second a channel noise DB object which inherits from WCT's =OmniNoiseChannelDB= and augments the fully but statically configured information with some portion that is taken dynamically from LS services.
+6) The =outputers= list is interpreted identically to =inputers= but its components are executed after the WCT app objects.
+7) The =params= dictionary may define WCT configuration parameters that are referenced by the Jsonnet files that are loaded.  This allows the bulk of the configuration to be made more generic by pushing out meta-parameters to the end user.
+
+WCT components are named in the =apps=, =inputers= and =outputers= parameter lists.  As shown, just their WCT component "type" names are given (these are not necessarily their C++ class names, but are usually similar).   Like all references to components in WCT configuration, these may be specialized by giving an optional "instance" name.  This allows for multiple instances of the same component class which may then be configured uniquely.  Again, more details on WCT configuration are in [[#configuration]].
+
+* Runtime
+  :PROPERTIES:
+  :CUSTOM_ID: wcls-run
+  :END:
+
+Running WCT inside of /art/ entails running /art/ which means setting up a runtime environment in the "Fermilab way".  This requires obtaining binary packages ("UPS products") from Fermilab for your host OS.  If supported, this can be done in a number of ways:
+
+- [[https://cdcvs.fnal.gov/redmine/projects/larsoft/wiki/LArSoft_cvmfs_page][CVMFS mount]] :: With a little setup effort this requires the least ongoing attention.  It is the best method to provide software to clusters, if the facility supports it.  It may not have support for as many OS flavors as other methods
+
+- [[https://cdcvs.fnal.gov/redmine/projects/larsoft/wiki/Installation_procedures][=pullProducts= downloader]] :: The =pullProducts= script is relatively easy to get started with but requires dedicated disk and does not provide any purge method nor local distribution method.  It tends to have available binaries for more OSes than CVMFS. 
+
+** Preparation
+
+Here are the steps to prepare the files in each of the three manners above.
+
+*** CVMFS
+
+If CVMFS is mounted to the client host then there is nothing to do.  Mounting CVMFS is not hard but is not covered here. One starting point is [[https://cernvm.cern.ch/portal/filesystem/quickstart][here]].
+
+*** =pullProducts=
+
+Using =pullProducts= involves these steps. Find desired larsoft version from from [[http://scisoft.fnal.gov/scisoft/bundles/larsoft/][this scisoft directory]] and navigate to the download guide [[http://scisoft.fnal.gov/scisoft/bundles/larsoft/v06_48_00/larsoft-v06_48_00.html][eg the one for LS 6.48.00]] and download the script and run it according to the guide.
+
+#+BEGIN_EXAMPLE
+  $ mkdir -p ~/dev/pp/products
+  $ cd ~/dev/pp
+  $ wget http://scisoft.fnal.gov/scisoft/bundles/tools/pullProducts
+  $ chmod +x pullProducts
+  $ ./pullProducts `pwd`/products u16 larsoft-v06_48_00 s50-e14 prof
+  $ rm *.tar.bz2
+#+END_EXAMPLE
+
+That last =rm= command is optional but cleans up some unneeded tarballs.
+
+** Environment
+
+For CVMFS:
+#+BEGIN_EXAMPLE
+  $ export PRODUCTS=/cvmfs/fermilab.opensciencegrid.org/products/larsoft
+#+END_EXAMPLE
+
+For =pullProducts=, using the same example location as above:
+#+BEGIN_EXAMPLE
+  $ export PRODUCTS=$HOME/dev/pp/products
+#+END_EXAMPLE
+
+Then, 
+
+#+BEGIN_EXAMPLE
+  $ source $PRODUCTS/setup
+  $ setup larsoft v06_48_00 -q e14:prof
+  $ wire-cell --help
+  Options:
+    -h [ --help ]         wire-cell [options] [arguments]
+    -a [ --app ] arg      application component to invoke
+    -c [ --config ] arg   provide a configuration file
+    -p [ --plugin ] arg   specify a plugin as name[:lib]
+    -V [ --ext-str ] arg  specify a Jsonnet external variable=value
+    -P [ --path ] arg     add to JSON/Jsonnet search path
+#+END_EXAMPLE
+
+Note, in general =PRODUCTS= is a ":"-separated list.  Use the proper directory to locate the =setup= script.
+
+
+* Development
+  :PROPERTIES:
+  :CUSTOM_ID: wcls-dev
+  :END:
+
+The challenge to do development on WC/LS integration code is that the =larwirecell= expects WCT to be provided as a released and built UPS product.  Development of course requires constant rebuilding and adding releases and full UPS product building is prohibitive.  The solution is to cheat and produce what looks like an installed =wirecell= UPS product area into which the development WCT code is directly built.
+
+** Prepare development UPS products area
+
+If the =$PRODUCTS= area defined above is writable, it can be used.  Otherwise, make a new one:
+
+#+BEGIN_EXAMPLE
+  $ mkdir ~/dev/myproducts
+  $ cp -a $PRODUCTS/.upsfiles ~/dev/myproducts
+#+END_EXAMPLE
+
+Declare a fictional version (here =v0_7_dev=) for what will become the dev =wirecell= UPS product area:
+
+#+BEGIN_EXAMPLE
+  $ ups declare wirecell v0_7_dev -f Linux64bit+4.4-2.23 -q e14:prof -r wirecell/v0_7_dev -z ~/dev/myproducts  -U ups  -m wirecell.table
+  $ mkdir -p ~/dev/myproducts/wirecell/v0_7_dev/ups
+  $ cp $PRODUCTS/wirecell/v0_6_1/ups/wirecell.table ~/dev/myproducts/wirecell/v0_7_dev/ups/
+#+END_EXAMPLE
+
+If the versions of dependencies listed in the =wirecell.table= file require updating, this is the time to change them and make sure they have UPS corresponding UPS products available.
+
+Now, let UPS know about this new products area for future =ups= incantations by putting it first in =$PRODUCTS= and "setup" this new version.  There's nothing there yet, that's okay.
+
+#+BEGIN_EXAMPLE
+  $ PRODUCTS=~/dev/myproducts:$PRODUCTS
+  $ unsetup wirecell
+  $ setup wirecell v0_7_dev -q e14:prof
+  $ echo $WIRECELL_VERSION 
+  v0_7_dev
+#+END_EXAMPLE
+
+** WCT Source
+
+Independent of the above, and as per usual, get the WCT source:
+
+#+BEGIN_EXAMPLE
+  # if developing for a future release
+  $ git clone --recursive git@github.com:WireCell/wire-cell-build.git wct-0.7.x
+  # if applying fixes for an existing release
+  $ git clone --recursive --branch 0.5.x https://github.com/WireCell/wire-cell-build.git wct-0.5.x
+#+END_EXAMPLE
+
+** Configuring WCT source
+
+The WCT source is configured as usual but leveraging some of the numerous UPS variables to locate dependencies.  
+This can be done manually but a shell script is provided (ca. 0.7.x) to simply things.
+
+#+BEGIN_EXAMPLE
+  $ cd wct-0.7.x/
+  $ ./waftools/wct-configure-for-ups.sh install
+#+END_EXAMPLE
+
+This will configure to install into a local directory =install/=.  To build into the location pointed to by the UPS configuration (specifically =$WIRECELL_FQ_DIR=) use the special "directory" =ups=.   
+
+#+BEGIN_EXAMPLE
+  $ ./waftools/wct-configure-for-ups.sh ups
+#+END_EXAMPLE
+
+#+begin_warning
+Be cautious to have "setup" the new version of the =wirecell= UPS product (=v0_7_dev= in the examples here) as installing will overwrite what exists.
+#+end_warning
+
+** Building and running WCT
+
+As usual, build and install with the provided =wcb=.
+
+#+BEGIN_EXAMPLE
+  $ ./wcb build install
+#+END_EXAMPLE
+
+If the source was configured to install into the UPS product area then everything is ready to run.  If it was installed locally then the usual =PATH= like variables need to be set to point into that installation location.
+
+** Preparing =mrb= development area
+
+To co-develop WCT (in the form of =wirecell= UPS product) and some =mrb= developed package, most likely, =larwirecell= one sets up more or less as usual.
+
+#+BEGIN_EXAMPLE
+  $ export MRB_PROJECT=larsoft
+  $ setup mrb
+  $ mkdir ~/dev/ls-6.48.00
+  $ cd ~/dev/ls-6.48.00
+  $ mrb newDev
+  $ source localProducts_larsoft_v06_48_00_e14_prof/setup
+
+  # if cloning via SSH
+  $ kinit bv@FNAL.GOV
+
+  $ mrb g -b feature/<identifier>_<my_feature> larwirecell
+#+END_EXAMPLE
+
+Be sure to follow branch naming conventions outlined [[https://cdcvs.fnal.gov/redmine/projects/larsoft/wiki/LArSoft_git_Guidelines][here]].  If this fails due to the branch not yet existing, 
+
+#+BEGIN_EXAMPLE
+  $ cd larwirecell
+  $ git flow feature start <identifier>_<my_feature>
+#+END_EXAMPLE
+
+Update the source to use the new version of =wirecell= by editing the =product_deps= file:
+
+#+BEGIN_EXAMPLE
+  $ sed -i 's/^wirecell.*/wirecell v0_7_dev/' ~/dev/ls-6.48.00/srcs/larwirecell/ups/product_deps
+#+END_EXAMPLE
+
+Finish setting up development environment and do a build:
+
+#+BEGIN_EXAMPLE
+  $ cd ~/dev/ls-6.48.00/build_u16.x86_64/
+  $ mrbsetenv 
+  $ mrb build
+#+END_EXAMPLE
+
