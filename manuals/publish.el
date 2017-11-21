@@ -1,8 +1,23 @@
+
+(require 'package)
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(setq package-user-dir "/tmp/elisp")
 (package-initialize)
+(package-install 'org-plus-contrib)
+(package-install 'ox-gfm)
+
+
+
 (require 'org)
 (require 'ox)
 (require 'ox-html)
+(require 'ox-gfm)
+
 (message (format "org-mode version %s" org-version))
+
+(setq org-publish-use-timestamps-flag nil)
 
 (defun wct-html-headline (headline contents info)
   "Transcode headline from org to WCT HTML"
@@ -119,7 +134,7 @@
         ("wct-manual-md"
          :base-directory ".."
          :publishing-directory "."
-         :publishing-function (org-gfm-publish-to-gfm)
+	 :publishing-function (org-gfm-publish-to-gfm)
          :base-extension "does-not-exist"
          :include ("manual.org")
          :recursive nil

@@ -7,10 +7,10 @@ These are online at http://wirecell.github.io/ (and some [[http://www.phy.bnl.go
 
 * Prototype
 
-The Wire Cell *Prototype* documentation is at http://BNLIF.github.io/wire-cell-docs/.
+The Wire Cell *Prototype* documentation is at
+http://BNLIF.github.io/wire-cell-docs/.
 
 * Updating
 
-To update the the WCT manual see the 
-comments at top of [[./manuals/wscript]] and for the news blog see its 
- [[./news/README.org][README]].
+To update the the WCT manual see the comments at top of
+[[./manuals/wscript]] and for the news blog see its [[./news/README.org][README]].
