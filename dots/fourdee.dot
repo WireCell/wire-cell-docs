@@ -1,0 +1,76 @@
+digraph fourdee {
+        graph[splines=true, style=filled];
+        label="Data Flow through WCT App Component ''Fourdee''"
+        node[shape=box];
+        deposrc[label="depo source"];
+        drifter[label="drifter"];
+        depofilter[label="depo filter\n(eg, NumpySaver)"];
+        subgraph cluster_depoiter {
+                graph[label="Depo Iteration",color=seashell2];
+                depoiter[shape=octagon,label="one depo at a time"];
+                ductor[label="Mono Ductor",color=seashell1,style=filled];
+                multi_ductor[label="Multi Ductor",color=seashell1,style=filled];
+                subgraph cluster_frameiter {
+                        graph[label="Frame Iteration", color=seashell];
+                        frameiter[shape=octagon,label="one frame at a time"];
+                        dissonance[label="noise source"];
+                        noisesum[shape=ellipse,label="signal+noise sum"];
+                        digitizer;
+                        outfilter[label="frame filter\n(eg NumpySaver)"];
+                        framesink[label="frame sink"];
+                }
+        }        
+        subgraph cluster_multiductor {
+                graph[label="Multi-ductor Rule-based Switching",color=seashell1];
+                md_rules[shape=ellipse,label="depo --> sub-ductor\nresolution rules\nfrom user config"];
+                ductor_nominal[label="Nominal Ductor"];
+                ductor_uvground[label="UV-grounded Ductor"];
+                ductor_vyground[label="VY-grounded Ductor"];
+                md_buffer[shape=house, label="Frame Buffer"];
+                md_extract[shape=ellipse, label="Maybe\nExtract\nFrames"];
+
+                {rank=same ductor_nominal, ductor_uvground, ductor_vyground}
+                {rank=same md_rules, md_extract}
+        }
+        
+        
+        deposrc->drifter[label="depo"];
+        drifter->depofilter[label="depo queue"];        
+        depofilter->depoiter[label="depo queue"]
+        depoiter->ductor[label="depo",style=dashed];
+        depoiter->multi_ductor[label="depo",style=dashed];
+
+        multi_ductor->md_rules[label="depo",weight=2];
+
+        md_rules->ductor_nominal[];
+        md_rules->ductor_uvground[];
+        md_rules->ductor_vyground[label="depo"];
+
+        ductor_nominal->md_buffer[];
+        ductor_uvground->md_buffer[];
+        ductor_vyground->md_buffer[taillabel="frame\nqueue"];
+
+        md_extract->md_buffer[dir=back,label="frame\nqueue"];
+        md_extract->multi_ductor[label="frame\nqueue"];
+        md_rules->md_extract[weight=2,label="depo"];
+
+        md_extract->ductor_nominal[label=""];
+        md_extract->ductor_uvground[label="flush"];
+        md_extract->ductor_vyground[label=""];
+
+        
+
+        
+        multi_ductor->frameiter[label=""];
+        
+        ductor->frameiter[taillabel="frame\nqueue"];
+        dissonance->noisesum[label="Noise\nvoltage frame"];
+        frameiter->noisesum[label="Signal\nvoltage frame",style=dashed];
+        noisesum->digitizer[taillabel="Sig+Noise\nvoltage frame"];
+        frameiter->digitizer[label="", style=dashed];
+        digitizer->outfilter[taillabel="ADC frame"];
+        frameiter->outfilter[label="", style=dashed];
+        outfilter->framesink;
+        frameiter->framesink[label="", style=dashed];
+        
+}
