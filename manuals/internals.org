@@ -168,14 +168,14 @@ After an implementation of an interface is instantiated and leaves local scope i
 
 Interfaces are used not only to access functionality but the data model for major working data is defined in terms of interfaces inheriting from =WireCell::IData=.  Once an instance is created it is immutable.
 
-Another category of interfaces are those which express the "node" concept.  They inherit from =WireCell::INode=.  These require implementation of an =operator()= method.   Nodes make up the main unit of code.  They are somewhat equivalent to =Algorithm= concept from the Gaudi framework where the =operator()= method is equivalent to Gaudi's =execute()= method.  They also require some additional instrumenting in order to participate in the data flow programming paradigm described below.
+Another important category of interfaces are those which express the "node" concept.  They inherit from =WireCell::INode=.  These require implementation of an =operator()= method which is the entry to one unit of data processing.   Thus nodes make up the main unit of code through which data flow in the application.  They are somewhat equivalent to =Algorithm= concept from the Gaudi framework where the =operator()= method is equivalent to Gaudi's =execute()= method.  As nodes are also /components/ they  require some additional code instrumenting as described in the next section.   In order to participate in the data flow programming paradigm they also have some behavior requirements as described in [[./dfp.org]].  
 
 * Components
   :PROPERTIES:
   :CUSTOM_ID: component-internals
   :END:
 
-Components are implementations an interface which itself inherits from the =WireCell::IComponponent= interface class (this interface class is in =util= as a special case due to dependency issues.  fixme: needs to be solved with a general package depending on both =iface and =util=).  This inheritance follows [[https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern][CRTP]].
+Components are implementations of an interface class which itself inherits from the =WireCell::IComponponent= (this interface class is in =util= as a special case due to dependency issues.  fixme: needs to be solved with a general package depending on both =iface and =util=).  This inheritance follows [[https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern][CRTP]].
 
 Components also must have some tooling added in their implementation file.  This is in the form of a single CPP macro which generates a function used to load a factory that can create and retain instances based on a /type/ name and an /instance/ name.  For =WireCell::Gen::TrackDepos= the tooling looks like:
 

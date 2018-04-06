@@ -1,1 +1,66 @@
-All about data flow programming support in WCT.
+As described in [[./internals.org]] the Wire-Cell toolkit is based on interfaces and the components that implement them and the data processing components are specialized classes called "nodes".  This section describes more about nodes and their execution.
+
+* Node basics
+
+A "node" is a callable class (it implements ~operator()~).  Any data sent in to or received out from the node passes through arguments to that call.  These points of passing are conceptually termed "ports".  A port has an associated direction (input or output).  A port also has an associated data type such that it may only be connected to another node's port of the same data type (and one of opposite direction).  
+
+There is a "zoo" of node interface classes which specify the multiplicity and direction of their ports but leave their types as template parameters.  For example, ~ISourceNode~ specifies exactly one output port of some template type.  Data is passed through a port either as a single atom in the form of a shared pointer to an ~IData~ interface or as a queue (~std::deque~) of such shared pointers.  In the case where a node has multiple input ports they are collected together and passed to the call via a ~std::tuple~.  Similar in the case of multiple output ports.
+
+The zoo of node interfaces include:
+
+- source :: a single output port providing an atom
+- sink :: a single input port accepting an atom
+- function :: a single input and output accepting and providing an atom synchronously.
+- queuedout :: a single atomic input is accepted and a queue is produced which may be empty
+- join :: multiple of atomic inputs, potentially of different types, is accepted and a single output type is produced.
+- fanin :: a fixed number of inputs of the same type are accepted and a single output type is produced.
+- hydra :: multiple queues of inputs and multiple queues of outputs
+
+Typically, an interface from this zoo is further inherited to provide a more specific interface that selects the type of data.  For example, an ~IDepoSource~ is an ~ISourceNode~ which produces objects adhering to the ~IDepo~ data interface.  Finally, a concrete implementation inherits from this intermediate interface, such as in the case of a ~TrackDepos~ which produces ideal line sources of energy depositions.
+
+TBD: describe inheritance hierarchy and type erasure.
+
+* Node execution paradigms
+
+A node does not "know" how it's called and in fact WCT supports multiple node execution paradigms.  
+
+- stand alone :: a node may be executed in isolation as it is, for example, in unit tests which validate its operation.  
+
+- hard-wired aggregation :: nodes may be aggregated into a fixed structure that dictates when each node is called relative to the others and how data is marshaled from the output of one node to the input of another.  Some flexibility may be provided to the user to specify which implementation of a node interface is used for a particular "slot" in the structure.  Hard-wired aggregation is typically implemented as complex, nested loops and may contain intervening inline code that also does data processing outside of an explicit component.
+
+- data flow programming :: (DFP) more reusable generally may be achieved when all processing is encapsulated explicitly in nodes and their execution solely involves marshalling data as opaque objects between node calls.  In DFP the nodes are thus arranged into a /directed acyclic graph/ (DAG) with edges formed by queues which allow data to pass from one node's output to another node's input.
+
+* DFP execution strategies
+
+WCT has abstracted the method of execution of a DFP graph and has implemented (or will implement) a number of execution strategies.  These include:
+
+- single threaded, minimized memory :: WCT component may be executed in a context with limited available RAM per core and a single core such as when they are run as part of a traditional "event processing framework".  The ~pgraph~ package provides a DFP engine which will call nodes in the graph such that the amount of data "in flight" is minimized.  
+
+- multi-threaded, single event :: if multiple cores are available some nodes in the DFP graph may execute in parallel but the graph as a whole only operates on one "event" (by some definition) of data at a time.  A new "event" is started, the graph executes and finally completely drains of data before a new "event" is begun.  A job running in this mode must be allocated N cores and depending on the graph topology some cores will typically run idle.
+
+- multi-threaded pipeline :: to maxim core utilization, this mode will start new "events" while the graph is processing prior events.
+
+* End-of-stream Protocol
+
+While some node types are purely functional in that they do not retain state or otherwise buffer data, others must necessarily do so.  As long as new inputs stream into a node the node can continue to make decisions about what data to stream out.  However, when its input is exhausted it needs a special notification so that it may invalidate or otherwise flush any buffers.  Because an arbitrary DFP graph may execute nodes asynchronously (and possibly in parallel) there is no general out-of-band mechanism to deliver this notification.  Instead, it must come in-band which requires defining a special form for any port type to accept or produce to indicate the current stream has ended.  This form is called the end-of-stream (EOS) marker or object.  Given that an atom of data, as described above, is a (shared) pointer the EOS is marked by a ~nullptr~.  Ports which pass collections of atoms may naturally have empty queues and thus to mark EOS to these ports the EOS object is placed *in* the passed queue.
+
+The EOS marker is meant to provide synchronization but there is no single rule for how it must be interpreted.  Different node types must interpret them differently.  For example, a join node which is meant to merge two streams may receive an EOS on one input stream and then continue to receive objects on the other input streams until they all produce an EOS.
+
+Finally, despite the EOS marker indicating an *end* of stream, stream may actually restart.  A restart has no explicit marker other than new data being passed.  As with the EOS itself, it is up to each node to implement certain behavior when this occurs.  For example, a join node that has received an EOS from one input may continue to drain inputs from other ports as above.  In the case of a stream restart, this join node may continue to ignore inputs which reached EOS until all inputs have passed an EOS marker.
+
+Besides the in-band EOS marker, the call to a node returns a Boolean value and this is to indicate if the call produced any change either in the nodes internal state or in the output.  This out-of-band return is required to notify the engine of activity and avoid deadlock.  For example a source must set its output argument to ~nullptr~ to indicate EOS but from the caller this is indistinguishable from the node simply having no data to produce.  This leads to the main EOS protocol rule:
+
+0) A node's call must return ~false~ when the call produces no state change.  If the call consumes input data, produces output data or changes or internal state relevant to the overall execution then it must return ~true~.
+
+From the point of view of a node receiving input it must follow these rules:
+
+1) A node *must* expect an EOS marker (~nullptr~) to arrive from its input ports.   Failure to check for EOS typically leads to a ~segfault~ as the ~nullptr~ is dereferenced.
+
+2) A node *must* expect non-EOS data follow EOS marker and vice versa.  Failure to process post EOS data can lead to dead lock or may limit the contexts in which the node may be useful.
+
+From the point of view of a node producing output it must follow these rules:
+
+1) A node *must* produce an EOS marker as the final objects to each of its output ports.
+
+2) A node *must* produce output EOS markers that correspond in some way to any EOS markers received on input.
+
