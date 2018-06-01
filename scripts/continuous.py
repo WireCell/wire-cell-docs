@@ -17,6 +17,8 @@ def make_times(t0, dt, mean):
     while True:
         t += random.expovariate(1.0/mean)
         if t >= dt:
+            if len(ret):
+                print (len(ret), ret[0], ret[-1])
             return numpy.asarray(ret);
         ret.append(t0 + t)
 
@@ -24,13 +26,13 @@ def make_times(t0, dt, mean):
 
 class Continuous(object):
 
-    bkglambda = 5.0                 # mean time between "background" depos
-    siglambda = 0.1                 # mean time between "signal" depos
-    intlambda = 10                  # mean time between "interactions"
-    maxtime = 25                    # total extent in time we consider
+    bkgperiod = 5.0             # mean time between "background" depos
+    sigperiod = 0.1             # mean time between "signal" depos
+    intperiod = 10              # mean time between "interactions"
+    maxtime = 25                # total extent in time we consider
 
-    extent = 1                      # physical extent in time
-    readout = 2*extent              # readout extent in time
+    extent = 1.0                # physical extent in time
+    readout = 2.0*extent        # readout extent in time
     boxheight=0.2
 
     def __init__(self, **params):
@@ -39,12 +41,12 @@ class Continuous(object):
 
     def update(self, **params):
         self.__dict__.update(**params)
-        self.bkgt = make_times(0, self.maxtime, self.bkglambda)
-        self.intt = make_times(0, self.maxtime, self.intlambda)
+        self.bkgt = make_times(0, self.maxtime, self.bkgperiod)
+        self.intt = make_times(0, self.maxtime, self.intperiod)
         self.events = list()
         for t in self.intt:
             dt = random.uniform(0, self.extent)
-            times = make_times(t, dt, self.siglambda)
+            times = make_times(t, dt, self.sigperiod)
             if not len(times):
                 continue
             self.events.append(times)
@@ -54,12 +56,13 @@ class Continuous(object):
     def plot(self):
         self.fig.clf()
         ax = self.fig.add_subplot(111)
+        ax.set_xlim([0,self.maxtime])
         ax.set_ylim([-0.5,0.5])
         plt.axis('off')
 
         # continuous readouts
         cros = list()
-        for iro in range(self.maxtime // self.readout):
+        for iro in range(int(self.maxtime / self.readout)):
             left = iro*self.readout
             top = 0.0
             bottom = -self.boxheight
@@ -72,7 +75,7 @@ class Continuous(object):
             ax.plot(evt, [0]*len(evt),
                     linestyle='None',
                     alpha = 0.5,
-                    markersize=10, c=self.ecolors[ievt], marker='o')
+                    markersize=10, c=self.ecolors[ievt], marker='D')
             dttot = evt[-1] - evt[0]
             nro = 1 + int(dttot/self.readout)
             for iro in range(nro):
@@ -96,9 +99,11 @@ class Continuous(object):
 
 
 if '__main__' == __name__:
-    c = Continuous()
+    c = Continuous(bkgperiod=1, intperiod=3, readout=2)
     c.plot()
     c.fig.savefig("continuous.pdf")
+    c.fig.savefig("continuous.png")
+    c.fig.savefig("continuous.svg")
 
         
     

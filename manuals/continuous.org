@@ -1,0 +1,51 @@
+
+* Continuous vs Discontinuous
+
+N.B. this belongs in a simulation section.
+
+The ~Ductor~ and ~MultiDuctor~ simulation components operate in either a "continuous" or "discontinuous" mode.  Each mode has a trade off depending on how the user is providing input depositions.
+
+- continuous :: the ~Ductor~ produces frames starting at the configured "start time" and a regular intervals according to the "readout time" so that all time is spanned and until the input depo stream is exhausted.
+
+- discontinuous :: the ~Ductor~ operates as above but uses the time of the first deposition to determine the "start time".  A corollary of this is that the user may provide subsequent sets of depos, each starting at a different time.
+
+The following figure illustrates the differences as a timeline going from right to left.  
+
+[[file:../scripts/continuous.svg]]
+
+The diamonds represent depos for "signal" interactions.  Every other
+interaction is colored red or blue.  The smaller black dots represent
+depos from some "background" event.
+
+The green boxes represent frames made in "continuous" mode and the
+yellow in "discontinuous" mode.  The "discontinuous" frames assume
+that the "background" depos far from the "signal" depos were not
+provided by the user.  Of course, the user could indeed include these
+backgrounds and then they'd produce frames but the user must group
+them somehow into a set of depos when using "discontinuous" mode.
+
+The trade offs between the two modes:
+
+- continuous mode sometimes reads out "nothing" (although "nothing" may
+  mean "just noise" if that's how the sim is configured)
+
+- continuous mode captures all activity.
+
+- continuous mode will split activity which may be from one depo (or
+  from the depos from one track) when it spans the boundary between
+  two frames.  This can be seen in the second blue set.
+
+- discontinuous mode will "oversample" time if ever the user provides
+  depo sets which are closer in time than one readout.  This can be
+  seen in that the second red set is "too close" to the first blue
+  set.
+
+Which mode is best?  The *continuous* mode is more correct and the *discontinuous* mode may require less CPU.  Some guidelines:
+
+- use continuous mode for simulating full stream running such as for DUNE FD.  Framing must still be done but their readout time may be somewhat arbitrary.  In any case, consumer of the stream of frames must concatenate them.
+
+- use discontinuous mode with care as a way to focus CPU usage on a'priori known regions of interest of time.  Consider to configure the job for a slightly longer readout window than actually desired and then trim the result to avoid edge effects.  Take care to avoid the "oversampling" of time as described above.  Take care of what depo provides the start time.
+
+
+
+
