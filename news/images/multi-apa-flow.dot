@@ -1,0 +1,31 @@
+digraph multiapa {
+        rankdir=LR;
+        
+        node[shape=box];
+        dsrc[label="depo\nsource"];
+        drift[label="drifter\n(VagabondX)"];
+        dfo[label="depo\nfan-out"];
+        d1[label="ductor\nAPA1"];
+        d2[label="ductor\nAPA2"];
+        d3[label="ductor\nAPA3"];
+        d4[label="ductor\nAPA4"];
+        d5[label="ductor\nAPA5"];
+        d6[label="ductor\nAPA6"];
+        ffi[label="frame\nfan-in"];
+
+        nsrc[label="noise\nsource"];
+        fsum[label="frame\nsummer"];
+
+        fsink[label="frame\nsink"];
+        
+        dsrc->drift->dfo;
+        dfo->d1->ffi;
+        dfo->d2->ffi;
+        dfo->d3->ffi;
+        dfo->d4->ffi;
+        dfo->d5->ffi;
+        dfo->d6->ffi;
+        ffi->fsum;
+        nsrc->fsum->fsink;
+
+}

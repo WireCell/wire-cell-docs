@@ -67,3 +67,4 @@ The news (and the [[../manuals][manual]]) deploy into the =wirecell.github.io= g
 
 Now visit http://127.0.0.1:8000/.
 
+See: https://plugins.getnikola.com/v7/orgmode/

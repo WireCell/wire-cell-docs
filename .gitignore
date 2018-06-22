@@ -36,3 +36,4 @@ __pycache__
 cache
 output
 .waf3*
+venv*
