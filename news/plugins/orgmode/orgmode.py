@@ -126,4 +126,6 @@ class CompileOrgmode(PageCompiler):
             if content:
                 fd.write(content)
             else:
-                fd.write('Write your post here.')
+                fd.write('Write your teaser here.')
+                fd.write('\n{{{TEASER_END}}}\n')
+                fd.write('Write remainder here.')                
