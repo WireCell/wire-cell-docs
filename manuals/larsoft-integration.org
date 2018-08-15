@@ -87,23 +87,37 @@ WCT components are named in the =apps=, =inputers= and =outputers= parameter lis
   :CUSTOM_ID: wcls-run
   :END:
 
-Running WCT inside of /art/ entails running /art/ which means setting up a runtime environment in the "Fermilab way".  This requires obtaining binary packages ("UPS products") from Fermilab for your host OS.  If supported, this can be done in a number of ways:
+Running WCT inside of /art/ entails running /art/ which means setting up a runtime environment in the "Fermilab way".  This requires obtaining binary packages ("UPS products") from Fermilab for your host OS.  If supported, this can be done in a number of ways.
 
-- [[https://cdcvs.fnal.gov/redmine/projects/larsoft/wiki/LArSoft_cvmfs_page][CVMFS mount]] :: With a little setup effort this requires the least ongoing attention.  It is the best method to provide software to clusters, if the facility supports it.  It may not have support for as many OS flavors as other methods
+** CVMFS mount
+   :PROPERTIES:
+   :CUSTOM_ID: wcls-run-cvmfs
+   :END:
 
-- [[https://cdcvs.fnal.gov/redmine/projects/larsoft/wiki/Installation_procedures][=pullProducts= downloader]] :: The =pullProducts= script is relatively easy to get started with but requires dedicated disk and does not provide any purge method nor local distribution method.  It tends to have available binaries for more OSes than CVMFS. 
+CVMFS is a way to deliver files (usually ready-to-run binary software
+builds) to a client via HTTP.  If not already available to you (check
+for the existence of [[file:/cvmfs][/cvmfs]]) the system administrator of the host will
+need to provide it.  One starting point is [[https://cernvm.cern.ch/portal/filesystem/quickstart][here]].
 
-** Preparation
+If CVMFS is available to you, start by setting:
+#+BEGIN_EXAMPLE
+  $ export PRODUCTS=/cvmfs/fermilab.opensciencegrid.org/products/larsoft
+#+END_EXAMPLE
 
-Here are the steps to prepare the files in each of the three manners above.
+** Local binaries
+   :PROPERTIES:
+   :CUSTOM_ID: wcls-run-local
+   :END:
 
-*** CVMFS
 
-If CVMFS is mounted to the client host then there is nothing to do.  Mounting CVMFS is not hard but is not covered here. One starting point is [[https://cernvm.cern.ch/portal/filesystem/quickstart][here]].
+It is possible to semi-automatically provide binary software builds
+via the [[https://cdcvs.fnal.gov/redmine/projects/larsoft/wiki/Installation_procedures][=pullProducts= downloader]] script.  This can (and should) be
+exercised without root permissions.  It requires dedicated disk space
+of 10-100 GB.  More OSes are supported with these binaries than are
+available in CVMFS (in particular Ubuntu)
 
-*** =pullProducts=
-
-Using =pullProducts= involves these steps. Find desired larsoft version from from [[http://scisoft.fnal.gov/scisoft/bundles/larsoft/][this scisoft directory]] and navigate to the download guide [[http://scisoft.fnal.gov/scisoft/bundles/larsoft/v06_48_00/larsoft-v06_48_00.html][eg the one for LS 6.48.00]] and download the script and run it according to the guide.
+To prepare a base installation 
+find a desired larsoft version from from [[http://scisoft.fnal.gov/scisoft/bundles/larsoft/][this scisoft directory]] and navigate to the download guide [[http://scisoft.fnal.gov/scisoft/bundles/larsoft/v06_48_00/larsoft-v06_48_00.html][eg the one for LS 6.48.00]] and download the =pullProducts= script and run it according to the guide.  One example:
 
 #+BEGIN_EXAMPLE
   $ mkdir -p ~/dev/pp/products
@@ -113,26 +127,35 @@ Using =pullProducts= involves these steps. Find desired larsoft version from fro
   $ ./pullProducts `pwd`/products u16 larsoft-v06_48_00 s50-e14 prof
   $ rm *.tar.bz2
 #+END_EXAMPLE
-
 That last =rm= command is optional but cleans up some unneeded tarballs.
 
-** Environment
-
-For CVMFS:
-#+BEGIN_EXAMPLE
-  $ export PRODUCTS=/cvmfs/fermilab.opensciencegrid.org/products/larsoft
-#+END_EXAMPLE
-
-For =pullProducts=, using the same example location as above:
 #+BEGIN_EXAMPLE
   $ export PRODUCTS=$HOME/dev/pp/products
 #+END_EXAMPLE
 
-Then, 
+** General
+   :PROPERTIES:
+   :CUSTOM_ID: wcls-run-general
+   :END:
+
+After providing a base software installation in one of the methods
+above and setting =PRODUCTS= continue as:
 
 #+BEGIN_EXAMPLE
   $ source $PRODUCTS/setup
   $ setup larsoft v06_48_00 -q e14:prof
+#+END_EXAMPLE
+
+#+begin_info
+Note, in general =PRODUCTS= can be a ":"-separated list.  If for some reason your must have more than one element in PRODUCTS at this point be sure to use proper directory to locate the =setup= script.
+#+end_info
+
+A simple test to see that the =art= and =wire-cell= programs are now available:
+
+#+BEGIN_EXAMPLE
+  $ art --version
+  art 2.07.03
+
   $ wire-cell --help
   Options:
     -h [ --help ]         wire-cell [options] [arguments]
@@ -143,8 +166,7 @@ Then,
     -P [ --path ] arg     add to JSON/Jsonnet search path
 #+END_EXAMPLE
 
-Note, in general =PRODUCTS= is a ":"-separated list.  Use the proper directory to locate the =setup= script.
-
+With this, the user is ready to run /art/, LArSoft and Wire-Cell.
 
 * Development
   :PROPERTIES:
@@ -154,6 +176,10 @@ Note, in general =PRODUCTS= is a ":"-separated list.  Use the proper directory t
 The challenge to do development on WC/LS integration code is that the =larwirecell= expects WCT to be provided as a released and built UPS product.  Development of course requires constant rebuilding and adding releases and full UPS product building is prohibitive.  The solution is to cheat and produce what looks like an installed =wirecell= UPS product area into which the development WCT code is directly built.
 
 ** Prepare development UPS products area
+   :PROPERTIES:
+   :CUSTOM_ID: wcls-dev-prep-ups
+   :END:
+
 
 If the =$PRODUCTS= area defined above is writable, it can be used.  Otherwise, make a new one:
 
@@ -182,38 +208,59 @@ Now, let UPS know about this new products area for future =ups= incantations by 
   v0_7_dev
 #+END_EXAMPLE
 
-** WCT Source
-
-Independent of the above, and as per usual, get the WCT source:
-
-#+BEGIN_EXAMPLE
-  # if developing for a future release
-  $ git clone --recursive git@github.com:WireCell/wire-cell-build.git wct-0.7.x
-  # if applying fixes for an existing release
-  $ git clone --recursive --branch 0.5.x https://github.com/WireCell/wire-cell-build.git wct-0.5.x
-#+END_EXAMPLE
-
-** Configuring WCT source
-
-The WCT source is configured as usual but leveraging some of the numerous UPS variables to locate dependencies.  
-This can be done manually but a shell script is provided (ca. 0.7.x) to simply things.
-
-#+BEGIN_EXAMPLE
-  $ cd wct-0.7.x/
-  $ ./waftools/wct-configure-for-ups.sh install
-#+END_EXAMPLE
-
-This will configure to install into a local directory =install/=.  To build into the location pointed to by the UPS configuration (specifically =$WIRECELL_FQ_DIR=) use the special "directory" =ups=.   
-
-#+BEGIN_EXAMPLE
-  $ ./waftools/wct-configure-for-ups.sh ups
-#+END_EXAMPLE
-
 #+begin_warning
-Be cautious to have "setup" the new version of the =wirecell= UPS product (=v0_7_dev= in the examples here) as installing will overwrite what exists.
+There will not yet be a code actually installed into the just declared =wirecell= UPS product area.  As a consequence, the above =setup= command will not actually set some important environment variables (in particular =LD_LIBRARY_PATH=).  This is rectified below. 
 #+end_warning
 
+** WCT Source
+   :PROPERTIES:
+   :CUSTOM_ID: wcls-dev-get-source
+   :END:
+
+
+Independent of the above, and as per usual, get the WCT source.  You may wish to get the source in one of two ways:
+
+- Development on the =master= branch, maybe in anticipation of a future release
+
+#+BEGIN_EXAMPLE
+  $ git clone --recursive git@github.com:WireCell/wire-cell-build.git wct-master
+#+END_EXAMPLE
+
+- Bug fixing an existing release branch called =<BRANCH>= (named after major.minor versions like =A.B.x=, eg =0.6.x=)
+
+#+BEGIN_EXAMPLE
+  $ git clone --recursive --branch <BRANCH> \
+    https://github.com/WireCell/wire-cell-build.git wct-<BRANCH>
+#+END_EXAMPLE
+
+#+begin_note
+The exact name for the source directory is up to you.  Below, =wct-src= is used as a placeholder.
+#+end_note
+
+** Configuring WCT source
+   :PROPERTIES:
+   :CUSTOM_ID: wcls-dev-config-source
+   :END:
+
+
+The WCT source is configured in the same manner as it is for any environment.  It must be told where to find the installed dependencies.  When building against UPS products, its environment variables may be used to locate the provided dependencies.  As this is tedious a script is provided to assist this configuration.  It assumes that the calling environment is already properly "setup".
+
+#+begin_warning
+This script configures the source to install WCT into the =wirecell= UPS product area.  This will overwrite any existing files.  Be sure that the environment is properly "setup" and in particular =$WIRECELL_FQ_DIR= is set as intended.
+#+end_warning
+
+
+#+BEGIN_EXAMPLE
+  $ cd wct-src/
+  $ ./waftools/wct-configure-for-ups.sh
+#+END_EXAMPLE
+
+
 ** Building and running WCT
+   :PROPERTIES:
+   :CUSTOM_ID: wcls-build-wct
+   :END:
+
 
 As usual, build and install with the provided =wcb=.
 
@@ -223,7 +270,23 @@ As usual, build and install with the provided =wcb=.
 
 If the source was configured to install into the UPS product area then everything is ready to run.  If it was installed locally then the usual =PATH= like variables need to be set to point into that installation location.
 
+** Fix UPS environment hysteresis 
+   :PROPERTIES:
+   :CUSTOM_ID: ups-hysteresis
+   :END:
+
+
+As warned above, the UPS =setup= command fails to set important variables after a UPS product is "declared" but before any code is installed.  After WCT is installed as above this UPS inadequacy can be rectified by "turning it off and on again":
+
+#+BEGIN_EXAMPLE
+  $ unsetup wirecell
+  $ setup wirecell v0_7_dev -q e14:prof
+#+END_EXAMPLE 
+
 ** Preparing =mrb= development area
+   :PROPERTIES:
+   :CUSTOM_ID: wcls-prep-mrb
+   :END:
 
 To co-develop WCT (in the form of =wirecell= UPS product) and some =mrb= developed package, most likely, =larwirecell= one sets up more or less as usual.
 
@@ -261,4 +324,8 @@ Finish setting up development environment and do a build:
   $ mrbsetenv 
   $ mrb build
 #+END_EXAMPLE
+
+#+begin_info
+If this build fails in CMake with cryptic statements about =SOURCE is required= it likely means that your =wirecell= UPS product environment is broken as warned above.  See section [[Fix UPS environment hysteresis]].
+#+end_info
 

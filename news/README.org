@@ -43,7 +43,7 @@ Notes:
 - Can also answer prompts instead of giving exhaustive command line args.
 - Other source formats are allowed other than =orgmode=.
 - Edit the resulting file to add content.
-- Try to reuse tags (=grep tags posts/*=)
+- Try to reuse tags.  Use =grep tags posts/*= or check https://wirecell.github.io/news/categories/
 
 * Deployment
 
