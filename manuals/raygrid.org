@@ -1,4 +1,6 @@
-The ~RayGrid~ namespace holds some optimized calculations for things related to Wire-Cell's name.  
+#+title: WCT Ray Grid and Clustering
+#+LATEX_HEADER: \usepackage{svg}
+
 
 * Introduction
 
@@ -37,7 +39,9 @@ WCT provides tiling classes and function in ~namespace RayGrid~ which are highly
 
 The exploitation of translational symmetry allows for a frugal indexing mechanism to be constructed and queried.  This provides fast calculation of the ray crossings and if they are contained by a strip.  The former becomes an array lookup with a couple multiplies and additions and the latter becomes simply an array lookup[fn:orgho].
 
+
 [fn:orgho] This latter optimization idea came from a Wire-Cell student at BNL, Orgho Anoronyo Neogi.
+
 
 This indexing machinery is described.  First, a *ray* is physically defined in terms of its two endpoints and logically by an index $i$ which enumerates the rays in order as they span their plane.  The pair of rays $i={0,1}$ correspond to the "first" wire in the plane (ie, the wire that has a WCT wire-in-plane number of 0).  Negative ray indices are allowed (indices are ~int~) but may not be considered valid in all contexts.  
 
@@ -54,7 +58,7 @@ Finally, it was recognized that this formalism can be carried to the second crit
 For the first step, the pitch location in layer $n$ for a crossing or ray $i$ in layer $l$ and ray $j$ in layer $m$ is a tensor $P^{lmn}_{ij} = (r^{lm}_{ij} - c^n) \cdot \hat{p}^n$ where $c^n$ and $\hat{p}^n$ are defined as above.  Expanding one gets  $P^{lmn}_{ij} = r^{lm}_{00}\cdot \hat{p}^n + jw^{lm} \cdot \hat{p}^n + iw^{ml} \cdot \hat{p}^n - c^n \cdot \hat{p}^n$.  Given the tensor symmetries, one can express more simply this as: $P^{lmn}_{ij} = ja^{lmn} + ia^{mln} + b^{lmn}$.  The tensors $a$ and $b$ are now scalar valued, $a$ is not symmetric under a transpose of $l$ and $m$ and $b$ is.  Both have undefined diagonals.  That is, $l, m, n$ must be mutually unique.  
 
 For each time slice and each layer, an activity array is prepared.  It assigns the amount of integrated signal above threshold in each channel to each of their associated wires in the layer.  This array is indexed by the wire-in-plane index, or equivalently by the lower bound ray associated with wire.  Thus, finally, the crossing point of ray $i$ from layer $l$ and ray $j$ from layer $m$ is within the strip of layer $n$ identified by the index
-$I^{lmn}_ij} = floor(P^{lmn}_{ij}/p^n)$ where $p^n$ is the pitch magnitude of layer $n$.  This index can be applied to the activity array for layer $n$ to immediately determine if the crossing point should be considered to bound an active region in the tiling.
+$I^{lmn}_{ij} = floor(P^{lmn}_{ij}/p^n)$ where $p^n$ is the pitch magnitude of layer $n$.  This index can be applied to the activity array for layer $n$ to immediately determine if the crossing point should be considered to bound an active region in the tiling.
 
 * Implementation
 
