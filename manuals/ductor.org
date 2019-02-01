@@ -1,0 +1,86 @@
+* Induced Charge Waveforms
+
+N.B. this belongs in a simulation section.
+
+** Ductor
+
+The core part of the WCT signal simulation is the ~Ductor~.  This
+component calculates induced charge (collection channel charge is also
+induced charge).  It performs a convolution of the individual 2D
+Gaussian charge distributions of the depositions and the field
+response functions.  The space of the convolution is in the
+longitudinal drift time and the transverse spacial coordinate
+orthogonal to the drift and to the wires.  The charge distribution is
+defined on the "response plane" near the wire planes and where the
+field response drift paths and functions originate.  Each slice of the
+charge distribution is associated with a drift path (actually
+interpolated between the two nearest paths) and the associated field
+response for each nearby wire is incremented to each wire's waveform.
+
+To perform this convolution, the ~Ductor~ instance needs to know a set
+of wires (wire segments) which are sensitive to an input deposition.
+Each wire is defined in terms of an associated electronics channel
+number and the wire segment endpoints expressed in the same Cartesian
+space as is the deposition.  
+
+It is up to the caller to assure the depositions and wires are
+expressed consistently.  A deposition will be discarded if it falls
+outside the projection along the drift direction of the active area of
+the APA wires.[fn:1]
+
+[nf:1] Even if expressed in a consistent coordinate system, any
+deposition which is created between the "response plane" and a wire
+plane is ignored.  To properly handle such close charge requires the
+use of truncated response functions.
+
+
+** MultiDuctor
+
+The ~MultiDuctor~ class implements the same ~IDuctor~ interface as
+~Ductor~.  Instead of directly consuming depositions in order to
+produce their contributions to waveforms, it delegates the work to
+other instances of ~IDuctor~.  The association is performed through a
+mapping of a set of rules applied to the deposition and a per-rule
+~IDuctor~.  Rules may be written in terms of any attribute of a
+deposition, including location, amount of charge or information about
+their particle origin.
+
+** Multiple APAs
+
+In ProtoDUNE-SP and DUNE SP FD there are multiple APAs making up the
+detector.  Some simulation may use a single APA but in general
+multiple APAs need to be considered.  WCT supports two approaches to
+handle simulation of multiple APAs which are here called /monolithic/
+and /replicated/.
+
+*** Monolithic APAs
+
+The /monolithic/ configuration treats the multiple APAs as if each is
+an individual instance embedded in a global coordinate systems.  For $N$
+APAs, $N$ sets of wires (defined in $N$ ~AnodePlane~ instances) are
+needed.  A ~MultiDuctor~ can then route and delegate each deposition
+to associated of $N$ ~Ductor~ instances.
+
+*** Replicated APAs
+
+The /replicated/ configuration uses a single, logical APA with a
+single, associated wire set, ~Ductor~ instance and $N$ spatial and
+channel transformation functions.  The spatial transformations are
+used to map a deposition into the single coordinate system of the
+logical APA while the channel transform function is used to map the
+resulting waveform channels which are originally produced in terms of
+the logical APA back to the desired APA out of the set of N.  
+
+*** Choosing a Mutli-APA approach
+
+The trade off in these two approaches is memory vs processing.  As the
+number $N$ of APAs increases the /monolithic/ approach may require
+prohibitive amount of memory.  The /replicated/ approach requires a
+modest amount of additional processing to apply the transformations
+but also uses fewer (nominally one) ~Ductor~ instance which must
+process the depositions for each logical APA in serial.  A hybrid
+approach of $n$ ~Ductor~ instances to process $N$ APAs might be
+developed to allow for some parallelism.
+
+
+
