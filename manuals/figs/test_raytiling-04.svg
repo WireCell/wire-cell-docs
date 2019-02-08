@@ -1,11 +1,11 @@
 <?xml version="1.0" standalone="no"?>
 <svg width="567.429" height="539.997" viewBox="0 0 567.429 539.997" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
 <title>
-./build/util/test_rayclustering-03.svg
+/home/bviren/dev/wct/src/build/util/test_raytiling-04.svg
 </title>
 <desc>
 Creator: ROOT Version 6.12/06
-CreationDate: Fri Feb  1 17:51:11 2019</desc>
+CreationDate: Thu Feb  7 16:12:01 2019</desc>
 <defs>
 </defs>
 <rect x="0.5" y="0" width="566.929" height="539.497" fill="white"/>
@@ -378,4 +378,4 @@ CreationDate: Fri Feb  1 17:51:11 2019</desc>
 <circle cx="346.349" cy="148.472" r="4.57201"/>
 </g>
 <path d="M94.9882,89.9162h 377.953v 359.665h -377.953v -359.665z" fill="none" stroke="black"/>
-<text xml:space="preserve" x="110.228" y="25.1461" fill="black" font-size="26.1704" font-family="Helvetica">100 points, 1 clusters, 2 strips</text></svg>
+<text xml:space="preserve" x="123.944" y="25.1461" fill="black" font-size="26.1704" font-family="Helvetica">100 points, 1 blobs, 2 strips</text></svg>

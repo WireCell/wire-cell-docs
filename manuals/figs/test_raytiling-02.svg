@@ -1,11 +1,11 @@
 <?xml version="1.0" standalone="no"?>
 <svg width="567.429" height="539.997" viewBox="0 0 567.429 539.997" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
 <title>
-./build/util/test_rayclustering-07.svg
+/home/bviren/dev/wct/src/build/util/test_raytiling-02.svg
 </title>
 <desc>
 Creator: ROOT Version 6.12/06
-CreationDate: Fri Feb  1 17:51:11 2019</desc>
+CreationDate: Thu Feb  7 16:12:01 2019</desc>
 <defs>
 </defs>
 <rect x="0.5" y="0" width="566.929" height="539.497" fill="white"/>
@@ -377,28 +377,37 @@ CreationDate: Fri Feb  1 17:51:11 2019</desc>
 <g stroke="white" stroke-width="1" fill="none">
 <circle cx="346.349" cy="148.472" r="4.57201"/>
 </g>
-<path d="M94.9882,169.25l 69.5337, 38.2028l -69.5337, 38.2028v -76.4056z" fill="none" stroke="black"/>
-<path d="M94.9882,141.829l 69.5337, -38.2028l 94.4882, 51.9131l -75.5906, 41.5305l -88.4313, -48.5854v -6.65543z" fill="none" stroke="black"/>
-<path d="M183.42,93.2439l 6.05685, -3.32772l 75.5906, -5.68434e-14v 48.1859l -81.6474, -44.8582z" fill="none" stroke="black"/>
-<path d="M283.965,89.9162h 6.78395l 43.8521, 24.093l -50.6361, 27.8202l 1.7053e-13, -51.9131z" fill="none" stroke="black"/>
-<path d="M94.9882,266.421l 88.4313, -48.5854l 81.6474, 44.8582l -1.13687e-13, 14.1098l -157.238, 86.3887l -12.8408, -7.05491v -89.7164z" fill="none" stroke="black"/>
-<path d="M265.067,172.977l 1.13687e-13, 68.9512l -62.7498, -34.4756l 62.7498, -34.4756z" fill="none" stroke="black"/>
-<path d="M283.965,169.25l 88.4313, 48.5854l -75.5906, 41.5305l -12.8408, -7.05491v -83.061z" fill="none" stroke="black"/>
-<path d="M353.498,124.392l 24.9545, 13.7103v 62.2958l -81.6474, -44.8582l 56.6929, -31.1479z" fill="none" stroke="black"/>
-<path d="M397.35,148.485l 50.6361, 27.8202l -50.6361, 27.8202l 2.27374e-13, -55.6403z" fill="none" stroke="black"/>
-<path d="M240.112,435.871l 24.9545, -13.7103l 1.13687e-13, 27.4207h -5.68434e-14l -24.9545, -13.7103z" fill="none" stroke="black"/>
-<path d="M283.965,411.778l 94.4882, -51.9131l 2.84217e-13, 89.7164h -94.4882l -1.7053e-13, -37.8033z" fill="none" stroke="black"/>
-<path d="M397.35,349.482l 12.8408, -7.05491l 43.8521, 24.093l -1.7053e-13, 76.4056l -12.1137, 6.65543h -44.5792l -2.27374e-13, -100.099z" fill="none" stroke="black"/>
-<path d="M454.043,318.334l 1.7053e-13, 27.4207l -24.9545, -13.7103l 24.9545, -13.7103z" fill="none" stroke="black"/>
 <path d="M567.429,89.9162h -566.929v 359.665h 566.929z" fill="black" fill-opacity="0.10" stroke-opacity="0.10"/>
+<path d="M567.429,89.9162h -566.929" fill="none" stroke="black"/>
+<path d="M0.5,449.581h 566.929" fill="none" stroke="black"/>
 <path d="M472.941,539.497v -539.497h -377.953v 539.497z" fill="black" fill-opacity="0.10" stroke-opacity="0.10"/>
+<path d="M472.941,539.497v -539.497" fill="none" stroke="black"/>
+<path d="M94.9882,0v 539.497" fill="none" stroke="black"/>
 <path d="M0.5,297.569l 541.611, -297.569h -188.976l -352.635, 193.742z" fill="#ff0000" fill-opacity="0.10" stroke-opacity="0.10"/>
+<path d="M0.5,297.569l 541.611, -297.569" fill="none" stroke="#ff0000"/>
+<path d="M353.135,0l -352.635, 193.742" fill="none" stroke="#ff0000"/>
 <path d="M0.5,422.16l 566.929, -311.479v -103.826l -566.929, 311.479z" fill="#ff0000" fill-opacity="0.10" stroke-opacity="0.10"/>
+<path d="M0.5,422.16l 566.929, -311.479" fill="none" stroke="#ff0000"/>
+<path d="M567.429,6.85517l -566.929, 311.479" fill="none" stroke="#ff0000"/>
 <path d="M278.271,539.497l 289.158, -158.867v -124.592l -515.93, 283.459z" fill="#ff0000" fill-opacity="0.10" stroke-opacity="0.10"/>
+<path d="M278.271,539.497l 289.158, -158.867" fill="none" stroke="#ff0000"/>
+<path d="M567.429,256.038l -515.93, 283.459" fill="none" stroke="#ff0000"/>
 <path d="M567.429,539.497v -110.681l -566.929, -311.479v 186.887l 428.225, 235.273z" fill="#00ff00" fill-opacity="0.10" stroke-opacity="0.10"/>
+<path d="M567.429,428.816l -566.929, -311.479" fill="none" stroke="#00ff00"/>
+<path d="M0.5,304.224l 428.225, 235.273" fill="none" stroke="#00ff00"/>
 <path d="M567.429,324.989l -566.929, -311.479v 83.061l 566.929, 311.479z" fill="#00ff00" fill-opacity="0.10" stroke-opacity="0.10"/>
+<path d="M567.429,324.989l -566.929, -311.479" fill="none" stroke="#00ff00"/>
+<path d="M0.5,96.5716l 566.929, 311.479" fill="none" stroke="#00ff00"/>
 <path d="M567.429,241.928l -440.339, -241.928h -113.386l 553.725, 304.224z" fill="#00ff00" fill-opacity="0.10" stroke-opacity="0.10"/>
+<path d="M567.429,241.928l -440.339, -241.928" fill="none" stroke="#00ff00"/>
+<path d="M13.7043,0l 553.725, 304.224" fill="none" stroke="#00ff00"/>
 <path d="M265.067,539.497v -539.497h -170.079v 539.497z" fill="#0000ff" fill-opacity="0.10" stroke-opacity="0.10"/>
+<path d="M265.067,539.497v -539.497" fill="none" stroke="#0000ff"/>
+<path d="M94.9882,0v 539.497" fill="none" stroke="#0000ff"/>
 <path d="M378.453,539.497v -539.497h -94.4882v 539.497z" fill="#0000ff" fill-opacity="0.10" stroke-opacity="0.10"/>
+<path d="M378.453,539.497v -539.497" fill="none" stroke="#0000ff"/>
+<path d="M283.965,0v 539.497" fill="none" stroke="#0000ff"/>
 <path d="M454.043,539.497v -539.497h -56.6929v 539.497z" fill="#0000ff" fill-opacity="0.10" stroke-opacity="0.10"/>
-<text xml:space="preserve" x="103.37" y="26.2891" fill="black" font-size="25.3477" font-family="Helvetica">100 points, 13 clusters, 65 strips</text></svg>
+<path d="M454.043,539.497v -539.497" fill="none" stroke="#0000ff"/>
+<path d="M397.35,0v 539.497" fill="none" stroke="#0000ff"/>
+<text xml:space="preserve" x="184.523" y="26.2891" fill="black" font-size="26.1704" font-family="Helvetica">Points and Strips</text></svg>
