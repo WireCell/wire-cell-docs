@@ -1,11 +1,11 @@
 <?xml version="1.0" standalone="no"?>
 <svg width="567.429" height="539.997" viewBox="0 0 567.429 539.997" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
 <title>
-/home/bviren/dev/wct/src/build/util/test_raytiling-04.svg
+./build/util/test_raytiling-09.svg
 </title>
 <desc>
 Creator: ROOT Version 6.12/06
-CreationDate: Thu Feb  7 16:12:01 2019</desc>
+CreationDate: Fri Mar 29 15:13:29 2019</desc>
 <defs>
 </defs>
 <rect x="0.5" y="0" width="566.929" height="539.497" fill="white"/>
@@ -377,5 +377,30 @@ CreationDate: Thu Feb  7 16:12:01 2019</desc>
 <g stroke="white" stroke-width="1" fill="none">
 <circle cx="346.349" cy="148.472" r="4.57201"/>
 </g>
-<path d="M94.9882,89.9162h 377.953v 359.665h -377.953v -359.665z" fill="none" stroke="black"/>
-<text xml:space="preserve" x="123.944" y="25.1461" fill="black" font-size="26.1704" font-family="Helvetica">100 points, 1 blobs, 2 strips</text></svg>
+<path d="M397.35,349.482l 12.8408, -7.05491l 43.8521, 24.093l -1.7053e-13, 76.4056l -12.1137, 6.65543h -44.5792l -2.27374e-13, -100.099z" fill="none" stroke="black" stroke-width="2"/>
+<text xml:space="preserve" x="399.408" y="405.766" fill="black" font-size="15.3485" font-family="Helvetica" font-style="oblique">s11:3.7</text>
+<path d="M454.043,318.334l 1.7053e-13, 27.4207l -24.9545, -13.7103l 24.9545, -13.7103z" fill="none" stroke="#ff0000" stroke-width="2"/>
+<text xml:space="preserve" x="432.555" y="337.186" fill="#ff0000" font-size="15.3485" font-family="Helvetica" font-style="oblique">s12</text>
+<path d="M240.112,435.871l 24.9545, -13.7103l 1.13687e-13, 27.4207h -5.68434e-14l -24.9545, -13.7103z" fill="none" stroke="black" stroke-width="2"/>
+<text xml:space="preserve" x="238.244" y="444.628" fill="black" font-size="15.3485" font-family="Helvetica" font-style="oblique">s9:4.9</text>
+<path d="M265.067,172.977l 1.13687e-13, 68.9512l -62.7498, -34.4756l 62.7498, -34.4756z" fill="none" stroke="#ff0000" stroke-width="2"/>
+<text xml:space="preserve" x="234.815" y="212.598" fill="#ff0000" font-size="15.3485" font-family="Helvetica" font-style="oblique">s5</text>
+<path d="M283.965,169.25l 88.4313, 48.5854l -75.5906, 41.5305l -12.8408, -7.05491v -83.061z" fill="none" stroke="#ff0000" stroke-width="2"/>
+<text xml:space="preserve" x="299.967" y="229.743" fill="#ff0000" font-size="15.3485" font-family="Helvetica" font-style="oblique">s6</text>
+<path d="M183.42,93.2439l 6.05685, -3.32772l 75.5906, -5.68434e-14v 48.1859l -81.6474, -44.8582z" fill="none" stroke="black" stroke-width="2"/>
+<text xml:space="preserve" x="205.097" y="107.442" fill="black" font-size="15.3485" font-family="Helvetica" font-style="oblique">s2:5.1</text>
+<path d="M283.965,89.9162h 6.78395l 43.8521, 24.093l -50.6361, 27.8202l 1.7053e-13, -51.9131z" fill="none" stroke="#ff0000" stroke-width="2"/>
+<text xml:space="preserve" x="288.537" y="114.3" fill="#ff0000" font-size="15.3485" font-family="Helvetica" font-style="oblique">s3</text>
+<path d="M94.9882,169.25l 69.5337, 38.2028l -69.5337, 38.2028v -76.4056z" fill="none" stroke="black" stroke-width="2"/>
+<text xml:space="preserve" x="82.7962" y="212.598" fill="black" font-size="15.3485" font-family="Helvetica" font-style="oblique">s0:14.9</text>
+<path d="M353.498,124.392l 24.9545, 13.7103v 62.2958l -81.6474, -44.8582l 56.6929, -31.1479z" fill="none" stroke="black" stroke-width="2"/>
+<text xml:space="preserve" x="326.256" y="160.02" fill="black" font-size="15.3485" font-family="Helvetica" font-style="oblique">s7:18.6</text>
+<path d="M94.9882,141.829l 69.5337, -38.2028l 94.4882, 51.9131l -75.5906, 41.5305l -88.4313, -48.5854v -6.65543z" fill="none" stroke="black" stroke-width="2"/>
+<text xml:space="preserve" x="114.8" y="153.162" fill="black" font-size="15.3485" font-family="Helvetica" font-style="oblique">s1:19.0</text>
+<path d="M397.35,148.485l 50.6361, 27.8202l -50.6361, 27.8202l 2.27374e-13, -55.6403z" fill="none" stroke="black" stroke-width="2"/>
+<text xml:space="preserve" x="392.55" y="181.737" fill="black" font-size="15.3485" font-family="Helvetica" font-style="oblique">s8:5.3</text>
+<path d="M94.9882,266.421l 88.4313, -48.5854l 81.6474, 44.8582l -1.13687e-13, 14.1098l -157.238, 86.3887l -12.8408, -7.05491v -89.7164z" fill="none" stroke="black" stroke-width="2"/>
+<text xml:space="preserve" x="125.087" y="300.61" fill="black" font-size="15.3485" font-family="Helvetica" font-style="oblique">s4:15.1</text>
+<path d="M283.965,411.778l 94.4882, -51.9131l 2.84217e-13, 89.7164h -94.4882l -1.7053e-13, -37.8033z" fill="none" stroke="black" stroke-width="2"/>
+<text xml:space="preserve" x="301.11" y="422.911" fill="black" font-size="15.3485" font-family="Helvetica" font-style="oblique">s10:10.4</text>
+<text xml:space="preserve" x="109.085" y="25.1461" fill="black" font-size="26.1704" font-family="Helvetica">100 points, 13 blobs, 65 strips</text></svg>

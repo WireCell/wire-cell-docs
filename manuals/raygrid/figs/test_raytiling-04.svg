@@ -1,11 +1,11 @@
 <?xml version="1.0" standalone="no"?>
 <svg width="567.429" height="539.997" viewBox="0 0 567.429 539.997" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
 <title>
-/home/bviren/dev/wct/src/build/util/test_raytiling-06.svg
+./build/util/test_raytiling-04.svg
 </title>
 <desc>
 Creator: ROOT Version 6.12/06
-CreationDate: Thu Feb  7 16:12:01 2019</desc>
+CreationDate: Fri Mar 29 15:13:29 2019</desc>
 <defs>
 </defs>
 <rect x="0.5" y="0" width="566.929" height="539.497" fill="white"/>
@@ -377,12 +377,5 @@ CreationDate: Thu Feb  7 16:12:01 2019</desc>
 <g stroke="white" stroke-width="1" fill="none">
 <circle cx="346.349" cy="148.472" r="4.57201"/>
 </g>
-<path d="M94.9882,169.25l 69.5337, 38.2028l -69.5337, 38.2028v -76.4056z" fill="none" stroke="black"/>
-<path d="M94.9882,148.485v -6.65543l 69.5337, -38.2028l 94.4882, 51.9131l -75.5906, 41.5305l -88.4313, -48.5854z" fill="none" stroke="black"/>
-<path d="M183.42,93.2439l 6.05685, -3.32772l 101.272, -5.68434e-14l 43.8521, 24.093l -56.6929, 31.1479l -94.4882, -51.9131z" fill="none" stroke="black"/>
-<path d="M94.9882,266.421l 88.4313, -48.5854l 94.4882, 51.9131l -170.079, 93.4436l -12.8408, -7.05491v -89.7164z" fill="none" stroke="black"/>
-<path d="M202.317,207.453l 75.5906, -41.5305l 94.4882, 51.9131l -75.5906, 41.5305l -94.4882, -51.9131z" fill="none" stroke="black"/>
-<path d="M296.805,155.54l 56.6929, -31.1479l 94.4882, 51.9131l -56.6929, 31.1479l -94.4882, -51.9131z" fill="none" stroke="black"/>
-<path d="M410.191,342.427l 62.7498, 34.4756l -5.68434e-14, 55.6403l -31.0113, 17.0381h -176.863l -24.9545, -13.7103l 170.079, -93.4436z" fill="none" stroke="black"/>
-<path d="M472.941,307.951l 5.68434e-14, 48.1859l -43.8521, -24.093l 43.8521, -24.093z" fill="none" stroke="black"/>
-<text xml:space="preserve" x="117.086" y="25.1461" fill="black" font-size="26.1704" font-family="Helvetica">100 points, 8 blobs, 32 strips</text></svg>
+<path d="M94.9882,89.9162h 377.953v 359.665h -377.953v -359.665z" fill="none" stroke="black" stroke-width="2"/>
+<text xml:space="preserve" x="123.944" y="25.1461" fill="black" font-size="26.1704" font-family="Helvetica">100 points, 1 blobs, 2 strips</text></svg>

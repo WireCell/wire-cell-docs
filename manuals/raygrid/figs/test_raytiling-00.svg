@@ -1,11 +1,11 @@
 <?xml version="1.0" standalone="no"?>
 <svg width="567.429" height="539.997" viewBox="0 0 567.429 539.997" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
 <title>
-/home/bviren/dev/wct/src/build/util/test_raytiling-00.svg
+./build/util/test_raytiling-00.svg
 </title>
 <desc>
 Creator: ROOT Version 6.12/06
-CreationDate: Thu Feb  7 16:12:01 2019</desc>
+CreationDate: Fri Mar 29 15:13:29 2019</desc>
 <defs>
 </defs>
 <rect x="0.5" y="0" width="566.929" height="539.497" fill="white"/>
@@ -91,25 +91,25 @@ CreationDate: Thu Feb  7 16:12:01 2019</desc>
 <g stroke="black" stroke-width="1" fill="none">
 <circle cx="115.736" cy="269.749" r="4.57201"/>
 </g>
-<text xml:space="preserve" x="90.7972" y="274.321" fill="black" font-size="10.399" font-family="Helvetica" font-style="oblique">00</text>
-<text xml:space="preserve" x="90.7972" y="262.891" fill="black" font-size="10.399" font-family="Helvetica" font-style="oblique">01</text>
-<text xml:space="preserve" x="83.9392" y="269.749" fill="black" font-size="15.3485" font-family="Helvetica" font-style="oblique">r</text>
-<text xml:space="preserve" x="137.66" y="252.604" fill="#ff0000" font-size="10.399" font-family="Helvetica" font-style="oblique">01</text>
-<text xml:space="preserve" x="125.087" y="259.462" fill="#ff0000" font-size="15.3485" font-family="Helvetica" font-style="oblique">w</text>
-<text xml:space="preserve" x="127.373" y="291.466" fill="#0000ff" font-size="10.399" font-family="Helvetica" font-style="oblique">10</text>
-<text xml:space="preserve" x="114.8" y="298.324" fill="#0000ff" font-size="15.3485" font-family="Helvetica" font-style="oblique">w</text>
+<text xml:space="preserve" x="80.5102" y="280.036" fill="black" font-size="10.399" font-family="Helvetica" font-style="oblique">00</text>
+<text xml:space="preserve" x="80.5102" y="268.606" fill="black" font-size="10.399" font-family="Helvetica" font-style="oblique">01</text>
+<text xml:space="preserve" x="73.6521" y="274.321" fill="black" font-size="15.3485" font-family="Helvetica" font-style="oblique">r</text>
+<text xml:space="preserve" x="125.087" y="260.605" fill="#ff0000" font-size="10.399" font-family="Helvetica" font-style="oblique">01</text>
+<text xml:space="preserve" x="112.514" y="266.32" fill="#ff0000" font-size="15.3485" font-family="Helvetica" font-style="oblique">w</text>
+<text xml:space="preserve" x="114.8" y="299.467" fill="#0000ff" font-size="10.399" font-family="Helvetica" font-style="oblique">10</text>
+<text xml:space="preserve" x="102.227" y="305.182" fill="#0000ff" font-size="15.3485" font-family="Helvetica" font-style="oblique">w</text>
 <g stroke="black" stroke-width="1" fill="black">
 <circle cx="383.739" cy="235.769" r="4.57201"/>
 </g>
-<text xml:space="preserve" x="400.551" y="240.03" fill="black" font-size="10.399" font-family="Helvetica" font-style="oblique">ij</text>
-<text xml:space="preserve" x="400.551" y="228.6" fill="black" font-size="10.399" font-family="Helvetica" font-style="oblique">01</text>
-<text xml:space="preserve" x="393.693" y="235.458" fill="black" font-size="15.3485" font-family="Helvetica" font-style="oblique">r</text>
+<text xml:space="preserve" x="391.407" y="244.603" fill="black" font-size="10.399" font-family="Helvetica" font-style="oblique">ij</text>
+<text xml:space="preserve" x="391.407" y="233.172" fill="black" font-size="10.399" font-family="Helvetica" font-style="oblique">01</text>
+<text xml:space="preserve" x="384.549" y="240.03" fill="black" font-size="15.3485" font-family="Helvetica" font-style="oblique">r</text>
 <path d="M115.736,269.749l 173.382, -95.2588" fill="none" stroke="#ff0000"/>
 <path d="M115.736,269.749l 173.382, 95.2588" fill="none" stroke="#0000ff"/>
 <path d="M115.736,281.075l 183.69, -100.922" fill="none" stroke="#ff0000"/>
 <path d="M115.736,258.422l 183.69, 100.922" fill="none" stroke="#0000ff"/>
-<text xml:space="preserve" x="297.681" y="147.447" fill="#ff0000" font-size="10.399" font-family="Helvetica" font-style="oblique">0</text>
-<text xml:space="preserve" x="288.537" y="154.305" fill="#ff0000" font-size="15.3485" font-family="Helvetica" font-style="oblique">p</text>
+<text xml:space="preserve" x="289.68" y="153.162" fill="#ff0000" font-size="10.399" font-family="Helvetica" font-style="oblique">0</text>
+<text xml:space="preserve" x="280.536" y="160.02" fill="#ff0000" font-size="15.3485" font-family="Helvetica" font-style="oblique">p</text>
 <path d="M115.736,269.749l 10.3078, -5.66325" fill="none" stroke="#ff0000" stroke-width="2"/>
 <path d="M121.462,263.988l 4.5814, 0.097166l -2.37485, 3.91903" fill="none" stroke="#ff0000" stroke-width="2"/>
 <path d="M115.736,269.749l 10.3078, 5.66325" fill="none" stroke="#0000ff" stroke-width="2"/>
@@ -120,9 +120,9 @@ CreationDate: Thu Feb  7 16:12:01 2019</desc>
 <path d="M216.439,322.462l 2.37485, 3.91903l -4.5814, 0.097166" fill="none" stroke="#0000ff" stroke-width="2"/>
 <path d="M218.814,326.381l 164.925, -90.612" fill="none" stroke="#ff0000" stroke-width="2"/>
 <path d="M379.157,235.672l 4.5814, 0.097166l -2.37485, 3.91903" fill="none" stroke="#ff0000" stroke-width="2"/>
-<text xml:space="preserve" x="192.524" y="337.186" fill="#0000ff" font-size="10.399" font-family="Helvetica" font-style="oblique">10</text>
-<text xml:space="preserve" x="176.522" y="345.187" fill="#0000ff" font-size="15.3485" font-family="Helvetica" font-style="oblique">iw</text>
-<text xml:space="preserve" x="318.255" y="292.609" fill="#ff0000" font-size="10.399" font-family="Helvetica" font-style="oblique">01</text>
-<text xml:space="preserve" x="301.11" y="300.61" fill="#ff0000" font-size="15.3485" font-family="Helvetica" font-style="oblique">jw</text>
+<text xml:space="preserve" x="177.665" y="345.187" fill="#0000ff" font-size="10.399" font-family="Helvetica" font-style="oblique">10</text>
+<text xml:space="preserve" x="161.663" y="353.188" fill="#0000ff" font-size="15.3485" font-family="Helvetica" font-style="oblique">iw</text>
+<text xml:space="preserve" x="303.396" y="299.467" fill="#ff0000" font-size="10.399" font-family="Helvetica" font-style="oblique">01</text>
+<text xml:space="preserve" x="286.251" y="307.468" fill="#ff0000" font-size="15.3485" font-family="Helvetica" font-style="oblique">jw</text>
 <path d="M383.739,367.839v -196.181" fill="none" stroke="black"/>
 <text xml:space="preserve" x="232.529" y="26.2891" fill="black" font-size="26.1704" font-family="Helvetica">Ray Grid</text></svg>

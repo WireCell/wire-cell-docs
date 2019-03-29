@@ -1,11 +1,11 @@
 <?xml version="1.0" standalone="no"?>
 <svg width="567.429" height="539.997" viewBox="0 0 567.429 539.997" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
 <title>
-/home/bviren/dev/wct/src/build/util/test_raytiling-02.svg
+./build/util/test_raytiling-05.svg
 </title>
 <desc>
 Creator: ROOT Version 6.12/06
-CreationDate: Thu Feb  7 16:12:01 2019</desc>
+CreationDate: Fri Mar 29 15:13:29 2019</desc>
 <defs>
 </defs>
 <rect x="0.5" y="0" width="566.929" height="539.497" fill="white"/>
@@ -377,37 +377,7 @@ CreationDate: Thu Feb  7 16:12:01 2019</desc>
 <g stroke="white" stroke-width="1" fill="none">
 <circle cx="346.349" cy="148.472" r="4.57201"/>
 </g>
-<path d="M567.429,89.9162h -566.929v 359.665h 566.929z" fill="black" fill-opacity="0.10" stroke-opacity="0.10"/>
-<path d="M567.429,89.9162h -566.929" fill="none" stroke="black"/>
-<path d="M0.5,449.581h 566.929" fill="none" stroke="black"/>
-<path d="M472.941,539.497v -539.497h -377.953v 539.497z" fill="black" fill-opacity="0.10" stroke-opacity="0.10"/>
-<path d="M472.941,539.497v -539.497" fill="none" stroke="black"/>
-<path d="M94.9882,0v 539.497" fill="none" stroke="black"/>
-<path d="M0.5,297.569l 541.611, -297.569h -188.976l -352.635, 193.742z" fill="#ff0000" fill-opacity="0.10" stroke-opacity="0.10"/>
-<path d="M0.5,297.569l 541.611, -297.569" fill="none" stroke="#ff0000"/>
-<path d="M353.135,0l -352.635, 193.742" fill="none" stroke="#ff0000"/>
-<path d="M0.5,422.16l 566.929, -311.479v -103.826l -566.929, 311.479z" fill="#ff0000" fill-opacity="0.10" stroke-opacity="0.10"/>
-<path d="M0.5,422.16l 566.929, -311.479" fill="none" stroke="#ff0000"/>
-<path d="M567.429,6.85517l -566.929, 311.479" fill="none" stroke="#ff0000"/>
-<path d="M278.271,539.497l 289.158, -158.867v -124.592l -515.93, 283.459z" fill="#ff0000" fill-opacity="0.10" stroke-opacity="0.10"/>
-<path d="M278.271,539.497l 289.158, -158.867" fill="none" stroke="#ff0000"/>
-<path d="M567.429,256.038l -515.93, 283.459" fill="none" stroke="#ff0000"/>
-<path d="M567.429,539.497v -110.681l -566.929, -311.479v 186.887l 428.225, 235.273z" fill="#00ff00" fill-opacity="0.10" stroke-opacity="0.10"/>
-<path d="M567.429,428.816l -566.929, -311.479" fill="none" stroke="#00ff00"/>
-<path d="M0.5,304.224l 428.225, 235.273" fill="none" stroke="#00ff00"/>
-<path d="M567.429,324.989l -566.929, -311.479v 83.061l 566.929, 311.479z" fill="#00ff00" fill-opacity="0.10" stroke-opacity="0.10"/>
-<path d="M567.429,324.989l -566.929, -311.479" fill="none" stroke="#00ff00"/>
-<path d="M0.5,96.5716l 566.929, 311.479" fill="none" stroke="#00ff00"/>
-<path d="M567.429,241.928l -440.339, -241.928h -113.386l 553.725, 304.224z" fill="#00ff00" fill-opacity="0.10" stroke-opacity="0.10"/>
-<path d="M567.429,241.928l -440.339, -241.928" fill="none" stroke="#00ff00"/>
-<path d="M13.7043,0l 553.725, 304.224" fill="none" stroke="#00ff00"/>
-<path d="M265.067,539.497v -539.497h -170.079v 539.497z" fill="#0000ff" fill-opacity="0.10" stroke-opacity="0.10"/>
-<path d="M265.067,539.497v -539.497" fill="none" stroke="#0000ff"/>
-<path d="M94.9882,0v 539.497" fill="none" stroke="#0000ff"/>
-<path d="M378.453,539.497v -539.497h -94.4882v 539.497z" fill="#0000ff" fill-opacity="0.10" stroke-opacity="0.10"/>
-<path d="M378.453,539.497v -539.497" fill="none" stroke="#0000ff"/>
-<path d="M283.965,0v 539.497" fill="none" stroke="#0000ff"/>
-<path d="M454.043,539.497v -539.497h -56.6929v 539.497z" fill="#0000ff" fill-opacity="0.10" stroke-opacity="0.10"/>
-<path d="M454.043,539.497v -539.497" fill="none" stroke="#0000ff"/>
-<path d="M397.35,0v 539.497" fill="none" stroke="#0000ff"/>
-<text xml:space="preserve" x="184.523" y="26.2891" fill="black" font-size="26.1704" font-family="Helvetica">Points and Strips</text></svg>
+<path d="M94.9882,141.829l 94.4882, -51.9131h 188.976l -283.465, 155.739v -103.826z" fill="none" stroke="black" stroke-width="2"/>
+<path d="M416.248,89.9162l 56.6929, -5.68434e-14l -5.68434e-14, 72.6784l -377.953, 207.653v -103.826l 321.26, -176.505z" fill="none" stroke="black" stroke-width="2"/>
+<path d="M472.941,307.951v 124.592l -31.0113, 17.0381h -226.772l 257.783, -141.63z" fill="none" stroke="black" stroke-width="2"/>
+<text xml:space="preserve" x="123.944" y="25.1461" fill="black" font-size="26.1704" font-family="Helvetica">100 points, 3 blobs, 9 strips</text></svg>

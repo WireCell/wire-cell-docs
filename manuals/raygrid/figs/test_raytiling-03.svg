@@ -1,11 +1,11 @@
 <?xml version="1.0" standalone="no"?>
 <svg width="567.429" height="539.997" viewBox="0 0 567.429 539.997" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
 <title>
-/home/bviren/dev/wct/src/build/util/test_raytiling-05.svg
+./build/util/test_raytiling-03.svg
 </title>
 <desc>
 Creator: ROOT Version 6.12/06
-CreationDate: Thu Feb  7 16:12:01 2019</desc>
+CreationDate: Fri Mar 29 15:13:29 2019</desc>
 <defs>
 </defs>
 <rect x="0.5" y="0" width="566.929" height="539.497" fill="white"/>
@@ -377,7 +377,4 @@ CreationDate: Thu Feb  7 16:12:01 2019</desc>
 <g stroke="white" stroke-width="1" fill="none">
 <circle cx="346.349" cy="148.472" r="4.57201"/>
 </g>
-<path d="M94.9882,141.829l 94.4882, -51.9131h 188.976l -283.465, 155.739v -103.826z" fill="none" stroke="black"/>
-<path d="M416.248,89.9162l 56.6929, -5.68434e-14l -5.68434e-14, 72.6784l -377.953, 207.653v -103.826l 321.26, -176.505z" fill="none" stroke="black"/>
-<path d="M472.941,307.951v 124.592l -31.0113, 17.0381h -226.772l 257.783, -141.63z" fill="none" stroke="black"/>
-<text xml:space="preserve" x="123.944" y="25.1461" fill="black" font-size="26.1704" font-family="Helvetica">100 points, 3 blobs, 9 strips</text></svg>
+<text xml:space="preserve" x="123.944" y="25.1461" fill="black" font-size="26.1704" font-family="Helvetica">100 points, 1 blobs, 1 strips</text></svg>
