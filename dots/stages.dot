@@ -1,0 +1,119 @@
+// Major processing stages showing options
+digraph stages {
+        subgraph cluster_ls {
+                node[shape=ellipse,color=black]
+                rawdigit[label="RawDigit\n(full det, dense)"]
+                simdepos[label="depos\n(full det)"]
+                recobwire[label="recob::Wire\n(full det, sparse)"]
+                sqpoints[label="space charge\npoints ??"]
+                label="LS Data Objects"
+        }
+        subgraph cluster_wcls {
+                node[shape=box,color=black]
+                framesource
+                deposource
+                rawframesink
+                sigframesink
+                clustersink
+                label="WC/LS components"
+        }
+        subgraph cluster_wct {
+                node[shape=box]                
+
+                trackdepos[label="ideal track\ndepo generator"]
+
+                drifter
+                depobagger[label="depo bagger\n(collect depos)"]
+                depofanout[label="depo fanout"]
+                depotrans[label="ductor\n(det signal sim)"]
+                reframe[label="reframer"]
+                addnoise[label="add noise"]
+                digitize[label="digitzer"]
+                
+                deposplat[label="fast sim+sp"]
+                          
+
+                framefanout
+                chansel[label="channel selector"]
+                nf[label="noise filtering"]
+                sp[label="signal processing"]
+                rawframefanin[label="frame fanin"]
+                sigframefanin[label="frame fanin"]
+
+                slicer[label="slicer\n(frame to N slices)"]
+                slicefanout[label="slice fanout"]
+                tiling[label="tiling\n(one face)"]
+                blobsync[label="blobset merge\n(two faces to one set)"]
+                clustering[label="clustering\n(collect slices)"]
+                grouping[label="grouping"]
+                solving[label="solving"]
+                stitching[label="stitching??"]
+                projecting[label="projecting??"]
+
+                node[shape=ellipse,color=red]
+                // sim objects
+
+                origdepo[label="orig depo\n(global)"]
+                drifteddepo[label="drifted depo\n(global)"]
+                deposet[label="depo set\n(global)"]
+                simsparseapaframe[label="sparse sim frame\n(per APA)"];
+                simapaframe[label="dense sim frame\n(per APA)"]
+                snapaframe[label="sig/noise frame\n(per APA)"]
+                // digiapaframe (rawapaframe)
+
+                // sim or data
+                node[shape=ellipse,color=blue]
+                rawfullframe[label="raw frame\n(full det)"]
+                rawapaframe[label="raw frame\n(per APA)"]
+                nfapaframe[label="noise filtered\n(per APA)"]
+                sigapaframe[label="signals\n(per APA)"]
+
+                sigfullframe[label="signals\n(full det)"]
+
+                // img
+                node[shape=ellipse,color=purple]
+                slices[label="slices\n(per APA)"]
+                blob[label="blob set\n(per face/slice)"]
+                blobset[label="blob set\n(per APA/slice)"]
+                channelcluster[label="s-b-w-c graph\n(per APA/frame)"]
+                measurecluster[label="s-b-m graph\n(blob q=0)\n(per APA/frame)"]
+                solvedcluster[label="s-b-m graph\n(with blob q)\n(per APA/frame)"]
+                stitchedcluster[label="s-b-m graph\n(stitched)\n(whole det/frame)"]
+
+                label="WCT component and data interfaces"
+        }
+
+        subgraph cluster_notes {
+                s[label="s\nslice"]
+                b[label="b\nblob"]
+                w[label="w\nwire"]
+                c[label="c\nchannel"]
+                m[label="m\nmeasurement"]
+
+                s->b->w->c->m[dir=none]
+                b->m[dir=none]
+                label="note: two types of\ncluster graph elements:\nfrom clustering: s-b-w-c\nfrom grouping: s-b-m"
+        }
+
+        simdepos->deposource->origdepo
+        trackdepos->origdepo
+        origdepo->deposplat->sigapaframe
+        origdepo->drifter->drifteddepo->depobagger->depofanout->deposet->depotrans->simsparseapaframe->reframe;
+        reframe->simapaframe->addnoise->snapaframe->digitize->rawapaframe
+
+
+        rawdigit->framesource->rawfullframe->framefanout->chansel->rawapaframe->nf->nfapaframe->sp->sigapaframe;
+        
+        sigapaframe->sigframefanin->sigfullframe->sigframesink->recobwire
+        rawapaframe->rawframefanin->rawfullframe->rawframesink->rawdigit
+
+        sigapaframe->slicer->slicefanout->slices->tiling->blob->blobsync->blobset->clustering->channelcluster
+        channelcluster->grouping->measurecluster->solving->solvedcluster
+
+        stitchedcluster->stitching->solvedcluster[dir=back]
+
+        sigapaframe->projecting->solvedcluster[dir=back]
+
+        solvedcluster->clustersink->sqpoints
+
+}

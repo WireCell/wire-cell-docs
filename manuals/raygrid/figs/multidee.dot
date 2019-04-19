@@ -1,0 +1,35 @@
+digraph multidee {
+        rankdir=LR;
+        depo0[label="Depos\n(initial)"];
+        depoD[label="Depos\n(drifted)"];
+        frameNom[label="Frame\n(nominal)"];
+        frameUVs[label="Frame\n(uv-short)"];
+        frameVYs[label="Frame\n(vy-short)"];
+        frameT[label="Frame\n(truth)"];
+        frameNoise[label="Frame\n(noise)"];
+
+        node[shape=box];
+
+        ds[label="DepoSource"];
+        drifter[label="Drifter"];
+        fanout[label="DepoFanout"];
+
+        mductor[label="MultiDuctor"];
+
+        ductorT[label="Ductor\n(truth)"];
+        ns[label="NoiseSource"];
+        out[label="MultiFrameSink"];
+
+        ds->depo0->drifter->depoD->fanout->mductor;
+        mductor->frameNom;
+        mductor->frameUVs;
+        mductor->frameVYs;
+        fanout->ductorT->frameT;
+        ns->frameNoise;
+        
+        frameNom->out;
+        frameUVs->out;
+        frameVYs->out;
+        frameT->out;
+        frameNoise->out;
+}

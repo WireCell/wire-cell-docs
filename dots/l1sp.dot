@@ -1,0 +1,44 @@
+digraph l1sp {
+        graph[nodesep=0.8];
+        
+        node[color=blue];
+        cfgsel[label="L1SP selection channels\nand tags, eg [raw], [gauss]"]
+        cfgl1sp[label="L1SP cfg parameters,\ntags for ADC/signal traces\nsmear array"];
+        cfgjoin[label="frame merge map\nf1 to f2 eg:\n[raw] to [raw]\n[l1sp] to [gauss]\n[l1sp] to [wiener]"];
+        
+
+        node[shape=record,color=black];
+        magsrc[label="{{MagnifySource}|{frame with tags:\n[raw], [gauss], [wiener]}}"];
+
+        fsplit[label="{{<in0>frame (tags: all)}|{FrameSplitter (ISplitNode)\n(duplicate 1 in to 2 outs)}|{<out0>frame1 (tags: all)|<out1>frame2 (tags: all)}}",color=red];
+
+        chsel[label="{{<in0>frame (tags:all)}|{ChannelSelector (IFrameFilter)\n(pass along L1SP chans)}|{<out0>frame (tags:[raw], [gauss])}}",color=red];
+
+        l1sp[label="{{<in0>frame (tags:[raw], [gauss])}|{L1SP (IFrameFilter)\n(process raw+gauss tags)}|{<out0>frame (tags:[l1sp])}}",color=red];
+        magout[label="{{<in0>frame}|{MagnifySink}}"];
+        
+        fjoin[label="{{<in0>frame1 (tags: [l1sp])|<in1>frame2 (tags:all)}|{FrameMerger\n(replace f1 into f2)}|{<out0>frame (tags: all)}}",color=red];
+
+
+
+        magsrc->fsplit;
+        fsplit:out0->chsel;
+        
+        fsplit:out1-> fjoin:in1;
+        chsel -> l1sp;
+
+        l1sp ->  fjoin:in0;
+        fjoin:out0 -> magout:in0;
+
+
+        edge[style=dashed];
+        
+        cfgsel->chsel:w;
+        
+        cfgl1sp->l1sp:w;
+        
+        cfgjoin->fjoin:w;
+
+        
+}
+

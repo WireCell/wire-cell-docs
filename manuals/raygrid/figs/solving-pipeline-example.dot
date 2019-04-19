@@ -1,0 +1,36 @@
+digraph junk {
+        rankdir=LR
+
+        // processes
+        node[shape=box]
+        facesplit[label="SliceFanout"]
+        tilingA[label="GridTiling"]
+        tilingB[label="GridTiling"]
+        blobsetjoin[label="BlobSetSync"]
+        clustering[label="BlobClustering"]
+        grouping[label="BlobGrouping"]
+        solving[label="BlogSolving"]
+        solving2[label="BlogRefinedSolving"]
+
+        // data
+        node[shape=ellipse]
+        slices[label="ISlice"]
+        slicesA[label="ISlice"]
+        slicesB[label="ISlice"]
+        blobsetA[label="IBlobSet\n(face 0)"]
+        blobsetB[label="IBlobSet\n(face 1)"]
+        blobsetAB[label="IBlobSet\n(2 faces)"]
+        blobgraph[label="ICluster\n(s-b-w-c graph)"]
+        groupgraph[label="ICluster\n(s-b-m graph)"]
+        refinedgroupgraph[label="ICluster\n(s-b-m graph)"]
+        solvedgroupgraph[label="ICluster\n(s-b-m graph)"]
+
+        slices->facesplit->slicesA->tilingA->blobsetA
+        facesplit->slicesB->tilingB->blobsetB
+        blobsetA->blobsetjoin
+        blobsetB->blobsetjoin->blobsetAB->clustering->blobgraph->grouping
+        refinedgroupgraph->solving2->solvedgroupgraph->solving->groupgraph->grouping[dir=back];
+
+}
+        
+        

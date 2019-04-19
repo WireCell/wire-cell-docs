@@ -1,0 +1,13 @@
+graph cgt {
+        graph[layout=circo,nodesep=2]
+             
+
+        node[shape=circle,fixedsize=true,width=1.2]
+        c[label="\"c\"\nchannel"]
+        w[label="\"w\"\nwire"]
+        b[label="\"b\"\nblob"]
+
+        edge[dir=both]
+        c--w
+        b--w
+}

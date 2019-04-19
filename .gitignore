@@ -21,7 +21,6 @@ auto
 *.vrb
 *.nav
 *.html
-*.pdf
 *.tex
 sitemap.org
 theindex.inc
@@ -39,3 +38,5 @@ output
 venv*
 svg-inkscape
 ltximg
+cut
+latexmk-out

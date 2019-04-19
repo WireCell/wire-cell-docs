@@ -1,0 +1,42 @@
+digraph l1sp {
+        node[color=blue];
+        chans[label="L1SP channels"]
+        cfg[label="L1SP cfg\n(smear array, etc)"];
+        
+
+        node[shape=box,color=black];
+        rawin[label="MagnifySource:raw"];
+        siging[label="MagnifySource:gauss"];
+        siginw[label="MagnifySource:weiner"];
+        rawsel[label="ChannelSelector:raw\n(pass along L1SP chans)",color=red];
+        sigsel[label="ChannelSelector:gauss\n(pass along L1SP chans)",color=red];
+        fjoinin[label="FrameJoiner:input\n(aggregate/tag)",color=red];
+        fjoinout[label="FrameJoiner:output\n(aggregate/tag)",color=red];
+        l1sp[label="L1SP\n(frame filter)",color=red];
+        fsplit[label="FrameSplitter\n(duplicate)",color=red];
+        gjoin[label="FrameJoiner:gauss\n(replace/tag)",color=red];
+        wjoin[label="FrameJoiner:weiner\n(replace/tag)",color=red];
+        magout[label="MagnifySink"];
+        
+
+        rawin->rawsel->fjoinin;
+        siging->sigsel->fjoinin;
+        fjoinin->l1sp->fsplit;
+        
+        fsplit->wjoin;
+        siginw->wjoin;
+        siging->gjoin;
+        fsplit->gjoin;
+
+        wjoin->fjoinout;
+        gjoin->fjoinout;
+        fjoinout->magout;
+
+        edge[style=dashed];
+        
+        chans->rawsel;
+        chans->sigsel;
+        
+        cfg->l1sp;
+        
+}
