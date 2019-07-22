@@ -1,0 +1,247 @@
+* Install wire-cell with singularity container
+  :PROPERTIES:
+  :CUSTOM_ID: install-wire-cell-with-singularity-container
+  :END:
+
+This is a markdown version of Wenqiang's google doc
+[[https://docs.google.com/document/d/1cXfifmLUx6UroHm66uJRzG1PEYJ7jLFNRA1LDZ7y5ls/edit][here]],
+with some updates that works on July 10th 2019 for the following
+versions:
+
+-  larsoft version: =v08_24_00=
+-  larwirecell version: =v08_05_08=
+-  wirecell: =v0_12_3=
+-  Check
+   [[https://cdcvs.fnal.gov/redmine/projects/larwirecell/repository][this]]
+   for the latest version
+
+** A) singularity and cvmfs
+   :PROPERTIES:
+   :CUSTOM_ID: a-singularity-and-cvmfs
+   :END:
+
+Install singlularity and cvmfs following
+[[https://github.com/WireCell/wire-cell-singularity][this]].
+
+** B) wcdo
+   :PROPERTIES:
+   :CUSTOM_ID: b-wcdo
+   :END:
+
+This step-by-setp guide showed an example of using wcdo. For more, refer
+[[https://github.com/WireCell/wire-cell-singularity/blob/master/wcdo.org][this]]
+
+*** B.1) Obain and configure a singularity image
+    :PROPERTIES:
+    :CUSTOM_ID: b.1-obain-and-configure-a-singularity-image
+    :END:
+
+#+BEGIN_SRC sh
+    mkdir -p ~/wcdo/example
+    cd ~/wcdo/example
+    wcdo.sh init
+    wcdo.sh wct
+    wcdo.sh get-image sl7krb
+    wcdo.sh make-project myproj sl7krb
+    vim wcdo-local-myproj.rc
+    wcdo_mrb_project_name="larsoft"
+    wcdo_mrb_project_version="v08_24_00"
+    wcdo_mrb_project_quals="e17:prof"
+    ./wcdo-myproj.sh
+#+END_SRC
+
+*** B.2) install ups and wcdo
+    :PROPERTIES:
+    :CUSTOM_ID: b.2-install-ups-and-wcdo
+    :END:
+
+*in the singularity container*
+
+#+BEGIN_SRC sh
+    source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh
+    path-prepend $wcdo_ups_products PRODUCTS
+    wcdo-mrb-init
+#+END_SRC
+
+output
+
+#+BEGIN_SRC sh
+    IMPORTANT: You must type
+        source /wcdo/src/mrb/localProducts_larsoft_v08_24_00_e17_prof/setup
+    NOW and whenever you log in
+#+END_SRC
+
+chekcout a feature branch
+
+#+BEGIN_SRC sh
+    wcdo-mrb-add-source larwirecell v080508 v08_05_08
+#+END_SRC
+
+output
+
+#+BEGIN_SRC sh
+    Summary of actions:
+    - A new branch 'feature/v080508' was created, based on 'v080508-branch'
+    - You are now on branch 'feature/v080508'
+
+    Now, start committing on your feature. When done, use:
+
+         git flow feature finish v080508
+#+END_SRC
+
+*build wirecell*
+
+#+BEGIN_SRC sh
+    wcdo-ups-declare wirecell wctdev
+    setup wirecell wctdev -q e17:prof
+
+    wcdo-ups-wct-configure-source
+    ./wcb -p --notests install
+#+END_SRC
+
+output
+
+#+BEGIN_SRC sh
+    Checking for program 'rootcint'          : /cvmfs/larsoft.opensciencegrid.org/products/root/v6_12_06a/Linux64bit+3.10-2.17-e17-prof/bin/rootcint 
+    Checking for program 'rlibmap'           : not found 
+    Checking for header Rtypes.h             : yes 
+    Checking for program 'dpkg-architecture' : not found 
+    Checking boost includes                  : 1.66.0 
+    ...
+    Waf: Entering directory `/wcdo/src/wct/build'
+    Building: apps, cfg, gen, iface, img, pgraph, ress, root, sigproc, sio, util
+    [206/206][100%][-][======================>][13m28.686s]
+    Waf: Leaving directory `/wcdo/src/wct/build'
+    'install' finished successfully (13m28.745s)
+#+END_SRC
+
+#+BEGIN_SRC sh
+    setup wirecell wctdev -q e17:prof
+    wcdo-wirecell-path default
+#+END_SRC
+
+*Build larwirecell*
+
+#+BEGIN_SRC sh
+    vim /wcdo/src/mrb/srcs/larwirecell/ups/product_deps
+    (change: wirecell v0_10_5 ==> wirecell wctdev)
+
+    mrbsetenv
+    mrb i
+    mrbslp
+#+END_SRC
+
+*** B.3) Test: you should see similar results
+    :PROPERTIES:
+    :CUSTOM_ID: b.3-test-you-should-see-similar-results
+    :END:
+
+*test 1*
+
+#+BEGIN_SRC sh
+    ups active | grep wirecell
+#+END_SRC
+
+output
+
+#+BEGIN_SRC sh
+    larwirecell v08_05_08 -f Linux64bit+4.18-2.17 -q e17:prof -z /wcdo/src/mrb/localProducts_larsoft_v08_24_00_e17_prof
+    wirecell wctdev -f Linux64bit+4.18-2.17-sl7-6 -q e17:prof -z /wcdo/lib/ups
+#+END_SRC
+
+*test 2*
+
+#+BEGIN_SRC sh
+    ups list -aK+ wirecell | tail
+#+END_SRC
+
+output
+
+#+BEGIN_SRC sh
+    "wirecell" "v0_12_3" "Linux64bit+2.6-2.12" "c2:debug" "" 
+    "wirecell" "v0_12_3" "Darwin64bit+18" "c2:debug" "" 
+    "wirecell" "v0_12_3" "Linux64bit+2.6-2.12" "e17:prof" "" 
+    "wirecell" "v0_12_3" "Linux64bit+2.6-2.12" "debug:e17" "" 
+    "wirecell" "v0_12_3" "Darwin64bit+17" "c2:prof" "" 
+    "wirecell" "v0_12_3" "Darwin64bit+17" "c2:debug" "" 
+    "wirecell" "v0_12_3" "Linux64bit+3.10-2.17" "debug:e17:py3" "" 
+    "wirecell" "v0_12_3" "Linux64bit+3.10-2.17" "e17:prof:py3" "" 
+    "wirecell" "v0_12_3" "Linux64bit+3.10-2.17" "c2:prof:py3" "" 
+    "wirecell" "v0_12_3" "Linux64bit+3.10-2.17" "c2:debug:py3" ""
+#+END_SRC
+
+So far, you should have a workable singularity with wirecell + larsoft.
+
+*** examples of wcdo-local-myproj.rc
+    :PROPERTIES:
+    :CUSTOM_ID: examples-of-wcdo-local-myproj.rc
+    :END:
+
+*Haiwang's*
+
+#+BEGIN_SRC sh
+    #!/bin/bash
+
+    # This is a local wcdo rc file for project myproj.
+    # It was initally generated but is recomended for customizing by you, dear user.
+    # It is included at the end of the main RC files.
+        
+    # These are optional but required if wcdo-mrb-* commands are to be used.
+    wcdo_mrb_project_name="larsoft"
+    wcdo_mrb_project_version="v08_24_00"
+    wcdo_mrb_project_quals="e17:prof"
+
+    # Additional variables may be usefully set since this file was 
+    # first generated.  
+
+    # It is perhaps useful to end this with some command to be called 
+    # on each entry to the contaner.
+    # source /cvmfs/larsoft.opensciencegrid.org/products/setup
+
+
+    bind '"\e[A":history-search-backward' #PageUp
+    bind '"\e[B":history-search-forward' #PageDown
+    set autolist
+    set autoexpand
+    export PS1='[s]$(pwd)\n$'
+    alias ls='ls --color=auto'
+    alias ll='ls -lh'
+#+END_SRC
+
+*Wenqiang's*
+
+#+BEGIN_SRC sh
+    #!/bin/bash
+
+    # This is a local wcdo rc file for project myproj.
+    # It was initally generated but is recomended for customizing by you, dear user.
+    # It is included at the end of the main RC files.
+        
+    # These are optional but required if wcdo-mrb-* commands are to be used.
+    wcdo_mrb_project_name="larsoft"
+    wcdo_mrb_project_version="v07_13_00"
+    wcdo_mrb_project_quals="e17:prof"
+
+    # Additional variables may be usefully set since this file was
+    # first generated.  
+
+    # It is perhaps useful to end this with some command to be called 
+    # on each entry to the contaner.
+    # source /cvmfs/larsoft.opensciencegrid.org/products/setup
+    source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh
+    setup dunetpc v07_13_00 -q e17:prof
+    path-prepend $wcdo_ups_products PRODUCTS
+    wcdo-mrb-init
+    wcdo-ups-init
+
+    setup wirecell wctdev -q e17:prof
+    export WIRECELL_PATH=/wcdo/src/wct/cfg:/wcdo/share/wirecell/data
+    #optional: wcdo-wirecell-path default
+    echo WIRECELL_PATH=$WIRECELL_PATH
+
+    mrbsetenv
+    mrbslp
+    export FHICL_FILE_PATH=$WIRECELL_PATH:$FHICL_FILE_PATH
+#+END_SRC
+
+Now please enjoy it: ./wcdo-myproj.sh
