@@ -20,6 +20,8 @@
 
 This section of the manual gives brief guidance on how to do various things with WCT.
 
+#+INCLUDE: "howto/install-wirecell-sigularity.org" :minlevel 2
+
 ** Run =wire-cell= command line program
    :PROPERTIES:
    :CUSTOM_ID: run-wire-cell-cli
