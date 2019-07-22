@@ -1,4 +1,4 @@
-#+TITLE Wire Cell Documentation
+#+TITLE: Wire Cell Documentation
 
 * Toolkit
 
