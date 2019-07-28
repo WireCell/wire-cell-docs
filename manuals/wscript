@@ -12,8 +12,8 @@
 # cd wire-cell-docs/manuals
 
 ## 3) Configure to install into local web site
-# ./waf-1.9.9 configure --prefix=~/public_html/wirecell.github.io
-# ./waf-1.9.9 -j1 build install
+# ./waf configure --prefix=~/public_html/wirecell.github.io
+# ./waf -j1 build install
 
 ## 4) Check results are good, commit and push
 # cd ~/public_html
