@@ -1,5 +1,7 @@
 
 ;; Note, load install.el (once) if you do not have the required emacs packages
+(require 'package)
+(package-initialize)
 
 (require 'org)
 (require 'ox)
