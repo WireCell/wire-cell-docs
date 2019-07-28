@@ -5,8 +5,11 @@
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 ;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(setq package-user-dir "/tmp/elisp")
+(package-initialize)
 (package-refresh-contents)
 (package-install 'org-plus-contrib)
+;;(package-install 'org)
 (package-install 'ox-gfm)
 
 (require 'org)

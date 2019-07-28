@@ -82,7 +82,7 @@ def build(bld):
 
     # EPUB
     epubsrc = [ bld.path.find_or_declare("manual.md"),
-                bld.path.find_or_declare("epub-title.txt")]
+                bld.path.find_resource("epub-title.txt")]
     epubsrc += figsrc
     bld(source=epubsrc, target="manual.epub",
             rule=epubify,
