@@ -12,3 +12,5 @@ before_install:
 
 script:
   - docker run brettviren/wct-documentation ./update.sh
+
+
