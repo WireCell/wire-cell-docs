@@ -11,6 +11,6 @@ before_install:
   - docker pull brettviren/wct-documentation
 
 script:
-  - docker run brettviren/wct-documentation ./update.sh
+  - docker run brettviren/wct-documentation ./anonbuild.sh
 
 
