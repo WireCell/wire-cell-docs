@@ -1,8 +1,8 @@
 The WCT build system is based on [[https://waf.io/][Waf]].  The parts of the build system include:
 
-- the =wcb= command provided by =wire-cell-build= which is a bundled version of Waf's =waf= command.
-- a number of Waf tools provide instructions for finding the required and optional software dependencies
-- the main =wscript= and per-package =wscript_build= files provide the high-level instructions for building WCT (ie, they are like old fashioned =Makefile= files).
+- the =wcb= command found at top level in the =wire-cell-toolki= source is the ~waf~ command from https://waf.io/ with extra tools bundled.
+- a number of additional "loose" Waf tools are provided in the ~tools/~ sub directory to find required and optional software dependencies
+- a main =wscript= and per-package =wscript_build= files provide the high-level instructions for building WCT (ie, they are Waf equivalent to old fashioned =Makefile= files).
 
 * Recreating =wcb=
   :PROPERTIES:
@@ -16,8 +16,8 @@ The =wcb= command bundles some optional Waf tools which are not included in the 
   $ git clone https://github.com/waf-project/waf.git
   $ cd waf/
   $ ./waf-light --tools=compat15,doxygen,boost,bjam
-  $ cp waf /path/to/wire-cell-build/wcb
-  $ cd /path/to/wire-cell-build
+  $ cp waf /path/to/wire-cell-toolkit/wcb
+  $ cd /path/to/wire-cell-toolkit
   $ git commit [...]
 #+END_EXAMPLE
 
@@ -27,8 +27,19 @@ The =wcb= command bundles some optional Waf tools which are not included in the 
   :END:
 
 
-A number of Waf tools are provided in the [[https://github.com/wirecell/wire-cell-waftools][waftools]] submodule.  This provides a Python module for each software package which is a required or optional dependency and which is not already covered by Waf itself. New dependencies can be added by using existing modules as examples.  It is the =smplpkgs.py= module which handles the building of the WCT packages themselves.  The =wcb.py= module is used as a simple aggregate of all the other modules.  It is this that is loaded by the main =wscript=.
+A number of Waf tools are provided in the ~tools/~ subdirectory.  They provide Python modules for each software package which is a required or optional dependency and which is not already covered by Waf itself.  New dependencies can be added by using existing modules as examples.  It is the =smplpkgs.py= module which handles the building of the WCT packages themselves.  The =wcb.py= module is used as a simple aggregate of all the other modules.  It is this that is loaded by the main =wscript=.
 
 #+begin_note
-The scripts to make and test releases are also housed in this package.
+Some scripts to help make and test releases are also housed in this package.
 #+end_note
+
+* The main ~wscript~
+  :PROPERTIES:
+  :CUSTOM_ID: main-wscript
+  :END:
+
+The ~wscript~ file directs all aspects of building WCT.  It locates core
+WCT packages automatically so generally does not require modification
+to add new externals or new WCT core packages.  However, it does
+contain hand-wired code to disable certain packages if their
+dependencies are not found.

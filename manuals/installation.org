@@ -21,53 +21,58 @@ Installation requires four steps:
     :CUSTOM_ID: source-code
     :END:
 
-WCT source is composed of several packages (see section [[Packages]]) and all source is available from the [[https://github.com/WireCell/][Wire Cell GitHub organization]].  Releases of each package are made and documented on GitHub (/eg/ [[https://github.com/WireCell/wire-cell-build/releases][here]]) and can be downloaded as archives.  However, using git to assemble a working source area is recommended and easier.  Releases and development branches are handled slightly differently.
+WCT source is composed of several packages (see section [[Packages]]) and all source is available from the [[https://github.com/WireCell/][Wire Cell GitHub organization]].  Releases of each package are made and documented on GitHub (/eg/ [[https://github.com/WireCell/wire-cell-toolkit/releases][here]]) and can be downloaded as archives.  However, using git to assemble a working source area is recommended and easier.  Releases and development branches are handled slightly differently.
 
 To obtain a release requires no GitHub authentication:
 #+BEGIN_EXAMPLE
-  $ git clone --recursive --branch 0.5.x \
-        https://github.com/WireCell/wire-cell-build.git
+  $ git clone --branch 0.5.x \
+        https://github.com/WireCell/wire-cell-toolkit.git
 #+END_EXAMPLE
-This gets the tip of the release branch for the =0.5.x= series.  If a specific release is desired a few more commands are needed.  For example, if the =0.5.0= release that started the series is wanted:
+This gets the tip of a release branch (the =0.5.x= series in this example).  
+A specific point release can then be checked out:
 #+BEGIN_EXAMPLE
   $ git checkout -b 0.5.0 0.5.0
-  $ git submodule init
-  $ git submodule update
-  $ git submodule foreach git checkout -b 0.5.0 0.5.0
 #+END_EXAMPLE
 
-To obtain the development branch requires SSH authentication with GitHub:
+To contribute new development to the toolkit, even as a "core"
+developer, it's recommended to /fork/ the ~wire-cell-toolkit~ repository
+on GitHub, do your work there and make GitHub Pull Requests (PR).
+This gives an opportunity for other developers to give a quick check
+on new code.  
+
+Core developers can nonetheless directly push to the central
+repository.  It's suggested to do so via an SSH authenticated clone:
+
 #+BEGIN_EXAMPLE
-  $ git clone --recursive \
-        git@github.com:WireCell/wire-cell-build.git wct
+  $ git clone git@github.com:WireCell/wire-cell-toolkit.git wct
 #+END_EXAMPLE
-
-Which ever way the source is obtained, enter the resulting directory
-#+BEGIN_EXAMPLE
-  $ cd wire-cell-build/
-#+END_EXAMPLE
-
-#+begin_tip
-At some time later if there is a need to switch between HTTP or SSH a =switch-git-urls= script is available in this directory.
-#+end_tip
 
 *** Configuring the source
     :PROPERTIES:
     :CUSTOM_ID: configuring-the-source
     :END:
 
-At a minimum, the source must be configured with an installation location for the build results and to allow it to find its dependencies.  This, and the remaining steps are done with the provided =wcb= script which is an instance of [[https://waf.io/][Waf]].
+Prior to building, the source must be configured to specify an
+installation location and provide options to direct how to find
+external software dependencies and/or to select which optional
+dependencies.  More details on the build system are in [[./waftools.org]].
+
+On systems where software dependencies can be auto-detected, the
+configuration step may be as simple as:
+
 #+BEGIN_EXAMPLE
-  $ ./wcb --prefix=/path/to/install configure
+  $ ./wcb configure \
+     --prefix=/path/to/install
 #+END_EXAMPLE
 
 This will print the results of the attempts to detect required and optional dependencies.  Missing but optional dependencies will not cause failure.  See below for guidance on installing dependencies if this step fails or if desired optional dependencies are not found.
 
-Dependencies will likely be found automatically if =pkg-config= is available possibly by suitably setting the =PKG_CONFIG_PATH= environment variable.  If automatic location fails then missing locations can be explicitly specified.  The following shows an example where all externals are installed at a single location identified by the =WCT_EXTERNALS= environment variable (not, this variable has no other special meaning other than to make this example brief).
+Dependencies may be automatically located if =pkg-config= is available and possibly by suitably setting the =PKG_CONFIG_PATH= environment variable.  If automatic location fails then missing locations can be explicitly specified.  The following shows an example where all externals are installed at a single location identified by the =WCT_EXTERNALS= environment variable (not, this variable has no other special meaning other than to make this example brief).
 
 
 #+BEGIN_EXAMPLE
-  $ ./wcb configure --prefix=/path/to/install \
+  $ ./wcb configure \
+     --prefix=/path/to/install \
      --boost-includes=$WCT_EXTERNALS/include \
      --boost-libs=$WCT_EXTERNALS/lib --boost-mt \
      --with-root=$WCT_EXTERNALS \
@@ -85,56 +90,16 @@ If the externals are not all in one directory then their locations must be accor
     :CUSTOM_ID: building-the-source
     :END:
 
-After the above is successful the =configure= results are cached and all other build related commands are brief.  To build the code to the temporary =build/= directory one simply runs:
+It is suggested to first build the code before running tests.
 
 #+BEGIN_EXAMPLE
-  $ ./wcb
+  $ ./wcb -p --notests
 #+END_EXAMPLE
 If there are build failures more information can be obtained by repeating the build with more verbosity:
 #+BEGIN_EXAMPLE
   $ ./wcb -vv
 #+END_EXAMPLE
-The build will try to run tests which can be avoided to save time:
-#+BEGIN_EXAMPLE
-  $ ./wcb --notests
-#+END_EXAMPLE
 
-*** Running unit tests
-    :PROPERTIES:
-    :CUSTOM_ID: running-unit-tests
-    :END:
-
-#+begin_note
-Unit tests are meant to be small, focused tests.  Some have grown beyond this intention and into full, if ad-hoc, applications themselves.  These need to be reworked or moved into the [[https://github.com/wirecell/wire-cell-validate][wire-cell-validate]] package.
-#+end_note
-
-Unless =--notests= are passed as above, the build system will build and run the many unit test programs.  In general, all unit tests should run successfully (in practice some small fraction may not).  To give them a chance to succeed they must at least be run with a properly set up environment.  In particular =LD_LIBRARY_PATH= must contain all library directories for external packages.  Setting this is user/system dependent and so is left to the user.
-
-#+BEGIN_INFO
-Developers wishing to run unit tests that exercise code they are developing should take care in setting =LD_LIBRARY_PATH=.  If the WCT installation area is included then the unit tests will run against those libraries, effectively masking the locally built versions in the development area.  Alternatively, they must run =./wcb install= and then manually re-run the unit test.
-#+END_INFO
-
-Setting =LD_LIBRARY_PATH= is *not* as above required for building.  To avoid polluting the build environment with superfluous settings it is possible to create a little shell script that will be used to run each test.  As an example, we create =tester.sh= that looks like:
-
-#+BEGIN_SRC sh
-#!/bin/sh
-/usr/bin/env LD_LIBRARY_PATH=/path/to/extern1/lib:/path/to/extern2/lib "$@"
-#+END_SRC
-
-After making this script executable it can be used like:
-
-#+BEGIN_EXAMPLE
-  $ ./wcb --testcmd="/path/to/tester.sh %s"
-#+END_EXAMPLE
-
-Another useful option is =--dump-test-scripts= which will produce a =test_<name>_run.py= file for each =test_<name>= that bakes in the environment and gives you a per-test runner that you can execute directly.  You can use the same =tester.sh= script here
-
-#+BEGIN_EXAMPLE
-  $ /path/to/tester.sh ./wcb --dump-test-scripts --alltests
-  $ ./build/util/test_fft_run.py
-#+END_EXAMPLE
-
-Where these two commands are executed in a shell that has no =LD_LIBRARY_PATH= set.
 
 *** Install the results
     :PROPERTIES:
@@ -143,8 +108,44 @@ Where these two commands are executed in a shell that has no =LD_LIBRARY_PATH= s
 
 To install the build results into the location given by =--prefix= simply issue:
 #+BEGIN_EXAMPLE
-  $ ./wcb install
+  $ ./wcb install --notests
 #+END_EXAMPLE
+
+
+*** Running unit tests
+    :PROPERTIES:
+    :CUSTOM_ID: running-unit-tests
+    :END:
+
+#+begin_note
+Unit tests are meant to be small, focused tests.  More elaborate tests may be found in the [[https://github.com/wirecell/wire-cell-validate][wire-cell-validate]] package.
+#+end_note
+
+Tests are run by default by ~./wcb~ unless ~--notests~ is given.  Running
+the tests can take a while but should be run on new installations and
+after any significant development.  The developers should not leave
+broken tests so any failure should be treated as important.  However,
+some tests require proper user environment to run correctly.  In
+particular, tests need to find some Wire-Cell configuration files and
+the executable programs and shared libraries of the external software
+dependencies need to be located.  Below shows an example:
+
+#+BEGIN_EXAMPLE
+  $ export WIRECELL_PATH=$HOME/dev/wct/wire-cell-data:$HOME/dev/wct/wire-cell-toolkit/cfg
+  $ export LD_LIBRARY_PATH=$HOME/dev/wct/install/lib:$HOME/opt/jsonnet/lib
+  $ ./wcb -p --alltests
+  ...
+  execution summary 
+    tests that pass 83/83
+      ... 
+    tests that fail 0/83 
+  'build' finished successfully (15.192s)
+#+END_EXAMPLE
+
+
+#+BEGIN_INFO
+Developers wishing to run unit tests that exercise code they are developing should take care in setting =LD_LIBRARY_PATH=.  If the WCT installation area is included then the unit tests will run against those libraries, effectively masking the locally built versions in the development area.  Alternatively, they must run =./wcb install= and then manually re-run the unit test.
+#+END_INFO
 
 *** Other build commands
     :PROPERTIES:
@@ -174,9 +175,9 @@ These other commands may be useful:
 
 Managing environment is usually a personal choice or computer facility policy and WCT does not place any significant requirements on this.  The usual setting of =PATH= like variables will likely be needed.  
 
-FIXME: we should look into setting =RPATH=.
+Internally, WCT requires a minimum of environment variables:
 
-Internally, WCT does not require any environment however it will search a =WIRECELL_PATH= when locating configuration or other (non data) input files.  More information is in the section [[Configuration]].
+- =WIRECELL_PATH= :: a list of directories to search when locating configuration files.  More information is in the section [[Configuration]].
 
 ** Guide for installation of dependencies 
    :PROPERTIES:
@@ -190,18 +191,17 @@ The WCT depends on a number of third-party "external" software packages which ar
 - FFTW3 :: for fast Fast Fourier Transforms
 - JsonCPP :: basis for configuration and input data files 
 - Jsonnet :: structured configuration files.
-- ROOT :: for many tests and I/O packages, but not the core library code
 
 Additional, optional package are needed for additional functionality:
 
-- TBB :: for data flow programming paradigm support
-
+- ROOT :: for the ~root/~ sub-package, not required for core code
+- TBB :: for parallel, multi-threaded data flow programming paradigm support
+- CUDA :: support for some GPU technologies
 
 #+begin_note
 This list may not represent current reality.
 To get a full, up-to-date list of what packages WCT can use run =./wcb --help=.   
 #+end_note
-
 
 The following subsections gives some guidance for obtaining these "external" packages.
 
@@ -213,6 +213,16 @@ The following subsections gives some guidance for obtaining these "external" pac
 In the DIY mode, the installer is free to provide the third-party packages in any convenient way.  Many of them are available on well supported operating systems such as Debian/Ubuntu.  Homebrew for Mac OS X is not a core developer platform but may provide many.  Redhat derived Linux distributions may find suitable package on EPEL.  Most of the required packages are fairly easy to build from source.
 
 However the installer decides to build in DIY-mode the WCT build system should be able to be given proper installation locations via the =--with-*= flags as described above.  If it seems not to be the case, please contact the developers.
+
+*** Singularity containers and CVMFS
+    :PROPERTIES:
+    :CUSTOM_ID: singularity-cvmfs-externals
+    :END:
+
+One mostly "turn key" sway to provide an environment for WCT
+development and running is to use Singularity containers possibly
+augmented with CVMFS.  Instructions and support can be found in the [[https://github.com/WireCell/wire-cell-singularity][wire-cell-singularity]] package.
+
 
 *** Automated Installation with Spack
     :PROPERTIES:

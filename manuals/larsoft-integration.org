@@ -217,24 +217,11 @@ There will not yet be a code actually installed into the just declared =wirecell
    :CUSTOM_ID: wcls-dev-get-source
    :END:
 
-
-Independent of the above, and as per usual, get the WCT source.  You may wish to get the source in one of two ways:
-
-- Development on the =master= branch, maybe in anticipation of a future release
-
-#+BEGIN_EXAMPLE
-  $ git clone --recursive git@github.com:WireCell/wire-cell-build.git wct-master
-#+END_EXAMPLE
-
-- Bug fixing an existing release branch called =<BRANCH>= (named after major.minor versions like =A.B.x=, eg =0.6.x=)
-
-#+BEGIN_EXAMPLE
-  $ git clone --recursive --branch <BRANCH> \
-    https://github.com/WireCell/wire-cell-build.git wct-<BRANCH>
-#+END_EXAMPLE
+WCT source is cloned in the usual way.
+See section on [[#source-code]] for details.
 
 #+begin_note
-The exact name for the source directory is up to you.  Below, =wct-src= is used as a placeholder.
+The exact name to use for the source directory is up to you.  Below, =wct-src= is used as a placeholder.
 #+end_note
 
 ** Configuring WCT source

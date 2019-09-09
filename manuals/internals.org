@@ -5,34 +5,68 @@ This doc describes the Wire Cell Toolkit (WCT) internal structure and support fa
   :CUSTOM_ID: toolkit-packages
   :END:
 
-The WCT is composed of a number of /packages/.  Each package has an associated with a Git source repository.
-Most packages produce a shared library, which may also be a WCT plugin library, C++ header files, some number of main or test applications.   Others include a single package holding all Python code in various modules, a package providing support for developing WCT configuration files and the documentation package holding this document.
-One special type of package is a /build/ package described more in section on the build package.
+The WCT is composed of a number of /packages/.  Each package is a sub-directory of the ~wire-cell-toolkit~. 
+Packages either hold code and produce a shared library, header files and possibly executable programs.  A few "special" packages also exist:
+
+- python :: a variety of Python modules and command-line interfaces
+- cfg :: support for developing WCT configuration using Jsonnet
+- tools :: support for building WCT with [[https://waf.io/][Waf]].
+
+Other important packages not included directly in the ~wire-cell-toolkit~ include:
+
+- data :: a set of large and generated configuration files
+- bee :: a web based visualization system used with Wire-Cell and other data
+- docs :: holding this manual, the news "blog" and other documentation
+- singularity :: support for creating and using Singularity containers
+- containers :: support for creating and using Docker containers
+- spack :: support for building WCT and externals with Spack
+- validate :: tests that are larger or otherwise do not fit as unit tests.
+
+#+begin_note
+Each package actually has its own git repository which is aggregated into ~wire-cell-toolkit~ via the ~git subrepo~ command.
+#+end_note
+
 
 ** Names
    :PROPERTIES:
    :CUSTOM_ID: package-names
    :END:
 
+Packages are broken up by their primary scope or if they hold
+implementation requiring a major external software dependency.  Each
+package should be named with a single, short word.  If it is held in a
+separate repository, that is usually named ~wire-cell-<name>~.
 
-Package repositories are named like =wire-cell-<name>= where =<name>= is some short identifier giving indication of the main scope of the package.  In the documentation the =wire-cell-= prefix is often dropped and only this short name is used.  
-
-If a package produces a shared library it should be named in =CamelCase= with a prefix =WireCell=.  For example the =gen= package produces a library =libWireCellGen.so=.  As a plugin name or an entry in the build system, the =lib= and =.so= are dropped.  If the package has public header files to expose to other packages they should use this same name for a subdirectory in which to hold them.  Package layout is described move below.
+If a package produces a shared library it should be named in =CamelCase=
+with a prefix =WireCell=.  For example the =gen= package produces a
+library =libWireCellGen.so=.  As a plugin name or an entry in the build
+system, the =lib= and =.so= are dropped.  If the package has public header
+files to expose to other packages they should use this same name for a
+subdirectory in which to hold them.  Package layout is described move
+below.
 
 ** Dependencies
    :PROPERTIES:
    :CUSTOM_ID: package-dependencies
    :END:
 
-Some of the C++ packages are designated as /core/ packages.  These include the packages providing the toolkit C++ structure (described later in this document) as well as the reference implementations (eg, =gen=, =sigproc=).   These packages have strict requirements on what dependencies may be introduced and in particular their shared libraries are not allowed to depend on ROOT (although their apps and tests are, see sections [[Package structure]] and [[Build package]]).
+Some of the C++ packages are designated as /core/ packages.  These
+include the packages providing the toolkit C++ structure (described
+later in this document) as well as the reference implementations (eg,
+=gen=, =sigproc=).  These packages have strict requirements on what
+dependencies may be introduced and in particular their shared
+libraries are not allowed to depend on ROOT (although their apps and
+tests are, see sections [[Package structure]] and [[Build package]]).
 
-The base package is =util= and it /must/ not depend on any other WCT package.  The next most basic is =iface= and it /must/ not depend on any other WCT except =util=.  Core implementation packages such as =gen= or =sigproc= may depend on both but should not depend on each other.
+The base package is =util= and it /must/ not depend on any other WCT
+package.  The next most basic is =iface= and it /must/ not depend on any
+other WCT except =util=.  Core implementation packages such as =gen= or
+=sigproc= may depend on both but /must/ not depend on each other.
 
-Fixme: there is a need to factor some general utility routines and data structures that depend on =iface= and which the implementation packages should use that needs to be created.
-
-WCT also provides a number of peripheral implementation packages, which are free to have more dependencies, including ROOT, than "core" packages.  These are mostly for the purpose of providing WCT components which provide file I/O.  The =sst= package in particular support the so called =celltree= ROOT =TTree= format used by the Wire Cell prototype code.
-
-Finally, there may be third-party implementation packages.  They are free to mimic WCT packages but WCT itself will not depend on them.  They should not make use of the =WireCell::= C++ namespace.
+Third-party implementation packages may be developed outside of WCT.
+They are free to mimic WCT packages and of course depend on WCT and
+WCT itself shall not depend on them.  They should not make use of the
+=WireCell::= C++ namespace.
 
 ** Package structure
    :PROPERTIES:
@@ -43,8 +77,12 @@ The WCT package layout and file extensions must follow some conventions in order
 
 - =src/*.cxx= ::  C++ source file for libraries with .cxx extensions or private headers
 - =inc/WireCellName/*.h= :: public/API C++ header files with .h extensions
-- =test/test_*.cxx= :: main C++ programs named like test_*.cxx, may also hold Python, shell scripts, private headers
-- =apps/*.cxx= :: main application(s), one appname.cxx file for each app named =appname=, should be very limited in number
+- =test/test_*.*= :: unit tests.  C++ programs named like ~test_*.cxx~
+     will be built and run as will any ~test_*.{py,sh}~,
+- =apps/*.cxx= :: main application(s), one appname.cxx file for each app
+                  named =appname=.  Apps should be limited in number and
+                  code. WCT provides a single ~wire-cell~ main
+                  application as a CLI to the shared libraries.
 
 In the root of each C++ package directory must exist a file called =wscript_build=.  It typically consist of a single line with a method call like:
 
@@ -60,44 +98,28 @@ Fixme: make a script that generates a dot file and show the graph.
    :CUSTOM_ID: build-package
    :END:
 
-To actually build WCT see the section on toolkit installation (section [[Installation]]).  The build system is based on [[https::waf.io][Waf]] and uses the =wcb= command and a =wscript= file provided by the top level /build package/.  More details on the build system are given in section [[=wire-cell-waftools=][Waf tools]].
-
-Besides holding the main build instructions this package aggregates all the other packages via Git's "submodule" feature.  In principle, there may be more than one build package maintained.  This allows developers working on a subset to avoid having to build unwanted code.  In practice there is a single build package which is at: https://github.com/wirecell/wire-cell-build.
-
+The ~wire-cell-toolkit~ provides a monolithic view of all the core WCT
+packages.  It is maintained using ~git subrepo~ and this is transparent
+to users and most developers.  To actually build WCT see the section
+on toolkit installation (section [[Installation]])
 
 ** Adding a new code package
    :PROPERTIES:
    :CUSTOM_ID: add-new-package-to-build
    :END:
 
+A new core WCT code package may be initially developed outside of
+~wire-cell-toolkit~ proper and added via ~git subrepo~ or it may be
+created simply as a sub-directory of ~wire-cell-toolkit~.
 
-To add a new code package to a build package from scratch, select a =<name>= following guidance above and do something like:
 #+BEGIN_EXAMPLE
-    $ mkdir <name>
-    $ cd <name>/
-    $ echo "bld.smplpkg('WireCell<Name>', use='WireCellUtil WireCellIface')" > wscript_build
-    $ git init
-    $ git add wscript_build
-    $ git commit -a -m "Start code package <name>"
+  $ mkdir <name>
+  $ echo "bld.smplpkg('WireCell<Name>', use='WireCellUtil WireCellIface')" > <name>/wscript_build
+  $ emacs wscript
+  $ git commit -a -m "Start code package <name>"
 #+END_EXAMPLE
 Replace =<name>= with your package name.  You can create and commit actual code at this time as well following the layout in [[Package structure]].
-
-Now, make a new repository by going to the [[https://github.com/WireCell][WireCell GitHub]] and clicking "New repository" button. Give it a name like =wire-cell-<name>=.  Copy-and-paste the two command it tells you to use:
-#+BEGIN_EXAMPLE
-    $ git remote add origin git@github.com:WireCell/wire-cell-<name>.git
-    $ git push -u origin master
-#+END_EXAMPLE
-If you made your initial package directory inside the build package move it aside.  Then, from the build package directory, add this new repository as a Git submodule:
-#+BEGIN_EXAMPLE
-    $ cd wire-cell-build/ # or whatever you named it
-    $ git submodule add -- git@github.com:WireCell/wire-cell-<name>.git <name>
-    $ git submodule update
-    $ git commit -a -m "Added <name> to top-level build package."
-    $ git push
-#+END_EXAMPLE
-In order to be picked up by the build the new package short name must be added to the =wscript= file.
-
-
+See section [[#main-wscript]] for how to modify the ~wscript~ file.
 
 
 * Coding conventions
@@ -113,7 +135,7 @@ In order to be picked up by the build the new package short name must be added t
 
 - Base indentation /should/ be four spaces.
 
-- Tabs /should/ not be used.
+- Tabs /should/ not be used for indentation.
 
 - Opening braces /should not/ be on a line onto themselves, closing braces /should be/.
 
@@ -129,10 +151,9 @@ In order to be picked up by the build the new package short name must be added t
 
 - The C++ =using namespace= keyword /must not/ be used at top file scope in a header.
 
-- Unused headers /should not/ be retained.
+- Only headers defining symbols required by a file /should/ be included.
 
-- Any =#include# need in an implementation file but not the corresponding header file /should not/ be in the header file.
-
+- Any ~#include~ needed in an implementation file but not required by the corresponding header file /should not/ be in the header file.
 
 ** C++ namespaces
    :PROPERTIES:
