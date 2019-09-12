@@ -7,7 +7,7 @@ This area holds a Nikola source area for producing news.
 This is what was done to get started from a green field.
 
 #+BEGIN_EXAMPLE
-  $ virtualenv --system-site-packages -p python3 venv
+  $ python3 -m venv venv
   $ source venv/bin/activate
   $ pip install Nikola
   $ nikola init news
@@ -20,7 +20,7 @@ This is what was done to get started from a green field.
 For new installs.
 
 #+BEGIN_EXAMPLE
-  $ virtualenv --system-site-packages -p python3 venv
+  $ python3 -m venv venv
   $ source venv/bin/activate
   $ pip install Nikola ws4py watchdog webassets
 #+END_EXAMPLE
