@@ -17,8 +17,8 @@ import time
 
 
 # Data about this site
-BLOG_AUTHOR = "Wire Cell Team"  # (translatable)
-BLOG_TITLE = "Wire Cell News"  # (translatable)
+BLOG_AUTHOR = "Wire-Cell Team"  # (translatable)
+BLOG_TITLE = "Wire-Cell News"  # (translatable)
 # This is the main URL for your site. It will be used
 # in a prominent link. Don't forget the protocol (http/https)!
 SITE_URL = "http://wirecell.github.io/news/"
@@ -26,7 +26,7 @@ SITE_URL = "http://wirecell.github.io/news/"
 # If not set, defaults to SITE_URL
 # BASE_URL = "http://wirecell.github.io/"
 BLOG_EMAIL = "bv@bnl.gov"
-BLOG_DESCRIPTION = "Updates on the Wire Cell Toolkit."  # (translatable)
+BLOG_DESCRIPTION = "Updates from the Wire-Cell team."  # (translatable)
 
 # Nikola is multilingual!
 #
@@ -138,7 +138,6 @@ NAVIGATION_LINKS = {
         ("/archive.html", "Archive"),
         ("/categories/", "Tags"),
         ("/rss.xml", "RSS feed"),
-        ("/../manual/", "Manual"),
     ),
 }
 
@@ -1376,13 +1375,14 @@ UNSLUGIFY_TITLES = True
 GLOBAL_CONTEXT = {'blog_sidebar': """\
     <div class="sidebar-module sidebar-module-inset">
       <h4>About</h4>
-      <p>Wire Cell encompasses a collection of techniques and software implementation for the simulation, noise filtering, signal processing, 3D imaging, pattern recognition and reconstruction of liquid argon time projection chamber detectors.</p>
+      <p>Wire-Cell encompasses a collection of techniques and software implementation for the simulation, noise filtering, signal processing, 3D imaging, pattern recognition and reconstruction of liquid argon time projection chamber detectors.</p>
     </div>
     <div class="sidebar-module">
       <h4>Links</h4>
       <ol class="list-unstyled">
-        <li><a href="https://www.phy.bnl.gov/wire-cell/">Main Home page</a></li>
-        <li><a href="http://wirecell.github.io/">Software Documentation</a></li>
+        <li><a href="https://lar.bnl.gov/wire-cell/">home page</a></li>
+        <li><a href="http://wirecell.github.io/">documentation</a></li>
+        <li><a href="http://github.io/WireCell">repositories</a></li>
       </ol>
     </div>
     """}
