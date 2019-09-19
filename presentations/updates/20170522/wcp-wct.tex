@@ -1,0 +1,1456 @@
+% TEXINPUTS=.:$HOME/git/bvtex: latexmk  -pdf <main>.tex
+\documentclass[xcolor=dvipsnames]{beamer}
+
+\input{defaults}
+\input{beamer/preamble}
+
+\setbeamertemplate{navigation symbols}{}
+% \setbeamertemplate{background}[grid][step=1cm]
+
+\usepackage{siunitx}
+\usepackage{xmpmulti}
+\usepackage[export]{adjustbox}
+\usepackage{ulem}
+\usepackage[outline]{contour}
+\usepackage{pdfpages}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\usetikzlibrary{positioning}
+
+\definecolor{bvtitlecolor}{rgb}{0.98, 0.92, 0.84}
+\definecolor{bvoutline}{rgb}{0.1, 0.1, 0.1}
+
+\renewcommand{\bvtitleauthor}{Brett Viren}
+\renewcommand{\bvtit}{WCT}
+\renewcommand{\bvtitle}{\LARGE Three Faces of Wire Cell\\Prototype, Toolkit, Integration}
+\renewcommand{\bvevent}{WC LEE Ana\\2017 May 22}
+\renewcommand{\bvbeamerbackground}{}
+
+\def\Put(#1,#2)#3{\leavevmode\makebox(0,0){\put(#1,#2){#3}}}
+\def\wc{Wire -- Cell\xspace}
+\def\wcp{Wire -- Cell Prototype\xspace}
+\def\wct{Wire -- Cell Toolkit\xspace}
+\def\wci{Wire -- Cell Integration\xspace}
+\def\ls{LArSoft\xspace}
+\def\art{\textit{art}\xspace}
+
+% fixme: move into my texlib
+\input{mylistings.tex}
+
+\begin{document}
+\input{beamer/title.tex}
+\input{beamer/toc.tex}
+
+\section{Overview}
+
+
+\begin{frame}
+  \frametitle{What's in a name}
+  \begin{center}
+    {\Huge \wc}
+
+    \vfill
+
+    some post-hoc philosophizing
+
+    \vfill
+
+    \begin{tabular}[h]{cc}
+      \textbf{wire} & embodies a measurement \\ 
+      \textbf{cell} & represents an ideal truth \\
+      \textbf{--} & indicates their connection \\
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Three Code Bases of \wc}
+
+  \wc software spans three distinct collections of packages:
+
+  \begin{enumerate}
+  \item \wcp (WCP):
+    \begin{itemize}
+    \item[$\to$] initial algorithm development, tryout new ideas,
+      don't worry (too much) about code perfection.
+    \end{itemize}
+  \item \wct (WCT):
+    \begin{itemize}
+    \item[$\to$] production quality coding, high performance and long
+      term maintenance.
+    \end{itemize}
+  \item \wci (WCI):
+    \begin{itemize}
+    \item[$\to$] use of WCT components by \ls.
+    \end{itemize}
+  \end{enumerate}
+
+  \footnotesize
+  \begin{itemize}
+  \item Typically, development of algorithms proceed in order: WCP$\to$WCT$\to$WCI.
+  \item WCP devel may be skipped if WCT-quality design is already understood.
+  \item WCI devel is only needed when new, major \textbf{Interfaces} are developed.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{\wc Source Code Organizations}
+
+  \begin{description}
+  \item[prototype] \url{https://github.com/BNLIF/}
+  \item[toolkit] \url{https://github.com/WireCell/}
+  \item[integration] \url{https://cdcvs.fnal.gov/redmine/projects/larwirecell}
+  \end{description}
+
+  \footnotesize
+
+  \begin{itemize}
+  \item Prototype and Toolkit each consist of a set of multiple
+    \texttt{git} repositories.
+
+  \item Integration consists just the one under the greater
+    \texttt{larsoft} UPS umbrella product.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Documentation}
+  \begin{description}
+  \item[prototype] \url{http://bnlif.github.io/wire-cell-docs/}
+    \begin{itemize}\footnotesize
+    \item Source in Markdown/\texttt{mkdocs}, read as HTML.
+    \item Not always maintained, but still useful.
+    \end{itemize}
+  \item[toolkit] \url{https://wirecell.github.io/}
+    \begin{itemize}\footnotesize
+    \item Source in Org, read as HTML/EPUB/PDF/Markdown/Org.
+    \item Intended to be up to date but not full coverage yet.
+    \item Documentation framework may change.
+    \end{itemize}
+  \item[integration] \url{https://cdcvs.fnal.gov/redmine/projects/larwirecell/wiki}
+    \begin{itemize}\footnotesize
+    \item Just the wiki, essentially empty.
+    \item We should flesh it out after the next WCI push.
+    \end{itemize}
+  \end{description}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Developer Installation: WCP}
+
+  Source is aggregated with \texttt{git submodules} and built with
+  \href{https://waf.io/}{Waf}.
+
+\begin{lstlisting}[language=bash]
+git clone --recursive git@github.com:BNLIF/wire-cell.git wcp
+
+cd wcp/ && alias waf=$(pwd)/waf-tools/waf
+
+waf --prefix=/path/to/install configure build install
+\end{lstlisting}
+%$
+  Thereafter, to rebuild/reinstall:
+\begin{lstlisting}[language=sh]
+waf install
+\end{lstlisting}
+
+  See documentation for user install.
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Developer Installation: WCT}
+
+  Source is aggregated with \texttt{git submodules} and built with
+  \href{https://waf.io/}{Waf}.
+
+\begin{lstlisting}[language=sh]
+git clone --recursive git@github.com:WireCell/wire-cell-build.git wct
+
+cd wct/ && alias waf=$(pwd)/wcb
+
+waf --prefix=/path/to/install configure build install
+\end{lstlisting}
+%$
+  Thereafter, to rebuild/reinstall:
+\begin{lstlisting}[language=sh]
+waf install
+\end{lstlisting}
+
+  See documentation for user install.
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Pulling, Committing and Pushing Commits} 
+
+    WCP/WCT currently use \textbf{git submodules}.  So, two step pull:
+\begin{lstlisting}[language=sh]
+git submodule foreach git pull
+git pull
+\end{lstlisting}
+
+
+  To commit and push is also a two step:
+\begin{lstlisting}[language=sh]
+cd <pkg>/ && hack
+git commit -am "My great hack."
+git push
+
+cd ..
+git commit -am "Pick up update to <pkg>."
+git push
+\end{lstlisting}
+
+  \vfill
+  \footnotesize
+  NB: The \textbf{larwirecell} integration code in a single Git repo
+  so apply the usual Git commands. FNAL recommends following
+  \href{http://nvie.com/posts/a-successful-git-branching-model/}{git
+    flow}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Installation of Software Dependencies - WCP/WCT}
+
+  WCP and WCP can share same set of ``external'' packages.  Provide
+  them however it is convenient:
+
+  \begin{itemize}
+  \item Install OS packages.
+    \begin{itemize}\footnotesize
+    \item Ubuntu has most required packages except ROOT6
+    \end{itemize}
+  \item Manually install each from source.
+  \item \href{https://github.com/wirecell/wire-cell-spack}{Automate installation with Spack.}
+    \begin{itemize}\footnotesize
+    \item This is the recommended approach.
+    \end{itemize}
+  \item Use existing binaries
+    \begin{itemize}\footnotesize
+    \item Eg, using UPS products at Fermilab
+    \end{itemize}
+  \item Some mixture of the above.
+  \end{itemize}
+
+Learn how to teach \texttt{waf} locations of externals:
+\begin{lstlisting}[language=sh]
+waf --help
+\end{lstlisting}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Installation: WCI}
+
+  \footnotesize
+  \begin{itemize}
+  \item WCT is UPS product \texttt{wirecell}, WCI is \texttt{larwirecell}
+  \item New releases (and their externals) are built to UPS products by FNAL
+    \begin{itemize}\scriptsize
+    \item Requests should ultimately go through Redmine tickets.
+    \item Asking Lynn Garren or \ls mgt directly is a good start.
+    \end{itemize}
+  \item WCI developer follows ``standard'' Fermilab way (\texttt{ups},
+    \texttt{mrb}, etc).
+
+  \item \textbf{TODO}: we must learn to build \texttt{wirecell} UPS
+    product ourselves:
+    \begin{itemize}\scriptsize
+    \item Often we have to make fixes to accommodate FNAL problems.
+    \item Best if we can test full stack at FNAL before making a WCT release.
+    \item Best if we can make simultaneous WCT+WCI releases.
+    \item Having FNAL in this test/release loop adds too much delay
+      and confusion.
+    \end{itemize}
+  \end{itemize}
+
+  \footnotesize Ideas to make WCI development easier for us have been
+  proposed but FNAL has responded negatively.
+\end{frame}
+
+
+\section{Prototype}
+
+\begin{frame}
+  \tableofcontents[currentsection,hideothersubsections]
+\end{frame}
+
+\begin{frame}
+  \frametitle{A few random comments about WCP devel}
+
+  \footnotesize
+
+  \begin{itemize}
+  \item Coordinate any development with Xin.
+    \begin{itemize}\scriptsize
+    \item I'll also try to help, but I give WCP very little attention.
+    \end{itemize}
+  \item Do not modify existing code without original author's permission.
+    \begin{itemize}\scriptsize
+    \item Use \texttt{git blame} or GitHub's \texttt{[Blame]} button to find author.
+    \end{itemize}
+  \item Okay to copy-and-modify but \textbf{must not} reuse same class
+    names.
+    \begin{itemize}\scriptsize
+    \item Feel free to make new WCP packages in BNLIF GitHub org.
+    \end{itemize}
+  \item Develop prototype as ``throw-away'' or ``first draft'' code.
+    \begin{itemize}\scriptsize
+    \item Don't get too ``attached''.
+
+    \item WCP and WCT classes and patterns differ but many concepts the same.
+
+    \item Long term, code needs to be ``ported'' to WCT where much
+      \textbf{stricter code quality control} will be enforced and only
+      \textbf{limited external dependencies} will be allowed in ``core''
+      libraries.  Preparing for that in WCP makes porting easier.
+    \end{itemize}
+  \end{itemize}
+  
+  With that, WCP is a playground, enjoy playing and be creative!
+
+\end{frame}
+
+
+\section{Toolkit}
+
+\begin{frame}
+  \tableofcontents[currentsection,hideothersubsections]
+\end{frame}
+
+\begin{frame}
+  \frametitle{\wct Caveats and Concerns}
+
+  \footnotesize
+  \begin{itemize}
+  \item There is a lot of ``stuff'' in \wct.
+  \item Not everything  is yet perfectly documented.
+  \item Not everything is even yet perfectly conceptualized or
+    designed.
+  \item \textbf{It is ready for contributions from others.}
+  \item However, \textbf{please tread lightly}, ask questions,
+    understand intentions.  
+  \item Before diving in there should be an informal discussion of scope,
+    design, dependencies, etc.
+  \item Some things can still change, but a lot of things must stand
+    firm.
+  \item I want us to resist making compromises just to satisfy
+    near-term time pressures.
+  \end{itemize}
+
+  \vfill
+  \onslide<2>{Okay, on to the technical stuff$\longrightarrow$}
+\end{frame}
+
+\subsection{Command Line Interface}
+
+\begin{frame}
+  \tableofcontents[
+  currentsection,
+  currentsubsection,        
+  subsectionstyle=show/shaded/hide]
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Command Line Interface}
+
+  \footnotesize
+  WCT is a \textbf{toolkit} but also provides the
+  \href{https://github.com/WireCell/wire-cell-apps/blob/master/apps/wire-cell.cxx}{wire-cell}
+  command line application exposes WCT functionality to the user.
+
+\vfill
+
+  Eg, to run the simulation:
+
+\begin{lstlisting}[language=sh]
+wire-cell -c uboone/fourdee.jsonnet
+\end{lstlisting}
+
+Has brief online help
+\begin{lstlisting}[language=sh]
+wire-cell --help
+\end{lstlisting}
+
+\vfill Cmdline arguments that:
+  \begin{itemize}
+  \item Set one or more ``app'' \textbf{components} to run.
+  \item Load \textbf{plugin} libraries that provide components.
+  \item Give one or more \textbf{configuration} files.
+  \item Dump hard-coded default configuration.
+  \item Override individual configuation parameters (still todo!)
+  \end{itemize}
+
+\end{frame}
+
+\subsection{Packages}
+
+\begin{frame}
+  \tableofcontents[
+  currentsection,
+  currentsubsection,        
+  subsectionstyle=show/shaded/hide]
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Package Names and Layout}
+
+  WCT (and WCP) packages follow fixed layout conventions:
+
+  \begin{description}\footnotesize
+  \item[name] source package is \texttt{wire-cell-<name>}, submodule
+    directory is \texttt{<name>/}, shared library, include dir and package name for
+    build system dependencies is \texttt{WireCellName}
+  \item[\texttt{src/}] holds \texttt{.cxx} implementation and private
+    \texttt{.h} headers for a shared library and \verb|wscript_build|
+    connection to build system.
+  \item[\texttt{inc/WireCellName/}] holds public \texttt{.h} headers.
+  \item[\texttt{test/}] holds unit test \verb|test_*.cxx| source.
+  \item[\texttt{apps/}] in rare packages, holds code for
+    \texttt{main()} programs.
+  \end{description}
+
+  \vfill
+
+  \footnotesize Note: any ``public'' Python modules/programs should
+  likely be put in \texttt{wire-cell-python} package rather than
+  spread among individual packages.
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Package Build System}
+  \footnotesize
+  The build system is almost invisible.
+
+  Each package needs one file, \texttt{wscript\_build}, holding a single
+  function declaring the \textbf{package name} and connections into
+  \textbf{three dependencies trees}:
+
+\begin{lstlisting}[language=python]
+bld.smplpkg("WireCellGen",                    # required
+            use="WireCellIface WireCellUtil", # optional, likely
+            test_use="WireCellRootVis",       # optional, likely
+            app_use="DYNAMO BOOST")           # optional, unlikely
+\end{lstlisting}
+
+  \begin{description}
+  \item[\texttt{use}] packages on which the shared library depends
+  \item[\texttt{test\_use}] (optional) if package's unit tests require more dependencies.
+  \item[\texttt{app\_use}] (optional) if package has applications and
+    they require additional dependencies.  
+  \end{description}
+
+  \scriptsize NB:
+  \begin{itemize}\scriptsize
+  \item ``Core'' WCT libraries have very restricted dependencies (eg,
+    no ROOT).  
+  \item Most packages \textbf{should not} have applications as this is
+    what \texttt{wire-cell} is for.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{WCT Package Dependency}
+  \begin{center}
+    \begin{tabular}[h]{|c|}
+      \hline
+      \texttt{wire-cell-*}\\
+      (implementation packages)\\
+      \hline
+      \texttt{wire-cell-iface} \\
+      (interface classes) \\
+      \hline
+      \texttt{wire-cell-util} \\
+      (infrastructure and utilities)\\
+      \hline
+      external dependencies\\
+      (Boost, Eigen3, FFTW3)\\
+      \hline
+    \end{tabular}
+  \end{center}
+
+  \scriptsize
+  \begin{itemize}
+  \item Implementation packages \textbf{must not} depend on one-another.
+  \item Optional packages may have optional dependencies.
+    Eg, \texttt{wire-cell-tbb} implements Wire Cell data flow
+    programming (DFP) using/requiring Intel TBB.
+  \item Some optional dependencies are handled by compile-time
+    switches in the code, Eg. optional Jsonnet support.
+  \end{itemize}
+\end{frame}
+
+\subsection{Class Interfaces and Components}
+
+\begin{frame}
+  \tableofcontents[
+  currentsection,
+  currentsubsection,        
+  subsectionstyle=show/shaded/hide]
+\end{frame}
+
+\begin{frame}
+  \frametitle{WCT Interfaces}
+
+  Major toolkit functionality is exposed via ``\textbf{Interfaces}''
+
+  \begin{itemize}
+  \item An Interface is an \textit{abstract base class}
+    defining the \textit{virtual methods} to be implemented by a subclass.
+  \item Interface \textbf{method arguments} must be:
+    \begin{itemize}\footnotesize
+    \item Other Interfaces (typically via \texttt{shared\_ptr<>})
+    \item Classes or types defined in \texttt{wire-cell-util}
+    \item Plain old data types (\texttt{int}, etc)
+    \item STL containers of PoD (\texttt{std::vector<float>}, etc)
+    \item \textbf{Must not} reference types specific to another toolkit/framework.
+      \begin{itemize}\scriptsize
+      \item[$\to$] no \texttt{TH1F}, no \texttt{recob::Wire}
+      \end{itemize}
+    \end{itemize}
+  \item All Interface classes live in
+    \href{https://github.com/WireCell/wire-cell-iface}{\texttt{wire-cell-iface}}.
+  \item Interfaces have some inheritance hierarchies:
+    \begin{description}\footnotesize
+    \item[\texttt{INode}] data flow programming nodes
+    \item[\texttt{IData}] data products passed between nodes
+    \end{description}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Data Interfaces}
+
+  \texttt{IData} is base to all data interfaces, provides pointer and
+  vector typed on the subclass
+  (\href{https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern}{CRTP}).
+
+  \vfill
+
+  Some examples:
+
+  \begin{itemize}
+  \item \texttt{IDepo} point energy deposition \texttt{(x,y,z,t,q)}
+    with optional transverse and longitudinal extent.
+  \item \texttt{IWire} a wire segment in a wire plane leading to a channel.
+  \item \texttt{ICell} an association of crossing wires.
+  \item \texttt{ITrace} a waveform fragment in a channel at a given time.
+  \item \texttt{IFrame} a collection of traces (aka ``event''/``trigger'')
+  \end{itemize}
+
+  \vfill
+
+  \footnotesize There are various more and we can make new ones as
+  needed, but with a lot of thought.
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Why Data Interfaces?}
+
+  It is somewhat unorthodox to have interfaces for data objects.
+
+  \begin{itemize}
+  \item As a toolkit, WCT must deal with ``foreign'' data classes from
+    other applications/frameworks.
+    \begin{itemize}\footnotesize
+    \item[$\to$] Want to avoid unnecessary copies.
+    \item[$\to$] Interfaces allow building of facades.
+    \end{itemize}
+  \item Do not want to dictate user representations.
+    \begin{itemize}\footnotesize
+    \item[$\to$] One user may have some backing database for some objects.
+    \item[$\to$] Another may have load-on-demand files.
+    \item[$\to$] A third may want to copy objects bodily.
+    \end{itemize}
+  \item Data Flow Programming places some restrictions.
+    \begin{itemize}\footnotesize
+    \item[$\to$] Nodes always pass \texttt{shared\_ptr} to interface
+      or collections of these shared pointers.
+    \end{itemize}
+  \end{itemize}
+
+  \vfill \footnotesize NB: \texttt{wire-cell-iface} provides a set of
+  \texttt{Simple*} concrete data classes which are trivial bags of
+  data.  Implementation code is free to use these if suitable.
+  
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{DFP Node Interfaces}
+
+  A Data Flow Programming (DFP) node Interfaces specify:
+  \begin{itemize}\footnotesize
+  \item data types for node input or output.
+  \item whether node instances are safe to run concurrently.
+  \item the node ``category'' (DFP connecting behavior, ``source'',
+    ``sink'', ``function'', ``queued'', etc)
+  \end{itemize}
+  
+
+  Some DFP node category Interfaces:
+  \begin{itemize}\footnotesize
+  \item \texttt{IFunctionNode} stateless, function-like node.
+  \item \texttt{IQueuedNode} object in, collection out, caching.
+  \item \texttt{ISourceNode} provide an object each call.
+  \item \texttt{ISinkNode} consume an object each call.
+  \item others: \texttt{IFaninNode}, \texttt{IJoinNode}, \texttt{IHydraNode}
+  \end{itemize}
+
+  \vfill
+  \footnotesize NB: Nodes are used even if app does not use full DFP
+  feature.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Typed Node Interfaces}
+  Subclasses of a node category Interface fixes the data types.
+  \begin{itemize}
+  \item \texttt{IDepoSource} source of energy depositions (``depos'')
+  \item \texttt{IDrifter} queued, drifting of depos.
+  \item \texttt{IDuctor} consume depos, produce frames applying induction (field + electronics response).
+  \item \texttt{IFrameSource} generate frames (eg, a for a noise source)
+  \item \texttt{IFrameFilter} frames in, frames out (eg, digitizer)
+  \item \texttt{IFrameSink} consume frames (eg, to writing output file)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Other Interfaces}
+  Some Interfaces simply provide some general functionality.
+
+  \begin{itemize}
+  \item \texttt{IWirePlane} info about one plane of wires, includes
+    logical wire geometry, field response, vector of \texttt{IWire} objects.
+  \item \texttt{IAnodeFace} info about wire planes on one face of an
+    anode plane.
+  \item \texttt{IAnodePlane} (``APA'') info about one or two anode faces,
+    includes wire/channel map.
+  \item \texttt{IRecombinationModel} simple function to convert energy
+    deposition to number of drifting electrons.
+  \item \texttt{IApplication} a main WCT ``app'' component with an
+    \texttt{execute()} method. (akin to Gaudi \texttt{Algorithm} or
+    \art Module).
+  \end{itemize}
+  
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{WCT Components}
+
+  A WCT \textbf{component} is an \textbf{object instance} of an
+  \textbf{implementation} (subclass) of one or more WCT
+  \textbf{interfaces}.
+
+  \begin{itemize}
+  \item Think: \textit{an actor in a play satisfying one or more roles.}
+  \item Some may be small and simple (eg a recombination model) or
+    large and complex (eg, the simulation ``app'').
+  \item Components may use other components.
+  \item Components are \textbf{dynamically constructed}
+  \item They are stored and located via two string labels:
+    \begin{description}\footnotesize
+    \item[type] typically (but not necessarily) the implementation
+      class name with any \texttt{namespaces} removed.  Must be
+      unique.
+    \item[name] labels a unique instance of a \textbf{type}.  If only one
+      instance needed, name is often left blank.
+    \end{description}
+  \end{itemize}
+    
+  \vfill
+  \footnotesize Note: the \textbf{type/name} pair is also used in configuration.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{\texttt{Drifter} - extended example}
+
+  \footnotesize
+
+  The ``\texttt{Drifter}'' component from \href{https://github.com/WireCell/wire-cell-gen/}{\texttt{wire-cell-gen}}
+  \begin{itemize}\scriptsize
+  \item Component \textbf{type}: \texttt{Drifter}
+  \item C++ class name: \texttt{WireCell::Gen::Drifter}
+  \item Definition file: \href{https://github.com/WireCell/wire-cell-gen/blob/master/inc/WireCellGen/Drifter.h}{Drifter.h}
+  \item Implementation file: \href{https://github.com/WireCell/wire-cell-gen/blob/master/src/Drifter.cxx}{Drifter.cxx}
+  \item Interfaces: \texttt{IDrifter} and \texttt{IConfigurable}
+  \end{itemize}
+  Features:
+  \begin{itemize}\scriptsize
+  \item Is user configurable
+  \item Transports energy depositions in space and time
+  \item Uses a uniform drift velocity vector field.
+  \item Drift stops at a ``\textit{field response plane}'' near the wires.
+  \item Applies physics: recombination, absorption, diffusion, statistics.
+  \end{itemize}
+
+  \vfill\footnotesize
+  So far it is the only \texttt{IDrifter} but there could be
+  others, eg:
+  \begin{itemize}\scriptsize
+  \item \texttt{SCEDrifter} might handle space-charge effects.
+  \item \texttt{GArDrifter} might handle gasseous argon drifting.
+  \end{itemize}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{\texttt{Drifter} - example component definition}
+
+  \texttt{Drifter} is both an \texttt{IDrifter} and an
+  \texttt{IConfigurable}.
+
+{
+\scriptsize
+\begin{lstlisting}[language=C++]
+#ifndef WIRECELL_DRIFTER   // include 
+#define WIRECELL_DRIFTER   // guards
+#include [...] // snipped for brevity
+
+namespace WireCell { namespace Gen {
+
+class Drifter : public IDrifter, public IConfigurable {
+public:
+ // IDrifter interface
+ virtual bool operator()(const input_pointer& depo,
+                         output_queue& outq);
+
+ // IConfigurable interface [snipped for later]
+
+ // ... local methods and data members ...
+}; }}
+#endif
+\end{lstlisting}
+}
+
+Showing just \texttt{IDrifter} interface method here.
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{\texttt{Drifter} - example component implementation}
+
+
+\begin{lstlisting}[language=C++]
+#include "WireCellGen/Drifter.h"
+#include "WireCellUtil/NamedFactory.h"
+
+WIRECELL_FACTORY(Drifter,                                      // (1)
+                 WireCell::Gen::Drifter,                       // (2)
+                 WireCell::IDrifter, WireCell::IConfigurable); // (3)
+
+//... actual implementation code...
+\end{lstlisting}
+
+
+A CPP macro is used to ``register'' the component via args:
+\begin{enumerate}
+\item the \textbf{type} label described above.
+\item the fully namespace-qualified C++ class name.
+\item list of all interfaces this component class implements.
+\end{enumerate}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{\texttt{Drifter} - example component lookup}
+
+
+\begin{lstlisting}[language=C++]
+#include "WireCellUtil/NamedFactory.h"
+#include "WireCellIface/IDrifter.h"
+using namespace WireCell;
+
+  // ... later in some method ...
+
+  string type = ..., name = ...;
+
+  auto drifter = Factory::lookup<IDrifter>(type, name);
+\end{lstlisting}
+
+
+  \footnotesize
+  \begin{itemize}
+  \item Look up component by \textbf{type} and \textbf{name}, typically as provided to user code via configuration.  Code should \textbf{not} ``care'' their values.
+  \item Component returned as a \texttt{shared\_ptr<InterfaceType>},
+    memory management is automatic.
+  \item The component should be considered pre-configured, ready to use.
+    \begin{itemize}\scriptsize
+    \item[$\to$] It is up to the application layer (\texttt{wire-cell} or
+      WCI) to assure this.
+    \end{itemize}
+  \item Some overhead so do not do \texttt{lookup} inside a tight loop!
+  \end{itemize}
+\end{frame}
+
+\subsection{Configuration}
+
+
+\begin{frame}
+  \tableofcontents[
+  currentsection,
+  currentsubsection,        
+  subsectionstyle=show/shaded/hide]
+\end{frame}
+
+\begin{frame}
+  \frametitle{WCT Configuration Rules}
+
+  Most WCT components:
+  \begin{itemize}
+  \item \textbf{should be} parameterized to the \textbf{greatest extent possible}.
+  \item \textbf{must not} use hard-coded numbers!
+  \item \textbf{should} provide sane, hard-coded \textbf{parameter defaults}.
+  \item \textbf{must not} use hard-coded numbers!
+  \item \textbf{must not} use hard-coded numbers!
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{\texttt{Drifter} - example configurable}
+
+\begin{lstlisting}[language=C++]
+#include "WireCellIface/IConfigurable.h"
+#include "WireCellIface/IDrifter.h"
+
+namespace WireCell { namespace Gen {
+
+class Drifter : public IDrifter, public IConfigurable {
+public:
+
+ // Provide hard-coded "sane" defaults.
+ virtual WireCell::Configuration default_configuration() const;
+
+ // Accept config object from user.
+ virtual void configure(const WireCell::Configuration& config);
+ // ...
+}; }}
+\end{lstlisting}
+
+\begin{itemize}\footnotesize
+\item Inherit from \texttt{IConfigurable} in addition to other interfaces.
+\item Declares \texttt{IConfigurable}'s two methods (others not shown).
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Code Strategies for Configuration}
+
+  Driven by:
+  \begin{itemize}\footnotesize
+  \item You \textbf{should} write unit tests for your components.
+  \item Unit tests \textbf{may} directly instantiate concrete components.
+  \item Concrete components \textbf{may} provide direct configuration methods.
+  \item You \textbf{should} avoid separate paths for configuration information.
+  \end{itemize}
+
+  Recommend following this ``configuration flow'' pattern:
+  \begin{enumerate}
+  \item Place ``sane'' hard-coded defaults as constructor arguments
+    and store as data members.
+  \item Return default configuration object based on these.
+  \item Use them as defaults when unpacking a configuration object
+    passed in.
+  \end{enumerate}
+
+  \vfill \footnotesize NB: some WCT code may fail to follow this
+  pattern, consider that a bug needing fixing.
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Configuration Code Strategy Example}
+
+\begin{lstlisting}[language=C++]
+namespace WireCell { namespace Gen {
+
+class MyComponent : public IConfigurable {
+  int m_a; double m_b;
+public:
+  // hard-code and store "sane" defaults here
+  MyComponent(int a=42, double b=6.9) : m_a(a), m_b(b) {};
+  // pass defaults to user
+  Configuration default_configuration() const {
+    Configuration cfg;
+    cfg["a"] = m_a;
+    cfg["b"] = m_b;
+    return cfg;
+  }
+  // use as defaults when unpacking user's config object
+  void configure(const Configuration& cfg) {
+    m_a = get(cfg, "a", m_a);
+    m_b = get(cfg, "b", m_b);
+  }
+  // ...
+};}}
+\end{lstlisting}
+
+\footnotesize
+Note: implementation is in header just for brevity here.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Configuring Components}
+
+  Manual configuration of component objects is allowed and useful in:
+  \begin{itemize}\footnotesize
+  \item Writing unit tests.
+    \begin{itemize}\scriptsize
+    \item[$\to$] eg setting parameters directly for brevity.
+    \end{itemize}
+  \item Developing integration code.
+    \begin{itemize}\scriptsize
+    \item[$\to$] eg converting from \ls's
+    configuration object.
+    \end{itemize}
+  \end{itemize}
+
+  WCT automates component configuring with \texttt{ConfigManager}:
+  \begin{itemize}\footnotesize
+  \item Configuration actions driven by the configuration itself.
+    \begin{itemize}\scriptsize
+    \item[$\to$] Iterates through configuration in strict order. 
+    \end{itemize}
+  \item Dynamically constructs components as they are discovered in
+    the configuration.
+  \item Matches portion of configuration to each component and applies
+    it.
+    \begin{itemize}\scriptsize
+    \item[$\to$] User config is merged into hard-coded default
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Configuration Object Schema}
+  In memory, configuration is a \textit{heterogeneous, recursive}
+  data structure \texttt{WireCell::Configuration}.
+  \begin{itemize}
+  \item It's really just a \texttt{Json::Value} (from JSONCPP)
+  \item Top level configuration object is an array (list).
+  \item Each entry is an object (dictionary) with keys \textbf{type},
+    \textbf{name} and \textbf{data}.
+  \item The \textbf{type} and \textbf{name} are used to match
+    configuration to configurable component instance.
+  \item The \textbf{data} attribute has a value which follows a
+    \textbf{type}-specific schema.
+  \item The \textbf{data} value is passed to \texttt{configure()}.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Example Configuration}
+
+  Expressed as JSON, with two components both of type
+  \texttt{MyComponent} (prior example) and with names \texttt{mc1} and
+  \texttt{mc2}:
+
+\begin{lstlisting}[language=json]
+[ 
+  {
+    "type":"MyComponent",
+    "name":"mc1",
+    "data": { "a":100, "b":1.0 }
+  },
+  { 
+    "type":"MyComponent",
+    "name":"mc2",
+    "data": { "a":200, "b":2.0 }
+  }
+]
+\end{lstlisting}
+
+  The \texttt{name} may be omitted and a default \texttt{""} will be assumed.
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Two Configuration File Formats}
+  WCT accepts two types of configuration files:
+
+  \begin{description}
+  \item[JSON] as described above, a simple list of configuration
+    objects, one for every configurable component that might be used
+    in an application.
+  \item[Jsonnet] a Touring-complete, JSON-like \textit{data templating
+    language} that \textbf{compiles into JSON}.
+  \end{description}
+  Why two?
+  \begin{itemize}
+  \item Code wants exhaustive, regular and lightly structured data.
+  \item Humans want concise and highly structured, non-repetitive
+    description of data.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{WCT Jsonnet Overview}
+  \begin{itemize}
+  \item Jsonnet is currently \textbf{optional} in WCT.
+    \begin{itemize}
+    \item If compiled with support Jsonnet files can be directly read.
+    \item If user's install has no support, can install Jsonnet and use
+      \texttt{jsonnet} command line program to compile to JSON.
+    \item You \textbf{really} want to use Jsonnet instead of plain JSON.
+    \end{itemize}
+  \item Excellent docs on the \href{http://jsonnet.org/}{Jsonnet web site}.
+  \item See also configuration section of the
+    \href{https://wirecell.github.io/}{WCT Manual}.
+  \item The
+    \href{https://github.com/wirecell/wire-cell-cfg}{\texttt{wire-cell-cfg}}
+    package holds Jsonnet configuration and support.
+  \item Jsonnet is similar in syntax and schema to FCL but it is 
+    somewhat more regular and has a super-set of features.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{WCT Jsonnet Support}
+  WCT provides \href{https://github.com/WireCell/wire-cell-cfg/blob/master/wirecell.jsonnet}{\texttt{wirecell.jsonnet}}
+  \begin{itemize}
+  \item Exports the WCT system-of-units to Jsonnet.
+  \item Provides Jsonnet forms for common, low-level WCT objects
+    \begin{itemize}
+    \item \texttt{Point, Ray, Component}
+    \end{itemize}
+  \item Helpers for defining DFP graphs.
+  \item Expect it will grow as needed.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Jsonnet Primer}
+  Explore the current config for
+  \href{https://github.com/WireCell/wire-cell-cfg/tree/master/uboone}{$\mu$Boone
+    sim}.
+
+  \vfill
+
+  Currently organized in three layers:
+  \begin{itemize}
+  \item \href{https://github.com/WireCell/wire-cell-cfg/blob/master/uboone/globals.jsonnet}{global parameters}
+  \item \href{https://github.com/WireCell/wire-cell-cfg/blob/master/uboone/components.jsonnet}{define some default component configurations}
+  \item \href{https://github.com/WireCell/wire-cell-cfg/blob/master/uboone/fourdee.jsonnet}{define actual configuration}
+  \end{itemize}
+  (click to browse source)
+
+  \vfill
+
+  This is just an initial organization.  Want to factor out
+  common configuration chunks shared between DUNE and $\mu$Boone.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Configuration File Miscellany}
+  \begin{itemize}
+  \item JSON and Jsonnet files are used for other input files:
+    \begin{itemize}
+    \item Field response data files.
+    \item Wire geometry / channel map files.
+    \item Deposition files
+    \end{itemize}
+  \item JSON and Jsonnet files are located first in the current
+    working directory and then by searching a path list given by the
+    \texttt{WIRECELL\_PATH} environment variable.
+  \item JSON (and not Jsonnet) files may be compressed with \texttt{bzip2}
+    (use a \texttt{.json.bz2} extension).
+  \end{itemize}
+\end{frame}
+
+\subsection{Utility Code}
+
+\begin{frame}
+  \tableofcontents[
+  currentsection,
+  currentsubsection,        
+  subsectionstyle=show/shaded/hide]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Tour of \texttt{wire-cell-util}}
+
+  Bottom of dependencies, it depends on no other WCT package.
+
+  Provides \textbf{low-level} and \textbf{general} classes and
+  functions.   Eg:
+
+  \footnotesize
+  \begin{itemize}
+  \item\texttt{Binning} nbins, maxbin, minbin and related operations.
+  \item\texttt{BoundingBox} operations to calculate 3D bounding boxes
+  \item\texttt{Point}, \texttt{Ray}, \texttt{Intersection} 3D vectors
+  \item\texttt{ExecMon} = \texttt{MemUsage} + \texttt{TimeKeeper}
+  \item\texttt{String} string functions, eg \texttt{split()}.
+  \item\texttt{Type} turn C++ types into human readable strings.
+  \item\texttt{Pimpos} pitch-impact-position operations
+  \item\texttt{Response} field+elec response support.
+  \item \texttt{Waveform} for real and complex arrays and FFT.
+  \item Patterns: Interface, Iterator, NamedFactory, Singleton, 
+  \item Managers: \texttt{PluginManager}, \texttt{ConfigManager}
+  \end{itemize}
+  
+  NB: some things probably should become components!
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Units}
+  It is \textbf{mandatory} that WCT system-of-units is obeyed.
+
+  This means any \textbf{quantity with units}:
+  \begin{itemize}
+  \item held in a variable in WCT C++, Python or Jsonnet code
+    \textbf{must} be considered expressed in the WCT system-of-units.
+  \item expressed as a literal number in WCT C++,
+    Python or Jsonnet code \textbf{must} have a unit \textbf{multiplied}.
+  \item \textbf{may} be expressed in alternative units if consumed
+    \textbf{immediately} (eg, for formatted output) by dividing by a
+    WCT unit symbol.
+  \item expressed as a literal number in JSON or other representation
+    where explicit units are not supported \textbf{must} be implicitly
+    in WCT system-of-units.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Units - Literal Values}
+\begin{lstlisting}[language=C++]
+// C++
+#include "WireCellUtil/Units.h" 
+double drift_speed = 1.6*units::mm/units::us;
+\end{lstlisting}
+\begin{lstlisting}[language=python]
+# Python
+from wirecell import units
+drift_speed = 1.6*units.mm/units.us
+\end{lstlisting}
+\begin{lstlisting}[language=c++]
+// Jsonnet
+local wc = import "wirecell.jsonnet";
+{ drift_speed: 1.6*wc.mm/wc.us, ... }
+\end{lstlisting}
+
+\vfill\footnotesize
+\begin{itemize}
+\item Never write a quantity as a bare number without a WCT unit.
+\item Never have a variable hold a quantity outside WCT system-of-units.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Units - Conversion On Output}
+
+  May convert units when value is immediately consumed
+
+\begin{lstlisting}[language=c++]
+// C++
+cout << "Drift speed is " << v/(units::mm/units::us) << " mm/us\n";
+\end{lstlisting}
+\begin{lstlisting}[language=python]
+# Python
+print ("Drift speed is %f mm/us" % v/(units.mm/units.us))
+\end{lstlisting}
+
+\vfill\footnotesize
+  Other contexts to convert to some explicit units:
+  \begin{itemize}
+  \item Booking histograms to use appropriate ranges.
+  \item Writing output in formats assuming other system of units.
+  \item Note, integration code may hold values in other than WCT
+    system-of-units but must convert when calling WCT code.
+  \end{itemize}
+\end{frame}
+
+\subsection{Coding Conventions}
+
+\begin{frame}
+  \tableofcontents[
+  currentsection,
+  currentsubsection,        
+  subsectionstyle=show/shaded/hide]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Coding Conventions}
+  Covers:
+  \begin{itemize}
+  \item Formatting (use one the true indent = 4 spaces).
+  \item Commenting conventions.
+  \item Usage of C++ \texttt{namespace}.
+  \item Class, method and variable casing and naming patterns.
+  \end{itemize}
+  Exhaustive list in \href{https://wirecell.github.io/}{the WCT manual}.
+
+  \vfill
+  Would like to have some editor config to help us comply.
+\end{frame}
+
+\subsection{Unit Tests}
+
+\begin{frame}
+  \tableofcontents[
+  currentsection,
+  currentsubsection,        
+  subsectionstyle=show/shaded/hide]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Unit Testing Philosophy}
+
+  \footnotesize
+  \begin{itemize}
+  \item As you develop some class or functions (units), you write tests.
+  \item Write tests to \textbf{fail}, actually test things.  Use
+    \texttt{assert()} liberally.
+  \item Write tests to be reproducible forever which means no input
+    data nor parameters.  For once, it's okay to hard-code!
+    \begin{itemize}\scriptsize
+    \item[$\to$] if input data is truly needed, make it as small as
+      possible so it can be included in the repo, even compiled into
+      the code.
+    \end{itemize}
+  \item Tests do not have to be beautiful or high-performance
+    \begin{itemize}\scriptsize
+    \item[$\to$] but they get run a lot so don't make them overblown.
+    \end{itemize}
+  \item Tests should be numerous and each should test a small part of some unit.
+  \item Tests should not include large copy-paste from other tests.
+    \begin{itemize}\scriptsize
+    \item[$\to$] Doing this means you are writing ``real'' code which
+      should be cleaned up and moved into some library (and
+      \textbf{it} should be tested)
+    \end{itemize}
+  \item Tests are not applications, they should only test, not
+    overloaded into also being ``useful''.
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Writing WCT Unit Tests}
+  \begin{enumerate}
+  \item Start a file under \texttt{<pkg>/test/test\_name.cxx}.
+    \begin{itemize}\footnotesize
+    \item Pick a name that describes the unit (eg, class name)
+    \end{itemize}
+  \item Inside make several \texttt{test\_<testname>()} functions which
+    take \textbf{no arguments} and each which tests some aspect of the unit.
+  \item Make a \texttt{int main()} function that takes \textbf{no arguments}
+    and which calls all the test functions.
+  \end{enumerate}
+
+\begin{lstlisting}[language=c++]
+#include "WireCellUtil/Testing.h"
+using namespace WireCell;
+void test_something() {
+  // ...
+  int val = some_function();
+  Assert(val == 42);
+}
+int main() {
+  test_something();
+  return 0;
+}
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Running WCT Unit Tests}
+
+  \footnotesize
+  \begin{itemize}
+  \item Unit test are built automatically by \texttt{waf}.
+  \item \texttt{waf} will \textbf{try} to run them, but they will fail
+    by default due to environment issues.
+  \item To make it work \texttt{waf} needs know how to set a run-time
+    environment.  You can set this up in your own shell but that can
+    interfere with build dependencies.
+  \end{itemize}
+
+  If \texttt{\$install} points to the installation directory:
+
+\begin{lstlisting}[language=sh]
+# first build without running tests
+waf --notests build install
+# then run all tests using proper harness
+waf --alltests --test-cmd="LD_LIBRARY_PATH=$install/lib %s"
+
+# or, run an individual test by hand:
+LD_LIBRARY_PATH=$install/lib ./build/<pkg>/test_<name>
+\end{lstlisting}
+
+  This needs some improvement!
+\end{frame}
+
+\subsection{Python}
+
+\begin{frame}
+  \tableofcontents[
+  currentsection,
+  currentsubsection,        
+  subsectionstyle=show/shaded/hide]
+\end{frame}
+
+\begin{frame}
+  \frametitle{WCT Python Support}
+
+
+  \href{https://github.com/wirecell/wire-cell-python}{\texttt{wire-cell-python}}
+  
+  \begin{itemize}
+  \item Currently a pure-Python package.
+  \item Uses standard Python \texttt{setup.py} packaging.
+  \item \wc system-of-units
+  \item Provides \texttt{wirecell} Python module tree and
+    \texttt{wirecell-*} main programs using
+    \href{http://click.pocoo.org/}{Click} CLI.
+  \item Conversion from external config formats (eg, Garfield),
+    generators of config (eg, wires) and tests and plots.
+  \item Various proofs of principle and prototypes.
+  \end{itemize}
+
+  \vfill
+  \footnotesize
+  May extend to allow using WCT components in Python.
+
+\end{frame}
+
+\subsection{Documentation}
+
+\begin{frame}
+  \tableofcontents[
+  currentsection,
+  currentsubsection,        
+  subsectionstyle=show/shaded/hide]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Types of Documentation}
+  \begin{itemize}
+  \item Formal manual.
+  \item Doxygen reference.
+  \item GitHub READMEs, issues, pull-requests
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Authoring and Building Manual Text}
+  Source at \href{https://github.com/WireCell/wire-cell-docs/tree/master/manuals}{\texttt{docs/manual/}} and generated content at \url{https://wirecell.github.io/}.
+  \begin{itemize}
+  \item Currently written in \href{http://orgmode.org/}{Org} markup language.
+  \item Uses \texttt{waf} to build the output formats.
+    \begin{itemize}
+    \item Needs Emacs and some Emacs packages installed.
+    \end{itemize}
+  \item A few caveats:
+    \begin{itemize}\footnotesize
+    \item Emacs is best for writing Org, but not required.
+    \item The build is currently not tested outside my environment.
+    \item Some things about the current manual system I don't like and
+      will probably change.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Reference Documentation}
+  \begin{itemize}
+  \item Follow Doxygen commenting rules for any comments that you want
+    to show up in the reference documentation.
+  \item All Interface headers \textbf{must} have per-class and
+    per-method Doxygen comments.
+    \begin{itemize}
+    \item Some may lack it - this is considered a bug.
+    \end{itemize}
+  \item Implementations headers \textbf{may} have Doxygen comments.
+  \item Doxygen comments \textbf{should not} be used for
+    implementation comments.
+  \item Implementation comments \textbf{may} be used.
+    \begin{itemize}\footnotesize
+    \item Opinion: Comments always lie.  It is far better to spend
+      energy to use \textbf{descriptive names} for variables,
+      functions and classes.
+    \end{itemize}
+  \end{itemize}
+  \footnotesize
+  NB: Generating Doxygen reference documents is not yet automated and
+  served. Volunteer?
+\end{frame}
+\section{Integration}
+
+\begin{frame}
+  \tableofcontents[currentsection,hideothersubsections]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Integration Strategy}
+  \footnotesize
+  \begin{itemize}
+  \item WCT Interfaces and components are similar in concept to
+    \href{https://cdcvs.fnal.gov/redmine/projects/art/wiki/Guide_to_writing_and_using_tools}{\art Tools}
+  \item Any WCT component we expose to \ls write an \art Tool which:
+    \begin{itemize}\scriptsize
+    \item Inherits from desired WCT Interface
+    \item Inherits from \ls Tool base class (interface)
+    \end{itemize}
+  \item Design \art Tool side to either accept \ls data objects or PoD.
+  \item Some more design details still need to be developed.
+  \end{itemize}
+  \begin{center}
+    \includegraphics[width=\textwidth]{chain.pdf}
+
+    \scriptsize
+    The WCT \texttt{Fourdee} simulation app component which
+    orchestrates various subcomponents.  The input and output
+    components are implemented as (also) \art Tools.
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Integration Tasks}
+
+  \begin{itemize}
+  \item Use currently integrated WCT Noise Filtering as vehicle for:
+    \begin{itemize}
+    \item Test out the Integration Strategy above.
+    \item As side effect clean up WCT and WCI parts.
+    \item Test out ways to handle configuration exchange. 
+    \item This task is for me.
+    \end{itemize}
+  \item Integrate existing WCT simulation.
+    \begin{itemize}
+    \item This task is for Brian after I provide more concrete
+      guidance based on the above.
+    \end{itemize}
+  \item Integrate WCT signal processing once ported from WCP.
+    \begin{itemize}
+    \item ditto
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\end{document}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

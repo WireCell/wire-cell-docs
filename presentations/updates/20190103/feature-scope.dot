@@ -1,0 +1,55 @@
+digraph fs {
+        compound=true
+        nodesep=1
+        ranksep=.2
+        style="filled,rounded"
+        fillcolor=gray90
+
+        node[shape=circle, style=filled, fillcolor=white, fontsize=20]
+
+        fontsize=30
+        penwidth=2
+
+//        main[shape=ellipse,label="Wire-Cell Feature Scope"]
+        subgraph cluster_wcp {
+                label="Wire-Cell\nPrototype"
+                img[label="3D\nImaging"]
+                clust[label="3D\nClustering"]
+                flash[label="Ionization -\nScintilation\n'flash'\nmatching"]
+                pat[label="Pattern\nRecognition"]
+        }
+        subgraph cluster_wct {
+                label="Wire-Cell\nToolkit"
+                nf[label="Noise\nFiltering"]
+                sp[label="Signal\nProcessing\n(inc. L1)"]
+                sim[label="Drift and\nField Response\nSimulation"]
+        }
+        subgraph cluster_bee {
+                label="Interactive\nVisualization"
+                bee[label="''Bee'' 3D\n(WebGL)"]
+                //mw[label="Magnify\nsignals\n(web)"]
+                mr[label="''Magnify'' tools\ncharge + light\nsigproc/tracking\n(ROOT/GUI)"]
+        }
+        subgraph cluster_future {
+                label="Future\n"
+                ml[label="3D\nMachine\nLearning"]
+                hpc[label="Parallel\nprocessing\n(grid + HPC)"]
+        }
+        spacer[style=invis]
+        notin[shape=record,fontcolor=gray40,color=gray30,style="rounded,dashed",
+              label="{{Currently\nout of scope}|{Particle-tracking\nsimulation (Geant4)}|{Raw data file\ninterface (art)}|{Event-processing\nframework (art)}}"]
+
+
+
+        edge[style=invis]
+        nf->sp->sim
+        img->clust->flash->pat
+        bee->mr
+        ml->hpc
+        hpc->spacer->notin
+        edge[style=dashed, constraint=false, penwidth=2, lhead=cluster_wct]
+        img->nf
+        clust->sp
+        flash->sim
+        pat->sim
+}

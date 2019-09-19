@@ -1,0 +1,12 @@
+\frametitle{Clustering visitor}
+  Clustering is a generic function which takes two lists of blobs and a \textbf{functor}:
+\begin{verbatim}
+    auto assoc = some_function_object;
+    RayGrid::associate(blobs_1, blobs_2, assoc);
+\end{verbatim}
+
+  The \texttt{associate()} function will call the \texttt{assoc} functor for every pair of blobs which are associated.
+
+  \vfill
+
+  It's then up to the user to do something fun in their functor.

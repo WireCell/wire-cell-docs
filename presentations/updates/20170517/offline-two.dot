@@ -1,0 +1,30 @@
+digraph Offline {
+        node[shape=box];
+        input[style=invis,pos="0.5,2!"];
+        unpack[label="inflate\nunpack",pos="2,2!"];
+        adc[label="ADC\ncorrections",pos="4,2!"];
+        noise[label="noise\nfiltering",pos="6,2!"];
+        sigproc[label="signal\nprocessing",pos="8,2!"];
+        hits[label="Gauss hit fitting\nor 3D imaging",pos="10,2!"];
+        reco[label="many event\nreconstruction\nalgorithms",pos="12,2!"];
+        
+        input->unpack[fontcolor=red,label="\n2.5PB\n12 bit x4\ncompressed\nfrom disk",penwidth=6,color=red];
+        unpack->adc[label="\n27PB 32bit\nuncompressed\nin memory",penwidth=10];
+        adc->noise[penwidth=9];
+        noise->sigproc[penwidth=8];
+        sigproc->hits[label="\n250TB\n32bit, ROI\nin memory",penwidth=4,style="invis"];
+        hits->reco[penwidth=1];
+        
+        dr[label="rebin\npack\ncompress",fontcolor=blue,color=blue,pos="8,1!",style=""];
+        reduc[fontcolor=red,label="Reduced data set\nsaved to file\nrebin-3: 24TB",shape=ellipse,pos="9,0!",style=""];
+        sigproc->dr[penwidth=4,style=""];
+        dr->reduc[color=red,fontcolor=red,style=""];
+
+        rd[label="inflate\n(unrebin)",pos="10,1!",style=""];
+        reduc->rd[color=red,style=""];
+        rd->hits[penwidth=4,style=""];
+
+
+
+        //        label="Two stage processing";
+}

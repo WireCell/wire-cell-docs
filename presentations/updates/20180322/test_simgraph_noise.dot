@@ -1,0 +1,29 @@
+digraph pgraph {
+rankdir=LR;
+	node[shape=record];
+	BlipSource_lowrate[label="{{BlipSource\nlowrate}|{<out0>0}}"];
+	DepoMerger_CBBlipJoiner[label="{{<in0>0|<in1>1}|{DepoMerger\nCBBlipJoiner}|{<out0>0}}"];
+	DepoMerger_CosmicBeamJoiner[label="{{<in0>0|<in1>1}|{DepoMerger\nCosmicBeamJoiner}|{<out0>0}}"];
+	Digitizer[label="{{<in0>0}|{Digitizer\n}|{<out0>0}}"];
+	Drifter[label="{{<in0>0}|{Drifter\n}|{<out0>0}}"];
+	DumpFrames[label="{{<in0>0}|{DumpFrames\n}}"];
+	FrameSummer[label="{{<in0>0|<in1>1}|{FrameSummer\n}|{<out0>0}}"];
+	MultiDuctor[label="{{<in0>0}|{MultiDuctor\n}|{<out0>0}}"];
+	NoiseSource[label="{{NoiseSource\n}|{<out0>0}}"];
+	NumpyDepoSaver[label="{{<in0>0}|{NumpyDepoSaver\n}|{<out0>0}}"];
+	NumpyFrameSaver[label="{{<in0>0}|{NumpyFrameSaver\n}|{<out0>0}}"];
+	TrackDepos_beam[label="{{TrackDepos\nbeam}|{<out0>0}}"];
+	TrackDepos_cosmics[label="{{TrackDepos\ncosmics}|{<out0>0}}"];
+	TrackDepos_cosmics:out0 -> DepoMerger_CosmicBeamJoiner:in0;
+	TrackDepos_beam:out0 -> DepoMerger_CosmicBeamJoiner:in1;
+	DepoMerger_CosmicBeamJoiner:out0 -> DepoMerger_CBBlipJoiner:in0;
+	BlipSource_lowrate:out0 -> DepoMerger_CBBlipJoiner:in1;
+	DepoMerger_CBBlipJoiner:out0 -> NumpyDepoSaver:in0;
+	NumpyDepoSaver:out0 -> Drifter:in0;
+	Drifter:out0 -> MultiDuctor:in0;
+	MultiDuctor:out0 -> FrameSummer:in0;
+	NoiseSource:out0 -> FrameSummer:in1;
+	FrameSummer:out0 -> Digitizer:in0;
+	Digitizer:out0 -> NumpyFrameSaver:in0;
+	NumpyFrameSaver:out0 -> DumpFrames:in0;
+}

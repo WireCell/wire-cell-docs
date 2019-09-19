@@ -1,0 +1,13 @@
+digraph layers {
+        ranksep=0.1
+        node[shape=record]
+
+        integ[label="{''wire-cell'' command line interface}|{art/LArSoft module/tool integration}"]
+        config[label="data flow processing graph, construct via user configuration"]
+        inter[label="component interface factory, ''tool lookup'' pattern"]
+        code[label="#include, use concrete code, directly in user code"]
+
+
+        edge[style=invis]
+        integ->config->inter->code
+}

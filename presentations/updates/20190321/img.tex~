@@ -1,0 +1,293 @@
+% TEX INPUTS=.:$HOME/git/bvtex: latexmk  -pdf <main>.tex
+\documentclass[xcolor=dvipsnames]{beamer}
+\usefonttheme{serif}
+
+\input{defaults}
+\input{beamer/preamble}
+\usepackage{svg}
+
+
+\setbeamertemplate{navigation symbols}{}
+% \setbeamertemplate{background}[grid][step=1cm]
+
+\usepackage{siunitx}
+\usepackage{xmpmulti}
+\usepackage[export]{adjustbox}
+\usepackage{ulem}
+\usepackage[outline]{contour}
+\usepackage{pdfpages}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\usetikzlibrary{positioning}
+
+\definecolor{bvtitlecolor}{rgb}{0.98, 0.92, 0.84}
+\definecolor{bvoutline}{rgb}{0.1, 0.1, 0.1}
+
+\renewcommand{\bvtitleauthor}{Brett Viren}
+\renewcommand{\bvtit}{title}
+\renewcommand{\bvtitle}{\LARGE TITLE}
+\renewcommand{\bvevent}{{\small EVENT -- DATE}}
+\renewcommand{\bvdate}{DD Mmm YYYY}
+\renewcommand{\bvbeamerbackground}{}
+
+\def\Put(#1,#2)#3{\leavevmode\makebox(0,0){\put(#1,#2){#3}}}
+
+\begin{document}
+\begin{frame}
+  \begin{center}
+    \huge
+    Start of 3D imaging
+
+    in Wire-Cell Toolkit
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Process}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+      \item \href{http://www.phy.bnl.gov/}{Summary slides} (Xin)
+      \item High level flow graph (Xin)
+      \item Stare at WCP code no copy-paste (Xin, et al)
+      \item Add some new ideas and optimizations.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      %\includegraphics[width=\textwidth]{flow.pdf}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Parts}
+  \begin{itemize}
+  \item Slicing (done)
+  \item Striping (done, but not needed)
+  \item Tiling (done)
+  \item Clustering (done)
+  \item Solving (in progress)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Slicing}
+  \begin{itemize}
+  \item (data structure)
+    
+  \item (algorithm)
+  \item (options)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Striping}
+  \begin{itemize}
+  \item (data structure)
+    
+  \item (algorithm)
+  \item (options)
+  \end{itemize}
+  why not needed
+\end{frame}
+
+\begin{frame}
+  \frametitle{Tiling}
+  \begin{itemize}
+  \item ray grid
+  \item ray tiling
+  \item formalism
+  \item how dead channels can be accommodated.
+  \item 2d viz
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Ray Grid Optimization}
+
+
+  A new optimization found for tiling.
+
+
+
+  Exploits uniform wire angle and pitch.
+
+
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Ray Grid}
+  \textbf{Ray}: a line segment defined by two 3D points and a direction.
+  \begin{itemize}
+  \item Each wire (segment) defines a ray.
+  \item Define two per-plane rays:
+    \textbf{ray0}/\textbf{ray1} = \textbf{wire 0} $\mp\,\frac{1}{2} \cdot\, \overrightarrow{pitch}$
+
+  \item These define a 2D coordinate system for the plane:
+    \begin{itemize}
+    \item[$\circ$] origin: center of \textbf{ray0} projected to $x=0$
+    \item[$\to$] $\hat{z}$ axis along $\overrightarrow{pitch}$
+    \item[$\uparrow$] $\hat{y}$ axis along $\overrightarrow{ray}$
+    \item[$\otimes$] $\hat{x}$ by RHR (anti-drift direction)
+    \end{itemize}
+  \item[$\leftrightarrow$] \textbf{1-D linear grid} spanning wire plane along pitch direction.    
+  \item[$\Rightarrow$] Specifying \textbf{ray index} specifies a \textbf{pitch location}.
+  \item[$\Rightarrow$] Valid \textbf{ray indices} $\in\{0,N_{wires}\}$
+  \end{itemize}
+  Thus, each \sout{wire plane} \textbf{layer} has a \textbf{ray grid}
+
+\end{frame}
+
+\begin{frame}
+  \begin{center}
+    \tiny
+    \includesvg[height=\textheight]{test_raytiling-00}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Two Ray Grids}
+  
+  Two ray grids form a \textbf{regular 2D grid} which is a \textbf{non-orthogonal coordinate system}. 
+
+  \begin{description}
+  \item[$p^l$] relative \textbf{pitch vector} for layer $l$.
+  \item[$c^l$] \textbf{origin point} (center of \textbf{ray0}) for layer $l$.
+  \item[$r^{lm}_{ij}$] \textbf{crossing point} of ray $i$ from layer $l$ and ray $j$ from layer $m$.
+  \item[$w^{lm}$] relative \textbf{displacement vector} for layer $l$ connecting crossing points of neighboring layer-$m$ rays on a ray of layer $l$.
+  \end{description}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Key optimization}
+  Given vectors $p^l$, $c^l$ and tensor $w^{lm}$ and one crossing point $r^{lm}_{00}$ the tensor of all other crossing points $r^{lm}_{ij}$ may be calculated with simple vector arithmetic.
+
+  \begin{center}
+    \[r^{lm}_{ij} = r^{lm}_{00} + j w^{lm} + i w^{ml}\]
+  \end{center}
+
+  \begin{itemize}
+  \item $r^{lm}_{00}$ and $w^{lm}$ can be calculated with simple vector arithmetic
+  \item These tensors are needed for \textbf{each pair of layers}.
+    \begin{itemize}
+    \item[$\circ$] This is $\mathcal{O}(N^2)$ but $N=5$ so small
+      \begin{itemize}\scriptsize
+      \item[?]  (why 5 you ask?  coming up!)
+
+      \end{itemize}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Crossing points in $3^{rd}$ layer}
+  Core tiling operation: find a crossing point $r^{lm}_{ij}$ in terms of \textbf{pitch location} of $3^{rd}$ layer $n$.  The tensor of all such pitch locations:
+  \vspace{-5mm}
+  \begin{center}
+    \[p^{lmn}_{ij} = (r^{lm}_{ij} - c^n) \cdot \hat{p}^n\]
+  \end{center}
+
+  Where $\hat{p}^n$ is unit vector in pitch direction of layer $n$.\\
+  Expanding $r^{lm}_{ij}$, 
+  \vspace{-5mm}
+  \begin{center}
+    \[P^{lmn}_{ij} = r^{lm}_{00}\cdot \hat{p}^n + jw^{lm} \cdot \hat{p}^n + iw^{ml} \cdot \hat{p}^n - c^n \cdot \hat{p}^n\]
+  \end{center}
+  Or more simply
+  \vspace{-5mm}
+  \begin{center}
+    \[P^{lmn}_{ij} = ja^{lmn} + ia^{mln} + b^{lmn}\]
+  \end{center}
+The tensors $a$ and $b$ are scalar valued, $a$ is not symmetric under a transpose of $l$ and $m$ and $b$ is.  Both have undefined diagonals
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Crossing point containment}
+  Okay, the operation that is \textbf{really} needed is:\footnote{In WCP language: ``is a \textit{blob corner} in a \textit{merged wire}?''}
+
+  \begin{itemize}
+  \item[?] what rays in layer $n$ bound a crossing point $r^{lm}_{ij}$ ?
+  \end{itemize}
+
+  They are found simply by their indices relative to:
+  \vspace{-5mm}
+  \begin{center}
+    \[I^{lmn}_{ij} \equiv floor(P^{lmn}_{ij}/p^n)\]
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Tiling definitions}
+  Goal:  identify regions where ionized electrons likely existed in the time slice
+
+  \begin{itemize}
+  \item Select all \textbf{wires} attached to \textbf{channels} which collected signal above some \textbf{threshold} in a \textbf{time slice}.
+    \begin{itemize}
+    \item[$\circ$] call these \textbf{active wires}\footnote{Might force dead wires to be ``active'' at this stage but not yet tried.}
+    \item[$\circ$] call the \textbf{active ray} which is $-\frac{1}{2}p^l$ from active wire.
+    \item[$\circ$] call the \textbf{active strip} $\mp\frac{1}{2}p^l$ around active wire.
+    \item[] (reminder: $p^l$ is relative pitch vector of layer $l$)
+    \end{itemize}
+  \item Selections are \textbf{per layer} (per ``wire plane'')
+  \item Note: wrapped wires don't complicate things here except in finding connected channel!
+
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Simple toy simulation}
+  \begin{columns}
+    \begin{column}{0.35\textwidth}
+      \footnotesize
+      \begin{itemize}
+      \item Random clusters of ``electrons'' in one slice.
+      \item Nearest wire from each plane ``hit'' directly.
+      \item Channels simply sum up their hits.
+      \item Active strips colored by \textbf{layer}.
+      \item Note: 5 layers = 3 planes + 2 bounds (each bound is like 1 big ``wire'' always hit)
+      \end{itemize}
+    \end{column}
+
+    \begin{column}{0.7\textwidth}
+      
+      \begin{center}
+        \tiny
+        \includesvg[height=0.8\textheight]{test_raytiling-01.svg}
+      \end{center}
+    \end{column}
+
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Clustering}
+  \begin{itemize}
+  \item alg using ray grid
+  \item visitor function to build association
+  \item 3d paraview viz
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Solving}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{More to do}
+  \begin{itemize}
+  \item Complete the solving
+  \item WCT components and data interfaces for full chain
+  \item One more pass through thinking how to allow for dead channels.
+  \item Test on data.
+  \item Get other eyes and hands on the code and validation
+  \end{itemize}
+\end{frame}
+
+\end{document}
+

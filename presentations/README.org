@@ -1,0 +1,37 @@
+#+title: Wire-Cell Presentations
+
+A non-exhaustive collection of presentations abuot Wire Cell
+
+* 2019
+
+- Progress adding 3D imaging to the Wire-Cell Toolkit, B. Viren for local WC team (local [[./updates/20190321][materials]] and [[./updates/20190321/latexmk-out/img.pdf][PDF]]
+
+- Wire-Cell Software, B. Viren at DUNE S&C, (local [[./updates/20190103][materials]] and [[./updates/20190103/latexmk-out/wire-cell.pdf][PDF]])
+
+* 2018
+
+- WCT Simulation Developments and larsoft integration, B. Viren for Yale group visit to BNL, (local [[./updates/20180412][materials]] and [[./updates/20180412/latexmk-out/wct-sim-int.pdf][PDF]])
+
+- Wire-Cell Toolkit Sim and Graph Updates Config and NF Integration, B. Viren at local MB meeting (local [[./updates/20180322/][materials]] and [[./updates/20180322/latexmk-out/simgraph.pdf][PDF]])
+
+* 2017 
+
+- Three Faces of Wire Cell: Prototype, Toolkit, Integration, B. Viren at WC LEE Ana (local [[./updates/20170522/][materials]] and [[./updates/20170522/latexmk-out/wcp-wct.pdf][PDF]])
+
+- Wire Cell Toolkit Updates and Status, B. Viren at SimReco, (local [[./updates/20170517][materials]] and [[./updates/20170517/latexmk-out/wire-cell-sr.pdf][PDF]])
+
+- Wire-Cell Validation "Systems", B. Viren at MB reco, (local [[./updates/20171212][materials]] and [[./updates/20171212/latexmk-out/wctv.pdf][PDF]])
+
+* 2016
+
+- [[https://indico.hephy.oeaw.ac.at/event/86/session/1/contribution/16/material/slides/0.pdf][The Wire Cell reconstruction method and software library]], B. Viren at [[https://indico.hephy.oeaw.ac.at/event/86/overview][Connecting the Dots 2016]] (local [[./ctd/][materials]] and [[./ctd/latexmk-out/ctd-wire-cell.pdf][PDF]])
+
+- Bee and Wire Cell Status and Larsoft Integration Plans, B. Viren at DUNE Collaboration (local [[updates/dune-20160521/][materials]] and [[./updates/dune-20160521/latexmk-out/wcbsalsi.pdf][PDF]])
+
+* 2015
+
+- Wire Cell Event Reconstruction Software for LArTPC Detectors, B. Viren at BNL CSC seminar (local [[./software/][materials]] and [[./software/latexmk-out/wire-cell.pdf][PDF]])
+
+- Wire Cell Software Overview, B. Viren at local meeting (local [[./overview/][materials]] and [[./overview/latexmk-out/wire-cell-overview.pdf][PDF]])
+
+- Wire Cell summit at LBNL (local [[./summit][materials]])

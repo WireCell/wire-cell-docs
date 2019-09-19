@@ -1,0 +1,16 @@
+digraph Full {
+        node[shape=box];
+        daq[label="pD/SP\nDAQ",pos="1,2!"];
+        stor[label="data storage\ndisk & tape\nCERN+FNAL",fontcolor=red,shape=ellipse,pos="3,2!"];
+
+        legend[label="''context''\n''available CPU''\n''result latency''",pos="5,2!"];
+        p3s[label="DQM/PP\n~300 cores\n10-60 min",pos="3,0.5!"];
+        om[label="OM\n~10? cores\n~1 min",pos="1,0.5!"];
+        off[label="Offline\n1k-10k of cores\ndays-months",pos="5,0.5!"];
+
+        
+        daq->stor[color=red,fontcolor=red,label="\n2.5 PB raw\ncompressed",penwidth=4];
+        daq->om[label="??% raw\nuncompressed  ",penwidth=4];
+        stor->off[color=red,fontcolor=red,label="\n100%  \nraw",penwidth=4];
+        stor->p3s[color=red,fontcolor=red,label="  ~1%\n  raw  "];
+}

@@ -1,0 +1,43 @@
+digraph chain {
+
+        node[shape=box];
+
+        ideposrc[label="IDepoSource",pos="0,2!"];
+
+        idrifter[label="IDrifter",pos="2,2!"];
+        drifter[label="WC Drifter",pos="2,0.5!"];
+
+        iductor[label="IDuctor",pos="4,2!"];
+        ductor[label="WC Ductor",pos="4, 0.65!"];
+
+        idis[label="IDissonance",pos="5,1.25!"];
+        dis[label="WC Noise",pos="5,0!"];
+
+        idigi[label="IDigitizer",pos="6,2!"];
+        digi[label="WC Digitizer",pos="6,0.65!"];
+
+        ifsink[label="IFrameSink", pos="8,2!"];
+
+
+        lsin[label="LArG4 hits", shape=ellipse,pos="-1.5,0!"];
+        lsout[label="recob::Wire", shape=ellipse,pos="9.5,0!"];
+
+        depotool[label="LS tool\n(hit sink)",pos="0,0!"];
+        frametool[label="LS tool\n(waveform\nsource)",pos="8,0!"];
+
+        depotool->ideposrc[arrowhead=empty];
+        frametool->ifsink[arrowhead=empty];
+
+        drifter->idrifter[arrowhead=empty];
+        ductor->iductor[arrowhead=empty];
+        dis->idis[arrowhead=empty];
+        digi->idigi[arrowhead=empty];
+
+        ideposrc->idrifter->iductor->idigi->ifsink[arrowhead=vee];
+        idis->idigi[arrowhead=vee];
+
+        lsin->depotool[arrowhead=vee];
+        frametool->lsout[arrowhead=vee];
+
+        // label="Wire Cell LArSoft Simulation Module";
+}
