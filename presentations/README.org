@@ -4,6 +4,14 @@ A non-exhaustive collection of presentations abuot Wire Cell
 
 * 2019
 
+- TPC Signal Processing and Detector Simulation, H. Wei gvien at a workshop of event reconstruction and machine learning at DESY (local [[./algs/Diff_RecoWorkshopDESY_LArTPCSPandSim_20190916.pdf][pdf]])
+
+- Linear Problem in LArTPC, C. Zhang given at a workshop of event reconstruction and machine learning at DESY (local [[./algs/Linear_Problem_in_LArTPC.pdf][pdf]])
+
+- Charge-Light Matching and PID with Wire-Cell, X. Qian given at a workshop of event reconstruction and machine learning at DESY (local [[./algs/Application_Wire_Cell.pptx][pptx]])
+
+- Seminar given at SBU, X. Qian (local [[./algs/SBU_Seminar_LArTPC.pptx][pptx]])
+
 - Colloquium at BNL, X. Qian (local [[./algs/BNL_Colloquium_LArTPCs_v2.pptx][pptx]])
 
 - Progress adding 3D imaging to the Wire-Cell Toolkit, B. Viren for local WC team (local [[./updates/20190321][materials]] and [[./updates/20190321/latexmk-out/img.pdf][PDF]]
