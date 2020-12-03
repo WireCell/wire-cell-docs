@@ -2,36 +2,51 @@ This area holds a Nikola source area for producing news.
 
 * Initial setup
 
-** Very first time
+** Get the blog source
 
-This is what was done to get started from a green field.
+#+begin_example
+  $ git clone git@github.com:wirecell/wire-cell-docs.git
+  $ cd wire-cell-docs
+#+end_example
+
+** Get the blog software
+
+To make new posts, rebuild the HTML and other things we need Nikola
+and its orgmode plugin.  Installation is best done in a Python venv.  
+
+It is recommended to use [[https://direnv.net/][direnv]] to manage the environment:
+
+#+begin_example
+  $ echo layout python3 > .envrc
+  $ direnv allow
+#+end_example
+
+But, one if that is not wanted, one can do things more manually:
 
 #+BEGIN_EXAMPLE
   $ python3 -m venv venv
   $ source venv/bin/activate
-  $ pip install Nikola
-  $ nikola init news
-  $ cd news
-  $ nikola plugin -i orgmode
 #+END_EXAMPLE
 
-** New installs
+Then install Nikola and its orgmode plugin: 
 
-For new installs.
+#+begin_example
+  $ pip install Nikola aiohttp watchdog jinja2
+#+end_example
 
-#+BEGIN_EXAMPLE
-  $ python3 -m venv venv
-  $ source venv/bin/activate
-  $ pip install Nikola aiohttp watchdog webassets jinja2
-#+END_EXAMPLE
+It should now be possible to serve the blog content locally:
+
+#+begin_example
+  $ cd news/
+  $ nikola auto
+#+end_example
 
 * New post
 
-Set up for [[New installs]] and then:
+To make a new post, first follow the above so that the ~nikola~ program
+is available and from the ~news/~ directory and then run a command like:
 
 #+BEGIN_EXAMPLE
-  $ source venv/bin/activate
-  $ cd news
   $ nikola new_post \
            -f orgmode \
            -t "The News title" \
@@ -41,9 +56,17 @@ Set up for [[New installs]] and then:
 
 Notes:
 - Can also answer prompts instead of giving exhaustive command line args.
-- Other source formats are allowed other than =orgmode=.
+- Feel free to use another source format than =orgmode=.
 - Edit the resulting file to add content.
-- Try to reuse tags.  Use =grep tags posts/*= or check https://wirecell.github.io/news/categories/
+- Use =grep tags posts/*= or check [[https://wirecell.github.io/news/categories/][online list]] to find existing tags.  Prefer reuse but also novel tags are okay.
+
+While editing, it may be useful to run:
+
+#+begin_example
+  $ nikola auto
+#+end_example
+
+in order to view how the post will appear and gain auto-refreshing of the your browser.
 
 * Deployment
 
