@@ -1382,7 +1382,8 @@ GLOBAL_CONTEXT = {'blog_sidebar': """\
       <ol class="list-unstyled">
         <li><a href="https://lar.bnl.gov/wire-cell/">home page</a></li>
         <li><a href="http://wirecell.github.io/">documentation</a></li>
-        <li><a href="http://github.io/WireCell">repositories</a></li>
+        <li><a href="http://github.com/WireCell">repositories (WCT)</a></li>
+        <li><a href="http://github.com/BNLIF">repositories (WCP)</a></li>
       </ol>
     </div>
     """}
