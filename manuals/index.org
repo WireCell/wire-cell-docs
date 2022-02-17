@@ -23,15 +23,22 @@ A manual is available for the Wire Cell Toolkit software in the following genera
 - [[./manual.md][MD]] just because
 - [[https://github.com/WireCell/wire-cell-docs/tree/master/manuals][Org]] source on GitHub for editing
 
-* Other documentation
+* Code reference
+
+- [[./doxy/html/][HTML]]
+
+* Links 
   :PROPERTIES:
   :CUSTOM_ID: other
   :END:
 
-Also available is reference documentation generated from the source
-comments by Doxygen:
-
-- [[./doxy/html/][HTML]]
+- [[https://czczc.github.io/wire-cell-tutorial/][Learning Wire-Cell]] tutorial covering use of WCT in a LArSoft context
+- [[https://lar.bnl.gov/wire-cell/][Summary of major WC algorithms]]
+- [[https://lar.bnl.gov/wire-cell/talks/][Some WC talks]]
+- [[https://lar.bnl.gov/properties/][LAr Properties]] Summary of the physics of LAr
+- [[https://www.youtube.com/watch?v=orWWx761GNs][Imaging Neutrinos in MicroBooNE with WireCell]] (video)
+- [[https://czczc.github.io/wire-cell-tutorial/refs.html][Yet more links]] (from "Learning Wire-Cell")
+- [[http://bnlif.github.io/wire-cell-docs/][WC Prototype docs]]
 
 
 --------
