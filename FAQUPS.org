@@ -1,0 +1,77 @@
+#+title: Frequently asked questions about UPS (and WCT)
+
+This collects some questions and answers related to the intersection of the Wire-Cell toolkit and the UPS software ecosystem.
+
+* What exactly is ~wirecell~?
+:PROPERTIES:
+:CUSTOM_ID: the-name-wirecell
+:END:
+
+A "UPS product" of the name ~wirecell~ provides programs, libraries and configuration files derived from the Wire-Cell Toolkit (WCT) project.  WCT source files are in the GitHub repository ~wire-cell-toolkit~ that is part of the GitHub organization named "WireCell".  There is nothing named ~wirecell~ which is part of WCT.  The main WCT program is named ~wire-cell~ and the sibling project ~wire-cell-python~ produces a suite of programs named ~wirecell-<name>~.  The name ~wirecell~ should refer only to the UPS product.
+
+
+* How do I use my own configuration files?
+:PROPERTIES:
+:CUSTOM_ID: custom-config
+:END:
+
+WCT finds its configuration files, including the ~.json.bz2~ file from ~wire-cell-data~ via:
+
+#+begin_example
+WIRECELL_PATH
+#+end_example
+
+This is the only variable WCT uses (though ~LD_LIBRARY_PATH~ is implicitly used to locate plugins). 
+
+
+* How do I build my own Wire-Cell toolkit in the context of a UPS environment?
+:PROPERTIES:
+:CUSTOM_ID: build-in-ups
+:END:
+
+First "setup" your UPS environment so that it provides the dependencies that WCT provides.  One way to do this is to setup an existing ~wirecell~ UPS product that provides WCT or a higher level package (eg ~larsoft~) that depends on ~wirecell~.
+
+Next, communicate the location of dependencies provided by UPS to ~wcb configure~ with a number of ~--with-<name>~ flags.  In some cases the more specific ~--with-<name>-include~ and ~--with-<name>-lib~ may be required.  Hints can be found in the [[https://cdcvs.fnal.gov/redmine/projects/build-framework/repository/wirecell-ssi-build/revisions/master/entry/build_wirecell.sh][official "SSI build shim" script]].
+
+The given ~--prefix <prefix>~ which determines where WCT will be installed may be freely chosen.  If the goal is to use WCT in a stand alone manner, you are done.  See also questions about [[#run-in-ups][running larsoft with custom WCT]] and  [[#build-against-in-ups][building larsoft with custom WCT]].
+
+
+* How can I run /art/ / LArSoft with my own Wire-Cell toolkit?
+:PROPERTIES:
+:CUSTOM_ID: run-in-ups
+:END:
+
+First, [[#build-in-ups][build WCT in a UPS context]] and then place the installed ~<prefix>/bin/~ directory at the front of your ~PATH~ and the ~<prefix>/lib/~ directory at the front of your ~LD_LIBRARY_PATH~.
+
+In principle, this should be enough.  The UPS ~wirecell~ product defines a number of other environment variables.  If there is any UPS or other code that you will use that is sensitive to these you may need to define them to point to your own WCT installation under ~<prefix>~.  The list of variables include:
+
+- ~WIRECELL_DIR~
+- ~WIRECELL_FQ_DIR~
+- ~WIRECELL_INC~
+- ~WIRECELL_LIB~
+- ~WIRECELL_VERSION~
+
+Take care that exercising various "setup" scripts in the UPS ecosystem, including use of "mrb" development areas may overwrite these non-standard UPS environment variables or the standard Unix ~PATH~ variables with values pointing to the nominal ~wirecell~ UPS product.
+
+
+* How do I build "larsoft" against my own Wire-Cell toolkit
+:PROPERTIES:
+:CUSTOM_ID: build-against-in-ups
+:END:
+
+In some cases, this is not required.  See [[#run-in-ups][run in UPS]] and [[#build-in-ups][build in UPS]].  However, when using a custom WCT, it may be required to (re)build the ~larwirecell~ package from LArSoft if:
+
+- You want to develop the ~larwirecell~ package itself in coincidence with your own development version WCT.
+
+- You may not want to develop ~larwirecell~, per se, but the version of WCT you want to use has changed its API (or ABI) from what it was in the version supplied by ~wirecell~ and on which ~larwirecell~ was original build/linked.
+
+The simplest way assumes you are familiar with the ~mrb~ package and applies a "hack".
+
+1) Use "mrb" to set up a development environment for ~larwirecell~ (or package that depends on ~larwirecell~) and which includes a local installation of the ~wirecell~ UPS product.
+
+2) [[#build-in-ups][Build WCT]] and give ~--prefix <prefix>~ pointing to the location of the ~wirecell~ UPS product installed by ~mrb~.
+
+Installing WCT in this way will simply overwrite the local ~wirecell~ UPS area an "trick" ~mrb~ and the rest of your local UPS ecosystem into using your custom version of WCT.
+
+Of course, be careful as the version used for ~wirecell~ is now a lie.  A more careful hack would be to first copy the local ~wirecell~ UPS area to a sibling with a different version string and install your custom WCT into that area.  The various UPS files in that area will need editing as well as the ~mrb~ files in your development area.
+
