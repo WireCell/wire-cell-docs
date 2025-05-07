@@ -3,12 +3,17 @@
 
 [[./news/images/wire-cell-logo.png]]
 
-* News:
+* News
   :PROPERTIES:
   :CUSTOM_ID: news
   :END:
 
 News items are posted to [[./news/][the Wire Cell news blog]].
+
+* Topics
+
+Various "readme" and topic documents from the WCT source:
+- [[file:README.org][README]]
 
 * Manual
   :PROPERTIES:
